@@ -2,12 +2,9 @@ import Layout from '@/components/layout/Layout';
 import TitleTile from '@/components/title/TitleTile';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { Inter } from 'next/font/google';
 
 import { publicNavItems } from '@/components/layout/navigationItems';
 import { useRouter } from 'next/router';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
   const router = useRouter();
