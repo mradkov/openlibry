@@ -24,6 +24,7 @@ export const translations = {
     author: 'Автор',
     topics: 'Теми',
     imageLink: 'Изображение',
+    barcode: 'Баркод',
     isbn: 'ISBN',
     editionDescription: 'Издание',
     publisherLocation: 'Местоположение на издателя',

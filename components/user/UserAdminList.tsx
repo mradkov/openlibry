@@ -122,12 +122,7 @@ export default function UserAdminList({
                           <Typography>
                             {u.lastName + ', ' + u.firstName}
                           </Typography>
-                          <Typography variant="caption">
-                            {'Клас ' +
-                              u.schoolGrade +
-                              ' - ' +
-                              u.schoolTeacherName}
-                          </Typography>
+                          <Typography variant="caption">{u.phone}</Typography>
                         </Grid>
                       </Grid>
                     </AccordionSummary>

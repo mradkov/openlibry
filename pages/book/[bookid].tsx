@@ -1,7 +1,7 @@
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import Layout from '@/components/layout/Layout';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { getAllTopics, getBook } from '../../entities/book';
 
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
@@ -47,28 +47,8 @@ export default function BookDetail({ user, book, topics }: BookDetailProps) {
   const router = useRouter();
 
   const [bookData, setBookData] = useState<BookType>(book);
-  const [antolinResults, setAntolinResults] = useState(null);
   const [returnBookSnackbar, setReturnBookSnackbar] = useState(false);
   const [saveBookSnackbar, setSaveBookSnackbar] = useState(false);
-
-  useEffect(() => {
-    setBookData(book);
-    fetch('/api/antolin/' + book.id, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then((res) => {
-      if (!res.ok) {
-        console.log('ERROR while getting Antolin Data', res.statusText);
-      }
-      //console.log("Retrieved Antolin data for book", book.title);
-      res.json().then((antolin) => {
-        //console.log("Antolin data", antolin);
-        setAntolinResults(antolin as any);
-      });
-    });
-  }, []);
 
   if (!router.query.bookid) {
     return <Typography>ID not found</Typography>;
@@ -167,7 +147,6 @@ export default function BookDetail({ user, book, topics }: BookDetailProps) {
           deleteSafetySeconds={deleteSafetySeconds}
           saveBook={handleSaveButton}
           topics={topics}
-          antolinResults={antolinResults}
         />
         <Snackbar
           open={returnBookSnackbar}

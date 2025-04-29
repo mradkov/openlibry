@@ -9,12 +9,10 @@ import Typography from '@mui/material/Typography';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 
 import palette from '@/styles/palette';
-import { Divider, Grid, Link, Paper, Tooltip } from '@mui/material';
+import { Divider, Grid, Paper, Tooltip } from '@mui/material';
 
-import { AntolinResultType } from '@/entities/AntolinResultsType';
 import { BookType } from '@/entities/BookType';
 import HoldButton from '../layout/HoldButton';
-import BookAntolinDialog from './edit/BookAntolinDialog';
 import BookBarcode from './edit/BookBarcode';
 import BookDateField from './edit/BookDateField';
 import BookImageUploadButton from './edit/BookImageUploadButton';
@@ -41,7 +39,6 @@ type BookEditFormPropType = {
   deleteSafetySeconds: number;
   saveBook: React.MouseEventHandler<HTMLButtonElement>;
   topics: string[];
-  antolinResults: AntolinResultType | null;
 };
 
 export default function BookEditForm({
@@ -51,11 +48,9 @@ export default function BookEditForm({
   deleteSafetySeconds = 3,
   saveBook,
   topics,
-  antolinResults,
 }: BookEditFormPropType) {
   const [editable, setEditable] = useState(true);
   const [loadingImage, setLoadingImage] = useState(1); //key for changing image
-  const [antolinDetailsDialog, setAntolinDetailsDialog] = useState(false);
 
   const [editButtonLabel, setEditButtonLabel] = useState('Редактиране');
 
@@ -65,9 +60,6 @@ export default function BookEditForm({
   const toggleEditButton = () => {
     editable ? setEditButtonLabel('Редактиране') : setEditButtonLabel('Отказ');
     setEditable(!editable);
-  };
-  const handleAntolinClick = () => {
-    setAntolinDetailsDialog(true);
   };
 
   const CoverImage = () => {
@@ -92,40 +84,9 @@ export default function BookEditForm({
       />
     );
   };
-  /*console.log(
-    "This is the antolin results for this book on the edit form",
-    antolinResults
-  );*/
-  const AntolinResult = (foundNumber: any) => {
-    let resultString = '...';
-    if (antolinResults) {
-      if (antolinResults.foundNumber > 1) {
-        resultString = ' ' + antolinResults.foundNumber + ' книги';
-      } else if (antolinResults.foundNumber == 0) {
-        resultString = ' Не е намерена книга';
-      } else if (antolinResults.foundNumber == 1) {
-        resultString = ' Намерена е една книга';
-      }
-
-      return (
-        <Typography variant="caption">
-          Antolin-търсене:
-          <Link onClick={handleAntolinClick} tabIndex={0} component="button">
-            {resultString}
-          </Link>
-        </Typography>
-      );
-    }
-    return <Typography variant="caption">...</Typography>;
-  };
 
   return (
     <Paper sx={{ mt: 5, px: 4 }}>
-      <BookAntolinDialog
-        open={antolinDetailsDialog}
-        setOpen={setAntolinDetailsDialog}
-        antolinBooks={antolinResults}
-      />{' '}
       <Grid
         container
         direction="row"
@@ -195,14 +156,12 @@ export default function BookEditForm({
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <BookTopicsChips
-              fieldType={'topics'}
+            <BookTextField
+              fieldType={'libraryId'}
               editable={editable}
               setBookData={setBookData}
               book={book}
-              topics={topics}
             />
-            <AntolinResult foundNumber={antolinResults} />
           </Grid>
           <Grid item xs={12}>
             <BookMultiText
@@ -214,11 +173,28 @@ export default function BookEditForm({
           </Grid>
           <Grid item xs={12} sm={6}>
             <BookTextField
+              fieldType={'barcode'}
+              editable={editable}
+              setBookData={setBookData}
+              book={book}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <BookTextField
               fieldType={'isbn'}
               editable={editable}
               setBookData={setBookData}
               book={book}
-            />{' '}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <BookTopicsChips
+              fieldType={'topics'}
+              editable={editable}
+              setBookData={setBookData}
+              book={book}
+              topics={topics}
+            />
           </Grid>
           <Grid item xs={12} sm={6}>
             <BookTextField
@@ -336,14 +312,6 @@ export default function BookEditForm({
           </Grid>
           <Grid item xs={12} sm={6}>
             <BookTextField
-              fieldType={'minPlayers'}
-              editable={editable}
-              setBookData={setBookData}
-              book={book}
-            />{' '}
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <BookTextField
               fieldType={'otherPhysicalAttributes'}
               editable={editable}
               setBookData={setBookData}
@@ -377,11 +345,15 @@ export default function BookEditForm({
           alignItems="center"
         >
           <Grid item>
-            <CoverImage />
-            <BookImageUploadButton
-              book={book}
-              setLoadingImage={setLoadingImage}
-            />
+            {process.env.NEXT_PUBLIC_API_URL && (
+              <>
+                <CoverImage />
+                <BookImageUploadButton
+                  book={book}
+                  setLoadingImage={setLoadingImage}
+                />
+              </>
+            )}
           </Grid>{' '}
           <Grid item>
             <BookBarcode book={book} />

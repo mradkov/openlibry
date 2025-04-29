@@ -6,6 +6,7 @@ import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -34,7 +35,7 @@ export default function BookSummaryCard({
   book,
   returnBook,
 }: BookSummaryCardPropType) {
-  const [src, setSrc] = useState('/coverimages/default.jpg');
+  const [src, setSrc] = useState('/coverimages/default_1.png');
 
   const selectedBook = book;
 
@@ -74,8 +75,8 @@ export default function BookSummaryCard({
         title={'Книга id ' + selectedBook.id}
       />
       <CardMedia sx={{ position: 'relative' }}>
-        <img
-          src={process.env.NEXT_PUBLIC_API_URL + '/api/images/' + book.id}
+        <Image
+          src={src}
           width={320}
           height={200}
           alt=""

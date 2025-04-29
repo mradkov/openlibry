@@ -133,44 +133,6 @@ export default function UserRentalList({
     }*/
   };
 
-  const getUniqueGrades = () => {
-    const uniqueGrades = users.reduce(
-      (unique: Array<string>, user: UserType) => {
-        if (user.schoolGrade && !unique.includes(user.schoolGrade)) {
-          unique.push(user.schoolGrade);
-        }
-        return unique;
-      },
-      []
-    );
-    return uniqueGrades;
-  };
-
-  function searchAndRemoveKlasse(inputString: string) {
-    // Create a regex pattern to find "klasse?" followed by a number
-    const regex = /клас\?\s?(\d+)/gi;
-
-    // Initialize variables to store whether the string is found and the number
-    let foundKlasse = false;
-    let klasseNumber = 0;
-
-    // Search for the string using the regex pattern and capture the number
-    const match = regex.exec(inputString);
-    if (match) {
-      foundKlasse = true;
-      klasseNumber = parseInt(match[1], 10); // Convert the captured string to an integer
-    }
-
-    // Remove the found string from the original string
-    const updatedString = inputString.replace(regex, '').trim();
-
-    return {
-      foundKlasse,
-      klasseNumber,
-      updatedString,
-    };
-  }
-
   const filterUsers = (users: Array<UserType>, searchString: string) => {
     selectedSingleUserId = -1;
     if (searchString.length == 0) return users; //nothing to do
@@ -178,14 +140,10 @@ export default function UserRentalList({
     const searchTokens = lowerCaseSearch.split(' ');
     //console.log("Search tokens", searchTokens);
     const searchPattern = { klasse: 0, overdue: false };
-    // Create a regex pattern to find "klasse?" followed by a number
-    const { foundKlasse, klasseNumber, updatedString } =
-      searchAndRemoveKlasse(lowerCaseSearch);
-    foundKlasse ? (searchPattern.klasse = klasseNumber) : 0;
-    let finalString = updatedString;
-    if (updatedString.indexOf('дължимо?') > -1) {
+    let finalString = searchString;
+    if (searchString.indexOf('дължимо?') > -1) {
       searchPattern.overdue = true;
-      finalString = updatedString.replace('дължимо?', '').trim();
+      finalString = searchString.replace('дължимо?', '').trim();
     }
 
     //console.log("Search check:", searchPattern, finalString);
@@ -193,9 +151,7 @@ export default function UserRentalList({
     const filteredUsers = users.filter((u: UserType) => {
       //this can be done shorter, but like this is easier to understand, ah well, what a mess
       let foundString = false;
-      let foundClass = true;
       let foundOverdue = true;
-      const filterForClass = foundKlasse;
       const filterForOverdue = searchPattern.overdue;
 
       //check if the string is at all there
@@ -206,12 +162,7 @@ export default function UserRentalList({
       ) {
         foundString = true;
       }
-      if (
-        filterForClass &&
-        !(searchPattern.klasse == parseInt(u.schoolGrade!))
-      ) {
-        foundClass = false;
-      }
+
       if (
         filterForOverdue &&
         !(searchPattern.overdue == hasOverdueBooks(booksForUser(u.id!)))
@@ -220,7 +171,7 @@ export default function UserRentalList({
       }
 
       //console.log("Found: ", foundString, foundClass, foundOverdue);
-      if (foundString && foundClass && foundOverdue) return u;
+      if (foundString && foundOverdue) return u;
     });
     if (filteredUsers.length == 1) {
       selectedSingleUserId = filteredUsers[0].id!;
@@ -246,7 +197,7 @@ export default function UserRentalList({
               Търсене на потребител{' '}
             </InputLabel>
             <Input
-              placeholder="Име, ID, клас?, дължимо?"
+              placeholder="Име, телефон"
               sx={{ my: 0.5 }}
               id="user-search-input"
               inputRef={searchFieldRef}
@@ -294,7 +245,6 @@ export default function UserRentalList({
       {showDetailSearch && (
         <RentSearchParams
           overdue={searchParams.overdue}
-          grade={getUniqueGrades()}
           setUserSearchInput={setUserSearchInput}
         />
       )}
@@ -339,15 +289,6 @@ export default function UserRentalList({
                 </Grid>
                 <Grid item>
                   <Grid container>
-                    <Grid>
-                      <Typography
-                        sx={{ fontSize: 12 }}
-                        color="text.primary"
-                        gutterBottom
-                      >
-                        {'№ ' + u.id + ', '} {'Клас ' + u.schoolGrade}{' '}
-                      </Typography>
-                    </Grid>
                     <Grid>
                       <OverdueIcon rentalsUser={rentalsUser} />
                     </Grid>

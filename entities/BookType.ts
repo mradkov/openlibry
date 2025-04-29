@@ -3,6 +3,7 @@ export interface BookType {
   updatedAt?: Date;
   id?: number;
   libraryId?: string;
+  barcode?: string;
   rentalStatus: string;
   rentedDate: Date | string;
   dueDate?: Date | string;

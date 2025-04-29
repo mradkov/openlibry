@@ -1,6 +1,5 @@
 import Layout from '@/components/layout/Layout';
 import { getAllBooks, getRentedBooksWithUsers } from '@/entities/book';
-import PlusOneRoundedIcon from '@mui/icons-material/PlusOneRounded';
 import { IconButton, Tooltip } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { ThemeProvider, useTheme } from '@mui/material/styles';
@@ -25,7 +24,6 @@ import { BookType } from '@/entities/BookType';
 import { RentalsUserType } from '@/entities/RentalsUserType';
 import { UserType } from '@/entities/UserType';
 import getMaxId from '@/utils/idhandling';
-import { increaseNumberInString } from '@/utils/increaseNumberInString';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
 import { Alert, Divider, InputBase, Paper, Snackbar } from '@mui/material';
 
@@ -89,6 +87,7 @@ export default function Users({ users, books, rentals }: UsersPropsType) {
     const user: UserType = {
       firstName: '',
       lastName: '',
+      phone: '',
       active: true,
     };
     if (!autoID) user.id = proposedID;
@@ -146,30 +145,6 @@ export default function Users({ users, books, rentals }: UsersPropsType) {
   const selectItem = (id: string) => {
     console.log('selected user', users, rentals);
     setDisplayDetail(parseInt(id));
-  };
-
-  const handleIncreaseGrade = () => {
-    //console.log("Increasing grade for users ", users, checked);
-    //the user IDs that are checked are marked as true
-    const updatedUserIDs = users.reduce((acc: any, u: UserType) => {
-      if (checked[u.id!])
-        acc.push({ id: u.id, grade: increaseNumberInString(u.schoolGrade) });
-      return acc;
-    }, []);
-
-    fetch('/api/batch/grade', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(updatedUserIDs),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log('Users increased', data);
-        setBatchEditSnackbar(true);
-        router.push('user');
-      });
   };
 
   const handleDeleteUsers = () => {
@@ -300,12 +275,6 @@ export default function Users({ users, books, rentals }: UsersPropsType) {
                 </IconButton>
               </Tooltip>
 
-              <SelectionActions
-                checked={checked}
-                icon={<PlusOneRoundedIcon />}
-                action={handleIncreaseGrade}
-                actionTitle="Повишаване на клас"
-              />
               <SelectionActions
                 checked={checked}
                 icon={<DeleteForeverRoundedIcon />}

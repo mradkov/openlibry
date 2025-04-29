@@ -135,32 +135,32 @@ export default function UserEditForm({
         <Grid item xs={12} sm={6}>
           <TextField
             required
-            id="schoolGrade"
-            name="schoolGrade"
-            label="Клас"
-            defaultValue={user.schoolGrade}
+            id="phone"
+            name="phone"
+            label="Телефон"
+            defaultValue={user.phone}
             disabled={!editable}
             fullWidth
             autoComplete="shipping address-level2"
             variant="standard"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setUserData({ ...user, schoolGrade: event.target.value });
+              setUserData({ ...user, phone: event.target.value });
             }}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <TextField
-            id="schoolTeacherName"
-            name="schoolTeacherName"
-            label="Учител"
-            defaultValue={user.schoolTeacherName}
+            id="email"
+            name="email"
+            label="Електронна поща"
+            defaultValue={user.eMail}
             disabled={!editable}
             fullWidth
             variant="standard"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setUserData({
                 ...user,
-                schoolTeacherName: event.target.value,
+                eMail: event.target.value,
               });
             }}
           />

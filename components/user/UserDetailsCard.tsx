@@ -39,13 +39,7 @@ export default function UserDetailsCard({
     <Card sx={{ minWidth: 275 }}>
       <CardContent>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          {'Nr. ' +
-            selectedUser.id +
-            ', ' +
-            'Клас ' +
-            selectedUser.schoolGrade +
-            ', ' +
-            selectedUser.schoolTeacherName}
+          {selectedUser.phone}
         </Typography>
         <Typography variant="h5" color="primary" component="div">
           {selectedUser.lastName + ', ' + selectedUser.firstName}
