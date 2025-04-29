@@ -4,8 +4,7 @@ export interface UserType {
   id?: number;
   lastName: string;
   firstName: string;
-  schoolGrade?: string | null;
-  schoolTeacherName?: string | null;
+  phone: string;
   active: boolean;
   eMail?: string | null;
 }

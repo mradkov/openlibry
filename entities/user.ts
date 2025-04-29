@@ -1,6 +1,6 @@
-import { UserType } from "@/entities/UserType";
-import { Prisma, PrismaClient } from "@prisma/client";
-import { addAudit } from "./audit";
+import { UserType } from '@/entities/UserType';
+import { Prisma, PrismaClient } from '@prisma/client';
+import { addAudit } from './audit';
 
 export async function getUser(client: PrismaClient, id: number) {
   try {
@@ -10,7 +10,7 @@ export async function getUser(client: PrismaClient, id: number) {
       e instanceof Prisma.PrismaClientKnownRequestError ||
       e instanceof Prisma.PrismaClientValidationError
     ) {
-      console.log("ERROR in getUser: ", e);
+      console.log('ERROR in getUser: ', e);
     }
     throw e;
   }
@@ -21,10 +21,7 @@ export async function getAllUsers(client: PrismaClient) {
     return await client.user.findMany({
       orderBy: [
         {
-          schoolGrade: "asc",
-        },
-        {
-          lastName: "asc",
+          lastName: 'asc',
         },
       ],
     });
@@ -33,7 +30,7 @@ export async function getAllUsers(client: PrismaClient) {
       e instanceof Prisma.PrismaClientKnownRequestError ||
       e instanceof Prisma.PrismaClientValidationError
     ) {
-      console.log("ERROR in getAllUsers: ", e);
+      console.log('ERROR in getAllUsers: ', e);
     }
     throw e;
   }
@@ -47,7 +44,7 @@ export async function countUser(client: PrismaClient) {
       e instanceof Prisma.PrismaClientKnownRequestError ||
       e instanceof Prisma.PrismaClientValidationError
     ) {
-      console.log("ERROR in count User: ", e);
+      console.log('ERROR in count User: ', e);
     }
     throw e;
   }
@@ -57,10 +54,10 @@ export async function addUser(client: PrismaClient, user: UserType) {
   try {
     await addAudit(
       client,
-      "Add user",
+      'Add user',
       user.id
-        ? user.id.toString() + ", " + user.firstName + " " + user.lastName
-        : "undefined",
+        ? user.id.toString() + ', ' + user.firstName + ' ' + user.lastName
+        : 'undefined',
       0,
       0
     );
@@ -72,7 +69,7 @@ export async function addUser(client: PrismaClient, user: UserType) {
       e instanceof Prisma.PrismaClientKnownRequestError ||
       e instanceof Prisma.PrismaClientValidationError
     ) {
-      console.log("ERROR in adding User: ", e);
+      console.log('ERROR in adding User: ', e);
     }
     throw e;
   }
@@ -86,10 +83,10 @@ export async function updateUser(
   try {
     await addAudit(
       client,
-      "Update user",
+      'Update user',
       user.id
-        ? user.id.toString() + ", " + user.firstName + " " + user.lastName
-        : "undefined",
+        ? user.id.toString() + ', ' + user.firstName + ' ' + user.lastName
+        : 'undefined',
       0,
       id
     );
@@ -104,46 +101,14 @@ export async function updateUser(
       e instanceof Prisma.PrismaClientKnownRequestError ||
       e instanceof Prisma.PrismaClientValidationError
     ) {
-      console.log("ERROR in updating User: ", e);
-    }
-    throw e;
-  }
-}
-
-export async function increaseUserGrade(
-  client: PrismaClient,
-  newGrades: Array<{ id: number; grade: string }>
-) {
-  try {
-    //create a transaction otherwise for single API calls, there's a connection pool issue
-    const transaction = [] as Array<any>;
-    newGrades.map((i: { id: number; grade: string }) => {
-      transaction.push(
-        client.user.update({
-          where: {
-            id: i.id,
-          },
-          data: { schoolGrade: i.grade },
-        })
-      );
-    });
-
-    const result = await client.$transaction(transaction);
-    console.log("Batch update database operation succeeded: ", result);
-    return result;
-  } catch (e) {
-    if (
-      e instanceof Prisma.PrismaClientKnownRequestError ||
-      e instanceof Prisma.PrismaClientValidationError
-    ) {
-      console.log("ERROR in updating batch grades for user : ", e);
+      console.log('ERROR in updating User: ', e);
     }
     throw e;
   }
 }
 
 export async function disableUser(client: PrismaClient, id: number) {
-  await addAudit(client, "Disable user", id.toString(), 0, id);
+  await addAudit(client, 'Disable user', id.toString(), 0, id);
   return await client.user.update({
     where: {
       id,
@@ -153,7 +118,7 @@ export async function disableUser(client: PrismaClient, id: number) {
 }
 
 export async function enableUser(client: PrismaClient, id: number) {
-  await addAudit(client, "Enable user", id.toString(), 0, id);
+  await addAudit(client, 'Enable user', id.toString(), 0, id);
   return await client.user.update({
     where: {
       id,
@@ -173,7 +138,7 @@ export async function isActive(client: PrismaClient, id: number) {
 }
 
 export async function deleteUser(client: PrismaClient, id: number) {
-  await addAudit(client, "Delete user", id.toString(), 0, id);
+  await addAudit(client, 'Delete user', id.toString(), 0, id);
   return await client.user.delete({
     where: {
       id,
@@ -197,6 +162,6 @@ export async function deleteManyUsers(
   });
 
   const result = await client.$transaction(transaction);
-  console.log("Batch delete user database operation succeeded: ", result);
+  console.log('Batch delete user database operation succeeded: ', result);
   return result;
 }

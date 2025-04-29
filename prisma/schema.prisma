@@ -11,17 +11,15 @@ datasource db {
 }
 
 model User {
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  id                Int      @id @default(autoincrement())
-  lastName          String
-  firstName         String
-  // could be 3A or so
-  schoolGrade       String?
-  schoolTeacherName String?
-  eMail             String?
-  active            Boolean  @default(true)
-  books             Book[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  lastName  String
+  firstName String
+  phone     String   @default("Не е въведен")
+  eMail     String?
+  active    Boolean  @default(true)
+  books     Book[]
 }
 
 model LoginUser {
@@ -45,26 +43,24 @@ model Audit {
 }
 
 model Book {
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  id           Int       @id @default(autoincrement())
-  rentalStatus String    @default("available")
-  rentedDate   DateTime  @default(now())
-  dueDate      DateTime?
-  renewalCount Int
-  title        String
-  subtitle     String?
-  author       String
-  topics       String?
-  imageLink    String?
-
-  //additional fields from OpenBiblio data model
+  createdAt               DateTime  @default(now())
+  updatedAt               DateTime  @updatedAt
+  id                      Int       @id @default(autoincrement())
+  libraryId               String?
+  rentalStatus            String    @default("available")
+  rentedDate              DateTime  @default(now())
+  dueDate                 DateTime?
+  renewalCount            Int
+  title                   String
+  subtitle                String?
+  author                  String
+  topics                  String?
+  imageLink               String?
   isbn                    String?
   editionDescription      String?
   publisherLocation       String?
   pages                   Int?
   summary                 String?
-  minPlayers              String?
   publisherName           String?
   otherPhysicalAttributes String?
   supplierComment         String?
@@ -73,10 +69,8 @@ model Book {
   minAge                  String?
   maxAge                  String?
   additionalMaterial      String?
-  //why is this string? In the migration, there were often DM prices or some other text
   price                   String?
   externalLinks           String?
-
-  user   User? @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  userId Int?
+  user                    User?     @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId                  Int?
 }

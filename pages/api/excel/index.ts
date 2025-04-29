@@ -113,8 +113,6 @@ export default async function handle(
                 id: u['Номер'], //TODO refactoring to re-use the mapping from utils xls mapping
                 lastName: u['Фамилия'],
                 firstName: u['Име'],
-                schoolGrade: u['Клас'],
-                schoolTeacherName: u['Учител'],
                 active: u['Активен'],
               },
             })
@@ -142,7 +140,6 @@ export default async function handle(
                 publisherLocation: b['Място на издаване'],
                 pages: parseInt(b['Страници']),
                 summary: b['Резюме'],
-                minPlayers: b['Мин играчи'],
                 publisherName: b['Издател'],
                 otherPhysicalAttributes: b['Характеристики'],
                 supplierComment: b['Доставчик'],

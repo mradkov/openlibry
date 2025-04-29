@@ -2,6 +2,7 @@ export interface BookType {
   createdAt?: Date;
   updatedAt?: Date;
   id?: number;
+  libraryId?: string;
   rentalStatus: string;
   rentedDate: Date | string;
   dueDate?: Date | string;
@@ -11,13 +12,11 @@ export interface BookType {
   author: string;
   topics?: string;
   imageLink?: string;
-  //additional fields from OpenBiblio data model
   isbn?: string;
   editionDescription?: string;
   publisherLocation?: string;
   pages?: number;
   summary?: string;
-  minPlayers?: string;
   publisherName?: string;
   otherPhysicalAttributes?: string;
   supplierComment?: string;

@@ -1,29 +1,28 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 async function main() {
   const user1 = await prisma.user.create({
     data: {
       id: 1000,
-      lastName: "Mustermann",
-      firstName: "Max",
-      schoolGrade: "1",
-      schoolTeacherName: "Minnie",
-      eMail: "max.mustermann@email.de",
+      lastName: 'Георгиев',
+      firstName: 'Георги',
+      phone: '0878987654',
+      eMail: 'gosho.georgiev@istinski.mail',
       active: true,
     },
   });
   const book1 = await prisma.book.create({
     data: {
       id: 1000,
-      rentalStatus: "available",
+      rentalStatus: 'available',
       rentedDate: new Date(),
       dueDate: new Date(),
       renewalCount: 0,
-      title: "Testbuch",
-      subtitle: "Untertitel vom Testbuch",
-      author: "Mickey Mouse",
-      topics: "",
-      imageLink: "",
+      title: 'Тест Книга',
+      subtitle: 'Напълно реална книга',
+      author: 'Истински Човек',
+      topics: '',
+      imageLink: '',
     },
   });
 }
