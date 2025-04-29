@@ -1,9 +1,9 @@
-import { BookType } from "@/entities/BookType";
-import { UserType } from "@/entities/UserType";
-import { Grid } from "@mui/material";
-import Box from "@mui/material/Box";
-import InfoTile from "./InfoTile";
-import MinAgeChart from "./MinAgeChart";
+import { BookType } from '@/entities/BookType';
+import { UserType } from '@/entities/UserType';
+import { Grid } from '@mui/material';
+import Box from '@mui/material/Box';
+import InfoTile from './InfoTile';
+import MinAgeChart from './MinAgeChart';
 
 interface DashboardType {
   users: Array<UserType>;
@@ -23,34 +23,34 @@ export default function Dashboard({ users, books, rentals }: DashboardType) {
         spacing={2}
       >
         <Grid item xs={12} md={3}>
-          {" "}
+          {' '}
           <InfoTile
-            title="Leihe"
-            subtitle="Ausgeliehene Bücher"
+            title="Заеми"
+            subtitle="Заети книги"
             value={rentals.length}
           />
         </Grid>
         <Grid item xs={12} md={3}>
-          {" "}
+          {' '}
           <InfoTile
-            title="Nutzerinnen"
-            subtitle="Anzahl aller Ausweise"
+            title="Потребители"
+            subtitle="Общ брой карти"
             value={users.length}
           />
         </Grid>
         <Grid item xs={12} md={3}>
-          {" "}
+          {' '}
           <InfoTile
-            title="Bücher"
-            subtitle="Gesamtzahl der Bücher"
+            title="Книги"
+            subtitle="Общ брой книги"
             value={books.length}
           />
         </Grid>
         <Grid item xs={12} md={3}>
-          {" "}
+          {' '}
           <InfoTile
-            title="Verspätet"
-            subtitle="Bücher über Rückgabedatum"
+            title="Закъснели"
+            subtitle="Книги след дата за връщане"
             value={
               rentals.filter((r: any) => {
                 return r.remainingDays > 0;

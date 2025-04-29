@@ -1,31 +1,31 @@
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import Avatar from "@mui/material/Avatar";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import { useRouter } from "next/navigation";
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import { useRouter } from 'next/navigation';
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
 import type {
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
-} from "next";
-import { getCsrfToken } from "next-auth/react";
+} from 'next';
+import { getCsrfToken } from 'next-auth/react';
 
-import registersplash from "./registersplashscreen.jpg";
+import registersplash from './registersplashscreen.jpg';
 
 export default function Register({
   csrfToken,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const [user, setUser] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEMail] = useState("");
-  const [passwordValidate, setPasswordValidate] = useState("");
+  const [user, setUser] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEMail] = useState('');
+  const [passwordValidate, setPasswordValidate] = useState('');
 
   const [passwordInPutError, setPasswordInputError] = useState(false);
   const [submitEnabled, setSubmitEnabled] = useState(false);
@@ -54,27 +54,27 @@ export default function Register({
       user: user,
       password: password,
       email: email,
-      role: "admin",
+      role: 'admin',
       active: true,
     };
-    fetch("/api/login/create", {
-      method: "POST",
+    fetch('/api/login/create', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(userData),
     }).then((res) => {
       if (!res.ok) {
-        console.log("ERROR while creating user", res.statusText);
+        console.log('ERROR while creating user', res.statusText);
       }
-      console.log("Created user", userData.user);
+      console.log('Created user', userData.user);
 
-      router.push("/");
+      router.push('/');
     });
   }
 
   return (
-    <Grid container component="main" sx={{ height: "100vh" }}>
+    <Grid container component="main" sx={{ height: '100vh' }}>
       <CssBaseline />
       <Grid
         item
@@ -83,10 +83,10 @@ export default function Register({
         md={7}
         sx={{
           backgroundImage: `url(${registersplash.src})`,
-          backgroundRepeat: "no-repeat",
+          backgroundRepeat: 'no-repeat',
 
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
@@ -94,16 +94,16 @@ export default function Register({
           sx={{
             my: 8,
             mx: 4,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
           }}
         >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" color="primary" variant="h5">
-            Neuen Benutzer für OpenLibry erzeugen
+            Създаване на нов потребител за OpenLibry
           </Typography>
           <Box
             component="form"
@@ -112,12 +112,12 @@ export default function Register({
             sx={{ mt: 1 }}
           >
             <TextField
-              sx={{ input: { color: "black" } }}
+              sx={{ input: { color: 'black' } }}
               margin="normal"
               required
               fullWidth
               id="user"
-              label="Username"
+              label="Потребителско име"
               name="user"
               autoComplete="user"
               color="secondary"
@@ -125,12 +125,12 @@ export default function Register({
               onChange={(e) => setUser(e.target.value)}
             />
             <TextField
-              sx={{ input: { color: "black" } }}
+              sx={{ input: { color: 'black' } }}
               margin="normal"
               required
               fullWidth
               id="email"
-              label="eMail"
+              label="Имейл"
               name="email"
               autoComplete="email"
               color="secondary"
@@ -142,7 +142,7 @@ export default function Register({
               required
               fullWidth
               name="password"
-              label="Passwort"
+              label="Парола"
               type="password"
               id="password"
               onChange={(e) => setPassword(e.target.value)}
@@ -154,7 +154,7 @@ export default function Register({
               fullWidth
               error={passwordInPutError}
               name="password-validation"
-              label="Passwort wiederholen"
+              label="Повторете паролата"
               type="password"
               id="passwordValidation"
               onChange={(e) => setPasswordValidate(e.target.value)}
@@ -167,7 +167,7 @@ export default function Register({
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Benutzer erzeugen
+              Създаване на потребител
             </Button>
           </Box>
         </Box>

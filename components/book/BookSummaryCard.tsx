@@ -1,25 +1,25 @@
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { Avatar, IconButton, Tooltip } from "@mui/material";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import Typography from "@mui/material/Typography";
-import Link from "next/link";
-import { useState } from "react";
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Avatar, IconButton, Tooltip } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import Link from 'next/link';
+import { useState } from 'react';
 
-import { BookType } from "@/entities/BookType";
+import { BookType } from '@/entities/BookType';
 
-import palette from "@/styles/palette";
-import CancelPresentationIcon from "@mui/icons-material/CancelPresentation";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import { CardHeader, CardMedia } from "@mui/material";
+import palette from '@/styles/palette';
+import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
+import TaskAltIcon from '@mui/icons-material/TaskAlt';
+import { CardHeader, CardMedia } from '@mui/material';
 
 const bull = (
   <Box
     component="span"
-    sx={{ display: "inline-block", mx: "2px", transform: "scale(0.8)" }}
+    sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
   >
     •
   </Box>
@@ -34,12 +34,12 @@ export default function BookSummaryCard({
   book,
   returnBook,
 }: BookSummaryCardPropType) {
-  const [src, setSrc] = useState("/coverimages/default.jpg");
+  const [src, setSrc] = useState('/coverimages/default.jpg');
 
   const selectedBook = book;
 
   const getAvatarIcon = (b: BookType) => {
-    return b.rentalStatus == "rented" ? (
+    return b.rentalStatus == 'rented' ? (
       <Avatar sx={{ bgcolor: palette.error.main }} aria-label="avatar">
         <CancelPresentationIcon />
       </Avatar>
@@ -57,11 +57,11 @@ export default function BookSummaryCard({
       sx={{
         maxWidth: 280,
         minWidth: 275,
-        margin: "0 auto",
-        padding: "0.1em",
-        display: "flex",
-        justifyContent: "space-between",
-        flexDirection: "column",
+        margin: '0 auto',
+        padding: '0.1em',
+        display: 'flex',
+        justifyContent: 'space-between',
+        flexDirection: 'column',
       }}
     >
       <CardHeader
@@ -71,15 +71,15 @@ export default function BookSummaryCard({
             <MoreVertIcon />
           </IconButton>
         }
-        title={"Buch id " + selectedBook.id}
+        title={'Книга id ' + selectedBook.id}
       />
-      <CardMedia sx={{ position: "relative" }}>
+      <CardMedia sx={{ position: 'relative' }}>
         <img
-          src={process.env.NEXT_PUBLIC_API_URL + "/api/images/" + book.id}
+          src={process.env.NEXT_PUBLIC_API_URL + '/api/images/' + book.id}
           width={320}
           height={200}
           alt=""
-          style={{ objectFit: "cover" }}
+          style={{ objectFit: 'cover' }}
         />
       </CardMedia>
       <CardContent>
@@ -96,16 +96,16 @@ export default function BookSummaryCard({
         </Typography>
       </CardContent>
       <CardActions>
-        <Link href={"/book/" + book.id} passHref>
-          <Tooltip title="Details für das Buch">
+        <Link href={'/book/' + book.id} passHref>
+          <Tooltip title="Детайли за книгата">
             <Button size="small" data-cy="book_card_editbutton">
-              Details
+              Детайли
             </Button>
           </Tooltip>
         </Link>
-        {book.rentalStatus != "available" ? (
+        {book.rentalStatus != 'available' ? (
           <Button size="small" onClick={returnBook}>
-            Abgeben
+            Върни
           </Button>
         ) : null}
       </CardActions>

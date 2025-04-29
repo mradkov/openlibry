@@ -1,6 +1,6 @@
-import { Paper, Typography } from "@mui/material";
-import { useRouter } from "next/router";
-import Barcode from "react-barcode";
+import { Paper, Typography } from '@mui/material';
+import { useRouter } from 'next/router';
+import Barcode from 'react-barcode';
 
 export default function Home() {
   const router = useRouter();
@@ -15,7 +15,7 @@ export default function Home() {
   );
   return (
     <Paper sx={{ mx: 10, my: 10 }}>
-      <Typography>Barcode Buch ID {bookid.toString()}</Typography>
+      <Typography>Баркод Книга ID {bookid.toString()}</Typography>
 
       <Barcode
         value={bookid.toString()}

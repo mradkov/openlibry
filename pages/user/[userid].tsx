@@ -1,29 +1,29 @@
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-import Layout from "@/components/layout/Layout";
-import { useEffect, useState } from "react";
-import { getUser } from "../../entities/user";
+import Layout from '@/components/layout/Layout';
+import { useEffect, useState } from 'react';
+import { getUser } from '../../entities/user';
 
-import { getRentedBooksForUser } from "@/entities/book";
+import { getRentedBooksForUser } from '@/entities/book';
 
-import MuiAlert, { AlertProps } from "@mui/material/Alert";
-import Snackbar from "@mui/material/Snackbar";
-import { useRouter } from "next/router";
-import { forwardRef } from "react";
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
+import { useRouter } from 'next/router';
+import { forwardRef } from 'react';
 
 import {
   convertDateToDayString,
   extendDays,
   replaceBookStringDate,
   replaceUserDateString,
-} from "@/utils/dateutils";
-import { PrismaClient } from "@prisma/client";
+} from '@/utils/dateutils';
+import { PrismaClient } from '@prisma/client';
 
-import UserEditForm from "@/components/user/UserEditForm";
-import { BookType } from "@/entities/BookType";
-import { UserType } from "@/entities/UserType";
-import { Typography } from "@mui/material";
-import { GetServerSidePropsContext } from "next/types";
+import UserEditForm from '@/components/user/UserEditForm';
+import { BookType } from '@/entities/BookType';
+import { UserType } from '@/entities/UserType';
+import { Typography } from '@mui/material';
+import { GetServerSidePropsContext } from 'next/types';
 
 type UserDetailPropsType = {
   user: UserType;
@@ -33,7 +33,7 @@ type UserDetailPropsType = {
 
 const theme = createTheme({
   palette: {
-    primary: { main: "#1976d2" },
+    primary: { main: '#1976d2' },
   },
 });
 
@@ -76,7 +76,7 @@ export default function UserDetail({
     event?: React.SyntheticEvent | Event,
     reason?: string
   ) => {
-    if (reason === "clickaway") {
+    if (reason === 'clickaway') {
       return;
     }
 
@@ -87,36 +87,38 @@ export default function UserDetail({
     event?: React.SyntheticEvent | Event,
     reason?: string
   ) => {
-    if (reason === "clickaway") {
+    if (reason === 'clickaway') {
       return;
     }
     setExtendBookSnackbar(false);
   };
 
   const handleSaveButton = () => {
-    console.log("Saving user ", userData);
+    console.log('Saving user ', userData);
 
     //we don't need to update the dates
     const { updatedAt, createdAt, ...savingUser } = userData;
 
-    fetch("/api/user/" + userid, {
-      method: "PUT",
+    fetch('/api/user/' + userid, {
+      method: 'PUT',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(savingUser),
     })
       .then((res) => res.json())
-      .then((data) => { router.push("/user"); });
+      .then((data) => {
+        router.push('/user');
+      });
   };
 
   const handleReturnBookButton = (bookid: number) => {
-    console.log("Returning book ", bookid);
+    console.log('Returning book ', bookid);
 
-    fetch("/api/book/" + bookid + "/user/" + userid, {
-      method: "DELETE",
+    fetch('/api/book/' + bookid + '/user/' + userid, {
+      method: 'DELETE',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     })
       .then((res) => res.json())
@@ -141,10 +143,10 @@ export default function UserDetail({
     //console.log("Saving an extended book", newbook);
     delete newbook.user; //don't need the user here
 
-    fetch("/api/book/" + bookid, {
-      method: "PUT",
+    fetch('/api/book/' + bookid, {
+      method: 'PUT',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(newbook),
     })
@@ -157,18 +159,18 @@ export default function UserDetail({
   };
 
   const handleDeleteButton = () => {
-    console.log("Deleting user ", userData);
+    console.log('Deleting user ', userData);
 
-    fetch("/api/user/" + userid, {
-      method: "DELETE",
+    fetch('/api/user/' + userid, {
+      method: 'DELETE',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("Delete operation performed on ", userid, data);
-        router.push("/user");
+        console.log('Delete operation performed on ', userid, data);
+        router.push('/user');
       });
   };
 
@@ -193,9 +195,9 @@ export default function UserDetail({
           <Alert
             onClose={handleCloseReturnBookSnackbar}
             severity="success"
-            sx={{ width: "100%" }}
+            sx={{ width: '100%' }}
           >
-            Buch zurückgegeben, super!
+            Книгата е върната, страхотно!
           </Alert>
         </Snackbar>
         <Snackbar
@@ -206,9 +208,9 @@ export default function UserDetail({
           <Alert
             onClose={handleCloseExtendBookSnackbar}
             severity="success"
-            sx={{ width: "100%" }}
+            sx={{ width: '100%' }}
           >
-            Buch verlängert, ist ein U-Boot, taucht wieder auf!
+            Наемът на книгата е удължен!
           </Alert>
         </Snackbar>
       </ThemeProvider>
@@ -234,21 +236,21 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 
   const user = replaceUserDateString(dbuser);
 
-  if (!("id" in user) || !user.id) return; //shouldn't happen
+  if (!('id' in user) || !user.id) return; //shouldn't happen
 
   const allBooks = (await getRentedBooksForUser(prisma, user.id)) as any;
 
   //TODO fix the type for book incl user
 
-  console.log("User, Books", user, allBooks);
+  console.log('User, Books', user, allBooks);
   const books = allBooks.map((b: BookType) => {
     const newBook = { ...b } as any; //define a better type there with conversion of Date to string
     newBook.createdAt = convertDateToDayString(b.createdAt);
     newBook.updatedAt = convertDateToDayString(b.updatedAt);
     newBook.rentedDate = b.rentedDate
       ? convertDateToDayString(b.rentedDate)
-      : "";
-    newBook.dueDate = b.dueDate ? convertDateToDayString(b.dueDate) : "";
+      : '';
+    newBook.dueDate = b.dueDate ? convertDateToDayString(b.dueDate) : '';
     //temp TODO
     //console.log("Book", newBook);
     return newBook;

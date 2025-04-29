@@ -1,23 +1,23 @@
-import { UserType } from "@/entities/UserType";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Typography from "@mui/material/Typography";
-import Link from "next/link";
+import { UserType } from '@/entities/UserType';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Typography from '@mui/material/Typography';
+import Link from 'next/link';
 
-import palette from "@/styles/palette";
-import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
+import palette from '@/styles/palette';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 
 const bull = (
   <Box
     component="span"
-    sx={{ display: "inline-block", mx: "2px", transform: "scale(0.8)" }}
+    sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
   >
     •
   </Box>
@@ -39,21 +39,21 @@ export default function UserDetailsCard({
     <Card sx={{ minWidth: 275 }}>
       <CardContent>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          {"Nr. " +
+          {'Nr. ' +
             selectedUser.id +
-            ", " +
-            "Klasse " +
+            ', ' +
+            'Клас ' +
             selectedUser.schoolGrade +
-            ", " +
+            ', ' +
             selectedUser.schoolTeacherName}
         </Typography>
         <Typography variant="h5" color="primary" component="div">
-          {selectedUser.lastName + ", " + selectedUser.firstName}
+          {selectedUser.lastName + ', ' + selectedUser.firstName}
         </Typography>
 
-        <Typography>Ausgeliehene Bücher:</Typography>
+        <Typography>Взети книги:</Typography>
         {rentals.length == 0 ? (
-          <Typography color={palette.success.main}>Keine</Typography>
+          <Typography color={palette.success.main}>Няма</Typography>
         ) : (
           <List>
             {rentals?.map((r: any) => {
@@ -70,9 +70,9 @@ export default function UserDetailsCard({
         )}
       </CardContent>
       <CardActions>
-        <Link href={"/user/" + user.id} passHref>
+        <Link href={'/user/' + user.id} passHref>
           <Button size="small" data-cy="user_card_editbutton">
-            Editieren
+            Редактиране
           </Button>
         </Link>
       </CardActions>

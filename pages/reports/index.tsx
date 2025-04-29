@@ -1,18 +1,18 @@
-import Layout from "@/components/layout/Layout";
-import { getAllBooks, getRentedBooksWithUsers } from "@/entities/book";
-import { deDE as coreDeDE } from "@mui/material/locale";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { deDE } from "@mui/x-data-grid";
-import { PrismaClient } from "@prisma/client";
-import dayjs from "dayjs";
-import { getAllUsers } from "../../entities/user";
+import Layout from '@/components/layout/Layout';
+import { getAllBooks, getRentedBooksWithUsers } from '@/entities/book';
+import { deDE as coreDeDE } from '@mui/material/locale';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { deDE } from '@mui/x-data-grid';
+import { PrismaClient } from '@prisma/client';
+import dayjs from 'dayjs';
+import { getAllUsers } from '../../entities/user';
 
-import BookLabelsCard from "@/components/reports/BookLabelsCard";
-import Dashboard from "@/components/reports/Dashboard";
-import TagCloudDashboard from "@/components/reports/TagCloud";
-import { BookType } from "@/entities/BookType";
-import { UserType } from "@/entities/UserType";
-import { convertDateToDayString } from "@/utils/dateutils";
+import BookLabelsCard from '@/components/reports/BookLabelsCard';
+import Dashboard from '@/components/reports/Dashboard';
+import TagCloudDashboard from '@/components/reports/TagCloud';
+import { BookType } from '@/entities/BookType';
+import { UserType } from '@/entities/UserType';
+import { convertDateToDayString } from '@/utils/dateutils';
 import {
   Button,
   Card,
@@ -21,17 +21,17 @@ import {
   Grid,
   TextField,
   Typography,
-} from "@mui/material";
-import type {} from "@mui/x-data-grid/themeAugmentation";
-import router from "next/router";
-import { useState } from "react";
+} from '@mui/material';
+import type {} from '@mui/x-data-grid/themeAugmentation';
+import router from 'next/router';
+import { useState } from 'react';
 
 const prisma = new PrismaClient();
 
 const theme = createTheme(
   {
     palette: {
-      primary: { main: "#1976d2" },
+      primary: { main: '#1976d2' },
     },
     spacing: 4,
   },
@@ -100,14 +100,12 @@ const LabelCard = ({
 
         <TextField
           id="outlined-number"
-          label="Anzahl Etiketten"
+          label="Брой етикети"
           key="book_report_number_input"
           type="number"
           value={startLabel}
           error={startLabel! > totalNumber}
-          helperText={
-            startLabel! > totalNumber ? "So viele gibt es nicht?" : ""
-          }
+          helperText={startLabel! > totalNumber ? 'Толкова няма?' : ''}
           onChange={(e: any) => {
             setStartLabel(parseInt(e.target.value));
           }}
@@ -123,10 +121,13 @@ const LabelCard = ({
         <Button
           size="small"
           onClick={() =>
-            window.open(link + "/?start=0" + "&end=" + Math.floor(startLabel!), "_blank")
+            window.open(
+              link + '/?start=0' + '&end=' + Math.floor(startLabel!),
+              '_blank'
+            )
           }
         >
-          Erzeuge PDF
+          Създай PDF
         </Button>
       </CardActions>
     </Card>
@@ -159,7 +160,7 @@ export default function Reports({ users, books, rentals }: ReportPropsType) {
         </CardContent>
         <CardActions>
           <Button size="small" onClick={() => router.push(link)}>
-            Erzeuge Tabelle
+            Създай таблица
           </Button>
         </CardActions>
       </Card>
@@ -169,7 +170,7 @@ export default function Reports({ users, books, rentals }: ReportPropsType) {
   books.map((b: BookType) => {
     //console.log("Importing topics", b.topics);
     b.topics
-      ? allTags.push(b.topics!.split(";").filter((t: string) => t.length > 0))
+      ? allTags.push(b.topics!.split(';').filter((t: string) => t.length > 0))
       : null;
   });
   //console.log("All Tags", allTags);
@@ -210,8 +211,8 @@ export default function Reports({ users, books, rentals }: ReportPropsType) {
         >
           <Grid item xs={12} md={6} lg={4} sx={{}}>
             <ReportCard
-              title="Nutzerinnen"
-              subtitle="Liste aller Nutzerinnen"
+              title="Потребители"
+              subtitle="Списък на всички потребители"
               unit="users"
               totalNumber={users.length}
               link="reports/users"
@@ -219,8 +220,8 @@ export default function Reports({ users, books, rentals }: ReportPropsType) {
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
             <ReportCard
-              title="Bücher"
-              subtitle="Liste aller Bücher"
+              title="Книги"
+              subtitle="Списък на всички книги"
               unit="books"
               totalNumber={books.length}
               link="reports/books"
@@ -228,8 +229,8 @@ export default function Reports({ users, books, rentals }: ReportPropsType) {
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
             <ReportCard
-              title="Leihen"
-              subtitle="Liste aller Leihen"
+              title="Наеми"
+              subtitle="Списък на всички наеми"
               unit="rentals"
               totalNumber={rentals.length}
               link="reports/rentals"
@@ -237,24 +238,24 @@ export default function Reports({ users, books, rentals }: ReportPropsType) {
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
             <LinkCard
-              title="Excel Export"
-              subtitle="Excel Export der Daten"
-              buttonTitle="Download Excel"
+              title="Експорт в Excel"
+              subtitle="Експорт на данни в Excel"
+              buttonTitle="Изтегли Excel"
               link="api/excel"
             />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
             <LinkCard
-              title="Excel Import"
-              subtitle="Excel Import der Daten"
-              buttonTitle="Upload Excel"
+              title="Импорт от Excel"
+              subtitle="Импорт на данни от Excel"
+              buttonTitle="Качи Excel"
               link="reports/xlsimport"
             />
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
             <ReportCard
-              title="Historie"
-              subtitle="Aktivitäten Bücher/User"
+              title="История"
+              subtitle="Активности на книги/потребители"
               unit="audits"
               totalNumber={1000}
               link="reports/audit"
@@ -262,9 +263,9 @@ export default function Reports({ users, books, rentals }: ReportPropsType) {
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
             <BookLabelsCard
-              title="Buch Etiketten"
+              title="Етикети за книги"
               subtitle=""
-              unit="Etiketten"
+              unit="Етикети"
               link="api/report/booklabels"
               totalNumber={books.length}
               startLabel={startLabel}
@@ -278,9 +279,9 @@ export default function Reports({ users, books, rentals }: ReportPropsType) {
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
             <LabelCard
-              title="Ausweise"
-              subtitle="Liste aller Ausweise"
-              unit="Etiketten"
+              title="Карти"
+              subtitle="Списък на всички карти"
+              unit="Етикети"
               link="api/report/userlabels"
               totalNumber={users.length}
               startLabel={startUserLabel}
@@ -289,9 +290,9 @@ export default function Reports({ users, books, rentals }: ReportPropsType) {
           </Grid>
           <Grid item xs={12} md={6} lg={4}>
             <LinkCard
-              title="Mahnungen"
-              subtitle="Ausdruck aller Mahnungen"
-              buttonTitle="Erzeuge Word"
+              title="Напомняния"
+              subtitle="Отпечатване на всички напомняния"
+              buttonTitle="Създай Word"
               link="/api/report/reminder"
             />
           </Grid>
@@ -304,36 +305,36 @@ export default function Reports({ users, books, rentals }: ReportPropsType) {
 
 export async function getServerSideProps() {
   const allUsers = await getAllUsers(prisma);
-  console.log("Reports page - loaded Users");
+  console.log('Reports page - loaded Users');
   const users = allUsers.map((u) => {
     const newUser = { ...u } as any; //define a better type there with conversion of Date to string
     newUser.createdAt = convertDateToDayString(u.createdAt);
     newUser.updatedAt = convertDateToDayString(u.updatedAt);
     return newUser;
   });
-  console.log("Reports page - converted Users");
+  console.log('Reports page - converted Users');
 
   const allBooks = await getAllBooks(prisma);
-  console.log("Reports page - loaded Books");
+  console.log('Reports page - loaded Books');
   const books = allBooks.map((b) => {
     const newBook = { ...b } as any; //define a better type there with conversion of Date to string
     newBook.createdAt = convertDateToDayString(b.createdAt);
     newBook.updatedAt = convertDateToDayString(b.updatedAt);
     newBook.rentedDate = b.rentedDate
       ? convertDateToDayString(b.rentedDate)
-      : "";
-    newBook.dueDate = b.dueDate ? convertDateToDayString(b.dueDate) : "";
+      : '';
+    newBook.dueDate = b.dueDate ? convertDateToDayString(b.dueDate) : '';
     //temp TODO
     return newBook;
   });
-  console.log("Reports page - converted Books");
+  console.log('Reports page - converted Books');
   const allRentals = await getRentedBooksWithUsers(prisma);
-  console.log("Reports page - Rentals calculated");
+  console.log('Reports page - Rentals calculated');
   const rentals = allRentals.map((r) => {
     //calculate remaining days for the rental
     const due = dayjs(r.dueDate);
     const today = dayjs();
-    const diff = today.diff(due, "days");
+    const diff = today.diff(due, 'days');
 
     return {
       id: r.id,

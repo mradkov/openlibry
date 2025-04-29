@@ -1,33 +1,33 @@
-import Layout from "@/components/layout/Layout";
-import { getAllBooks, getRentedBooksWithUsers } from "@/entities/book";
-import PlusOneRoundedIcon from "@mui/icons-material/PlusOneRounded";
-import { IconButton, Tooltip } from "@mui/material";
-import Grid from "@mui/material/Grid";
-import { ThemeProvider, useTheme } from "@mui/material/styles";
-import { PrismaClient } from "@prisma/client";
-import { useRouter } from "next/router";
-import { ChangeEvent, useEffect, useState } from "react";
-import { getAllUsers } from "../../entities/user";
+import Layout from '@/components/layout/Layout';
+import { getAllBooks, getRentedBooksWithUsers } from '@/entities/book';
+import PlusOneRoundedIcon from '@mui/icons-material/PlusOneRounded';
+import { IconButton, Tooltip } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import { ThemeProvider, useTheme } from '@mui/material/styles';
+import { PrismaClient } from '@prisma/client';
+import { useRouter } from 'next/router';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { getAllUsers } from '../../entities/user';
 
-import UserAdminList from "@/components/user/UserAdminList";
-import DeleteForeverRoundedIcon from "@mui/icons-material/DeleteForeverRounded";
-import QueueIcon from "@mui/icons-material/Queue";
-import SearchIcon from "@mui/icons-material/Search";
+import UserAdminList from '@/components/user/UserAdminList';
+import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
+import QueueIcon from '@mui/icons-material/Queue';
+import SearchIcon from '@mui/icons-material/Search';
 
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 
-import { convertDateToDayString } from "@/utils/dateutils";
+import { convertDateToDayString } from '@/utils/dateutils';
 
-import NewUserDialog from "@/components/user/NewUserDialog";
-import SelectionActions from "@/components/user/SelectionActions";
-import UserDetailsCard from "@/components/user/UserDetailsCard";
-import { BookType } from "@/entities/BookType";
-import { RentalsUserType } from "@/entities/RentalsUserType";
-import { UserType } from "@/entities/UserType";
-import getMaxId from "@/utils/idhandling";
-import { increaseNumberInString } from "@/utils/increaseNumberInString";
-import DoneAllIcon from "@mui/icons-material/DoneAll";
-import { Alert, Divider, InputBase, Paper, Snackbar } from "@mui/material";
+import NewUserDialog from '@/components/user/NewUserDialog';
+import SelectionActions from '@/components/user/SelectionActions';
+import UserDetailsCard from '@/components/user/UserDetailsCard';
+import { BookType } from '@/entities/BookType';
+import { RentalsUserType } from '@/entities/RentalsUserType';
+import { UserType } from '@/entities/UserType';
+import getMaxId from '@/utils/idhandling';
+import { increaseNumberInString } from '@/utils/increaseNumberInString';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+import { Alert, Divider, InputBase, Paper, Snackbar } from '@mui/material';
 
 const prisma = new PrismaClient();
 /*
@@ -44,7 +44,7 @@ interface UsersPropsType {
 }
 
 export default function Users({ users, books, rentals }: UsersPropsType) {
-  const [userSearchInput, setUserSearchInput] = useState("");
+  const [userSearchInput, setUserSearchInput] = useState('');
   const [displayDetail, setDisplayDetail] = useState(0);
   const [userCreating, setUserCreating] = useState(false);
   const [newUserDialogVisible, setNewUserDialogVisible] = useState(false);
@@ -61,7 +61,7 @@ export default function Users({ users, books, rentals }: UsersPropsType) {
     event?: React.SyntheticEvent | Event,
     reason?: string
   ) => {
-    if (reason === "clickaway") {
+    if (reason === 'clickaway') {
       return;
     }
 
@@ -71,7 +71,7 @@ export default function Users({ users, books, rentals }: UsersPropsType) {
     event?: React.SyntheticEvent | Event,
     reason?: string
   ) => {
-    if (reason === "clickaway") {
+    if (reason === 'clickaway') {
       return;
     }
 
@@ -83,20 +83,20 @@ export default function Users({ users, books, rentals }: UsersPropsType) {
   };
 
   const handleCreateNewUser = (autoID: boolean, proposedID: number) => {
-    console.log("Creating a new user with", autoID, proposedID);
+    console.log('Creating a new user with', autoID, proposedID);
     setUserCreating(true);
 
     const user: UserType = {
-      firstName: "",
-      lastName: "",
+      firstName: '',
+      lastName: '',
       active: true,
     };
     if (!autoID) user.id = proposedID;
 
-    fetch("/api/user", {
-      method: "POST",
+    fetch('/api/user', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(user),
     })
@@ -108,12 +108,12 @@ export default function Users({ users, books, rentals }: UsersPropsType) {
       })
       .then((data) => {
         setUserCreating(false);
-        router.push("user/" + data.id);
+        router.push('user/' + data.id);
         //router.push("user/" + data.id + "?edit=true");
-        console.log("User created", data);
+        console.log('User created', data);
       })
       .catch((error) => {
-        console.error("Error updating user IDs:", error);
+        console.error('Error updating user IDs:', error);
         setUserCreating(false);
         setNewUserSnackbarError(true);
         // Stop further execution if there is an error
@@ -121,8 +121,8 @@ export default function Users({ users, books, rentals }: UsersPropsType) {
   };
 
   const handleEditUser = (id: string) => {
-    console.log("Editing user ", id);
-    router.push("user/" + id);
+    console.log('Editing user ', id);
+    router.push('user/' + id);
   };
 
   const handleSelectAll = () => {
@@ -144,7 +144,7 @@ export default function Users({ users, books, rentals }: UsersPropsType) {
   };
 
   const selectItem = (id: string) => {
-    console.log("selected user", users, rentals);
+    console.log('selected user', users, rentals);
     setDisplayDetail(parseInt(id));
   };
 
@@ -157,18 +157,18 @@ export default function Users({ users, books, rentals }: UsersPropsType) {
       return acc;
     }, []);
 
-    fetch("/api/batch/grade", {
-      method: "POST",
+    fetch('/api/batch/grade', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(updatedUserIDs),
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("Users increased", data);
+        console.log('Users increased', data);
         setBatchEditSnackbar(true);
-        router.push("user");
+        router.push('user');
       });
   };
 
@@ -180,18 +180,18 @@ export default function Users({ users, books, rentals }: UsersPropsType) {
       return acc;
     }, []);
 
-    fetch("/api/batch/user", {
-      method: "DELETE",
+    fetch('/api/batch/user', {
+      method: 'DELETE',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(updatedUserIDs),
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("Users deleted", data);
+        console.log('Users deleted', data);
         setBatchEditSnackbar(true);
-        router.push("user");
+        router.push('user');
       });
   };
 
@@ -209,7 +209,7 @@ export default function Users({ users, books, rentals }: UsersPropsType) {
           setOpen={setNewUserDialogVisible}
           maxUserID={getMaxId(users) + 1}
           onCreate={(idAuto, idValue) => {
-            console.log("Creating user", idAuto, idValue);
+            console.log('Creating user', idAuto, idValue);
             handleCreateNewUser(idValue, idAuto);
             setNewUserDialogVisible(false);
           }}
@@ -222,7 +222,7 @@ export default function Users({ users, books, rentals }: UsersPropsType) {
           <Alert
             onClose={handleBatchEditSnackbar}
             severity="success"
-            sx={{ width: "100%", background: "teal", color: "white" }}
+            sx={{ width: '100%', background: 'teal', color: 'white' }}
           >
             Selektierte Benutzer geändert, super!
           </Alert>
@@ -235,7 +235,7 @@ export default function Users({ users, books, rentals }: UsersPropsType) {
           <Alert
             onClose={handleNewUserSnackbarError}
             severity="error"
-            sx={{ width: "100%", background: "teal", color: "white" }}
+            sx={{ width: '100%', background: 'teal', color: 'white' }}
           >
             Neuer User konnte nicht erzeugt werden. Ist die Nutzer ID schon
             vorhanden?
@@ -253,9 +253,9 @@ export default function Users({ users, books, rentals }: UsersPropsType) {
             <Paper
               component="form"
               sx={{
-                p: "2px 4px",
-                display: "flex",
-                alignItems: "center",
+                p: '2px 4px',
+                display: 'flex',
+                alignItems: 'center',
                 width: 400,
               }}
             >
@@ -263,24 +263,24 @@ export default function Users({ users, books, rentals }: UsersPropsType) {
                 sx={{ ml: 1, flex: 1 }}
                 value={userSearchInput}
                 onChange={handleInputChange}
-                placeholder="NutzerIn suchen.."
-                inputProps={{ "aria-label": "search users" }}
+                placeholder="Търсене на потребител.."
+                inputProps={{ 'aria-label': 'search users' }}
                 data-cy="rental_input_searchuser"
               />
-              <Tooltip title="Suche">
+              <Tooltip title="Търсене">
                 <IconButton
                   type="button"
-                  sx={{ p: "10px" }}
+                  sx={{ p: '10px' }}
                   aria-label="search"
                 >
                   <SearchIcon />
                 </IconButton>
               </Tooltip>
               <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-              <Tooltip title="Alle auswählen">
+              <Tooltip title="Избери всички">
                 <IconButton
                   color="primary"
-                  sx={{ p: "10px" }}
+                  sx={{ p: '10px' }}
                   aria-label="new-book"
                   onClick={handleSelectAll}
                 >
@@ -289,10 +289,10 @@ export default function Users({ users, books, rentals }: UsersPropsType) {
               </Tooltip>
               <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
 
-              <Tooltip title="Neue Nutzerin erzeugen">
+              <Tooltip title="Създаване на нов потребител">
                 <IconButton
                   color="primary"
-                  sx={{ p: "10px" }}
+                  sx={{ p: '10px' }}
                   aria-label="new-book"
                   onClick={() => setNewUserDialogVisible(true)}
                 >
@@ -304,16 +304,16 @@ export default function Users({ users, books, rentals }: UsersPropsType) {
                 checked={checked}
                 icon={<PlusOneRoundedIcon />}
                 action={handleIncreaseGrade}
-                actionTitle="Klasse erhöhen"
+                actionTitle="Повишаване на клас"
               />
               <SelectionActions
                 checked={checked}
                 icon={<DeleteForeverRoundedIcon />}
                 action={handleDeleteUsers}
-                actionTitle={"User löschen"}
+                actionTitle={'Изтриване на потребител'}
               />
             </Paper>
-          </Grid>{" "}
+          </Grid>{' '}
           {displayDetail > 0 ? (
             <Grid item xs={6}>
               <UserDetailsCard
@@ -356,8 +356,8 @@ export async function getServerSideProps() {
     newBook.updatedAt = convertDateToDayString(b.updatedAt);
     newBook.rentedDate = b.rentedDate
       ? convertDateToDayString(b.rentedDate)
-      : "";
-    newBook.dueDate = b.dueDate ? convertDateToDayString(b.dueDate) : "";
+      : '';
+    newBook.dueDate = b.dueDate ? convertDateToDayString(b.dueDate) : '';
     //temp TODO
     return newBook;
   });
@@ -366,9 +366,9 @@ export async function getServerSideProps() {
     //calculate remaining days for the rental
     const due = dayjs(r.dueDate);
     const today = dayjs();
-    const diff = today.diff(due, "days");
+    const diff = today.diff(due, 'days');
     if (r.user?.lastName == undefined)
-      console.log("Fetching rental for undefined user", r);
+      console.log('Fetching rental for undefined user', r);
 
     return {
       id: r.id,

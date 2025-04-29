@@ -1,10 +1,10 @@
 /* eslint-disable no-use-before-define */
 
-import { BookType } from "@/entities/BookType";
-import ClearIcon from "@mui/icons-material/Clear";
+import { BookType } from '@/entities/BookType';
+import ClearIcon from '@mui/icons-material/Clear';
 
-import { Autocomplete, Chip, TextField } from "@mui/material";
-import { Dispatch } from "react";
+import { Autocomplete, Chip, TextField } from '@mui/material';
+import { Dispatch } from 'react';
 
 type BookTopicsChipsProps = {
   fieldType: string;
@@ -15,7 +15,9 @@ type BookTopicsChipsProps = {
 };
 
 const parseTopics = (combined: string) => {
-  const parsedTopics = (combined != null ? combined : ";").split(";").filter((t: string) => t.length > 0);
+  const parsedTopics = (combined != null ? combined : ';')
+    .split(';')
+    .filter((t: string) => t.length > 0);
   return parsedTopics;
 };
 
@@ -32,7 +34,7 @@ export default function BookTopicsChips({
   //if (!book.topics) return <span></span>;
 
   const serializeTopics = (topics: string[]): string => {
-    return topics.join(";");
+    return topics.join(';');
   };
 
   // test topics
@@ -46,7 +48,7 @@ export default function BookTopicsChips({
       <Chip
         key={label}
         label={label}
-        variant={!editable ? "outlined" : "filled"}
+        variant={!editable ? 'outlined' : 'filled'}
         deleteIcon={<ClearIcon />}
         onDelete={() => {
           if (editable) {
@@ -87,7 +89,7 @@ export default function BookTopicsChips({
           <TextField
             {...params}
             variant="standard"
-            placeholder="Schlagwörter"
+            placeholder="Ключови думи"
             margin="normal"
             fullWidth
           />

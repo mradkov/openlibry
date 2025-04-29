@@ -6,7 +6,7 @@ import {
   CardContent,
   TextField,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
 
 type BookLabelCardProps = {
   title: string;
@@ -47,14 +47,12 @@ export default function BookLabelCard({
 
         <TextField
           id="outlined-number"
-          label="Anzahl Etiketten"
+          label="Брой етикети"
           key="book_report_number_input"
           type="number"
           value={startLabel}
           error={startLabel! > totalNumber}
-          helperText={
-            startLabel! > totalNumber ? "So viele gibt es nicht?" : ""
-          }
+          helperText={startLabel! > totalNumber ? 'Толкова няма?' : ''}
           onChange={(e: any) => {
             setStartLabel(parseInt(e.target.value));
           }}
@@ -65,7 +63,7 @@ export default function BookLabelCard({
         />
         <TextField
           id="outlined-number"
-          label="Mediennummer"
+          label="Номер на медията"
           key="book_report_id_input"
           type="number"
           value={idFilter}
@@ -91,7 +89,7 @@ export default function BookLabelCard({
           renderInput={(params) => (
             <TextField
               {...params}
-              label="Schlagwort Filter"
+              label="Филтър по ключова дума"
               variant="standard"
             />
           )}
@@ -106,15 +104,16 @@ export default function BookLabelCard({
             //console.log("Rendering API pdf", topicsFilter);
             window.open(
               link +
-              "/?start=0" +
-              "&end=" +
-              Math.floor(startLabel!) +
-              (idFilter ? "&id=" + idFilter : "") +
-              (topicsFilter ? "&topic=" + topicsFilter.topic : "")
-              , "_blank");
+                '/?start=0' +
+                '&end=' +
+                Math.floor(startLabel!) +
+                (idFilter ? '&id=' + idFilter : '') +
+                (topicsFilter ? '&topic=' + topicsFilter.topic : ''),
+              '_blank'
+            );
           }}
         >
-          Erzeuge PDF
+          Създай PDF
         </Button>
       </CardActions>
     </Card>

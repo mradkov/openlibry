@@ -1,27 +1,27 @@
-import MenuBookIcon from "@mui/icons-material/MenuBook";
-import { Grid, Tooltip } from "@mui/material";
-import FormControl from "@mui/material/FormControl";
-import Input from "@mui/material/Input";
-import InputAdornment from "@mui/material/InputAdornment";
-import InputLabel from "@mui/material/InputLabel";
-import Paper from "@mui/material/Paper";
-import { useEffect, useState } from "react";
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import { Grid, Tooltip } from '@mui/material';
+import FormControl from '@mui/material/FormControl';
+import Input from '@mui/material/Input';
+import InputAdornment from '@mui/material/InputAdornment';
+import InputLabel from '@mui/material/InputLabel';
+import Paper from '@mui/material/Paper';
+import { useEffect, useState } from 'react';
 
-import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
-import ClearIcon from "@mui/icons-material/Clear";
-import UpdateIcon from "@mui/icons-material/Update";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import ClearIcon from '@mui/icons-material/Clear';
+import UpdateIcon from '@mui/icons-material/Update';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 
-import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
+import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 
-import { BookType } from "@/entities/BookType";
-import { UserType } from "@/entities/UserType";
-import userNameForBook from "@/utils/userNameForBook";
-import dayjs from "dayjs";
-import "dayjs/locale/de";
+import { BookType } from '@/entities/BookType';
+import { UserType } from '@/entities/UserType';
+import userNameForBook from '@/utils/userNameForBook';
+import dayjs from 'dayjs';
+import 'dayjs/locale/de';
 
-import itemsjs from "itemsjs";
+import itemsjs from 'itemsjs';
 
 interface BookPropsType {
   books: Array<BookType>;
@@ -34,7 +34,6 @@ interface BookPropsType {
   handleUserSearchSetFocus: () => void;
 }
 
-
 export default function BookRentalList({
   books,
   users,
@@ -45,11 +44,11 @@ export default function BookRentalList({
   searchFieldRef,
   handleUserSearchSetFocus,
 }: BookPropsType) {
-  const [bookSearchInput, setBookSearchInput] = useState("");
+  const [bookSearchInput, setBookSearchInput] = useState('');
   const [renderedBooks, setRenderedBooks] = useState(books);
   const [returnedBooks, setReturnedBooks] = useState({});
   const searchEngine = itemsjs(books, {
-    searchableFields: ["title", "author", "subtitle", "id"],
+    searchableFields: ['title', 'author', 'subtitle', 'id'],
   });
 
   useEffect(() => {
@@ -60,7 +59,7 @@ export default function BookRentalList({
     const resultBooks = [] as Array<BookType>;
     const foundBooks = searchEngine.search({
       per_page: 20,
-      sort: "name_asc",
+      sort: 'name_asc',
       // full text search
       query: searchString,
     });
@@ -68,10 +67,9 @@ export default function BookRentalList({
     setRenderedBooks(foundBooks.data.items);
   }
 
-
   const handleClear = (e: any) => {
     e.preventDefault();
-    setBookSearchInput("");
+    setBookSearchInput('');
   };
 
   const handleInputChange = (
@@ -82,16 +80,15 @@ export default function BookRentalList({
     searchBooks(e.target.value);
   };
 
-
   const handleKeyUp = (e: React.KeyboardEvent): void => {
     if (e.key == 'Escape') {
-      if (bookSearchInput == "") {
+      if (bookSearchInput == '') {
         handleUserSearchSetFocus();
       } else {
-        setBookSearchInput("");
+        setBookSearchInput('');
       }
     }
-  }
+  };
 
   const ReturnedIcon = () => {
     //console.log("Rendering icon ", id, returnedBooks);
@@ -115,7 +112,9 @@ export default function BookRentalList({
   return (
     <div>
       <FormControl variant="standard">
-        <InputLabel htmlFor="book-search-input-label">Suche Buch</InputLabel>
+        <InputLabel htmlFor="book-search-input-label">
+          Търсене на книга
+        </InputLabel>
         <Input
           id="book-search-input"
           inputRef={searchFieldRef}
@@ -176,13 +175,13 @@ export default function BookRentalList({
                       sx={{ px: 0.5 }}
                     >
                       <Grid item>
-                        {!(b.rentalStatus == "available") && (
-                          <Tooltip title="Verlängern">
+                        {!(b.rentalStatus == 'available') && (
+                          <Tooltip title="Удължаване">
                             <IconButton
                               aria-label="extend"
                               onClick={() => {
                                 console.log(
-                                  "Book rental list, extend button",
+                                  'Book rental list, extend button',
                                   b
                                 );
                                 handleExtendBookButton(b.id!, b);
@@ -201,15 +200,15 @@ export default function BookRentalList({
                         )}
                       </Grid>
                       <Grid item>
-                        {!(b.rentalStatus == "available") && (
-                          <Tooltip title="Zurückgeben">
+                        {!(b.rentalStatus == 'available') && (
+                          <Tooltip title="Връщане">
                             <IconButton
                               onClick={() => {
                                 const result = handleReturnBookButton(
                                   b.id!,
                                   b.userId! //TODO not sure if this is actually needed
                                 );
-                                console.log("Result of the return:", result);
+                                console.log('Result of the return:', result);
                                 const time = Date.now();
                                 const newbook = {};
                                 (newbook as any)[b.id!] = time;
@@ -218,19 +217,19 @@ export default function BookRentalList({
                                   ...newbook,
                                 });
                               }}
-                              aria-label="zurückgeben"
+                              aria-label="връщане"
                             >
                               <ReturnedIcon key={b.id} />
                             </IconButton>
                           </Tooltip>
                         )}
                       </Grid>
-                      {userExpanded && b.rentalStatus == "available" && (
+                      {userExpanded && b.rentalStatus == 'available' && (
                         <Grid container item>
-                          <Tooltip title="Ausleihen">
+                          <Tooltip title="Наемане">
                             <IconButton
                               onClick={() => {
-                                console.log("Rent click", b);
+                                console.log('Rent click', b);
                                 handleRentBookButton(b.id!, userExpanded!);
                                 const time = Date.now();
                                 const newbook = {};
@@ -240,7 +239,7 @@ export default function BookRentalList({
                                   ...newbook,
                                 });
                               }}
-                              aria-label="ausleihen"
+                              aria-label="наемане"
                             >
                               <PlaylistAddIcon />
                             </IconButton>
@@ -251,27 +250,27 @@ export default function BookRentalList({
                   </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                  {" "}
+                  {' '}
                   <Typography sx={{ m: 0.5 }} variant="body2">
-                    Untertitel: {b.subtitle}
+                    Подзаглавие: {b.subtitle}
                   </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                  {" "}
+                  {' '}
                   <Typography sx={{ m: 0.5 }} variant="body2">
-                    Buch Nr. {b.id}
+                    Книга № {b.id}
                     {!(
-                      b.rentalStatus == "available" || b.rentalStatus == "lost"
+                      b.rentalStatus == 'available' || b.rentalStatus == 'lost'
                     ) && (
-                        <span>
-                          {" "}
-                          - ausgeliehen bis{" "}
-                          {dayjs(b.dueDate).format("DD.MM.YYYY")} an{" "}
-                          {userNameForBook(users, b.userId!)}
-                        </span>
-                      )}
-                    {b.rentalStatus == "available" && (
-                      <span> -{" " + b.author}</span>
+                      <span>
+                        {' '}
+                        - заета до {dayjs(b.dueDate).format(
+                          'DD.MM.YYYY'
+                        )} от {userNameForBook(users, b.userId!)}
+                      </span>
+                    )}
+                    {b.rentalStatus == 'available' && (
+                      <span> -{' ' + b.author}</span>
                     )}
                   </Typography>
                 </Grid>

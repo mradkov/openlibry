@@ -5,14 +5,14 @@ import {
   Paper,
   Tooltip,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
 
-import GridViewIcon from "@mui/icons-material/GridView";
-import QueueIcon from "@mui/icons-material/Queue";
-import SearchIcon from "@mui/icons-material/Search";
-import ViewListIcon from "@mui/icons-material/ViewList";
+import GridViewIcon from '@mui/icons-material/GridView';
+import QueueIcon from '@mui/icons-material/Queue';
+import SearchIcon from '@mui/icons-material/Search';
+import ViewListIcon from '@mui/icons-material/ViewList';
 
-import Grid from "@mui/material/Grid";
+import Grid from '@mui/material/Grid';
 
 interface BookSearchBarPropType {
   handleInputChange: React.ChangeEventHandler<
@@ -45,15 +45,15 @@ export default function BookSearchBar({
         <Paper
           component="form"
           sx={{
-            p: "2px 4px",
-            display: "flex",
-            alignItems: "center",
+            p: '2px 4px',
+            display: 'flex',
+            alignItems: 'center',
             width: 400,
           }}
         >
-          <Tooltip title="Ansicht wechseln">
+          <Tooltip title="Превключване на изгледа">
             <IconButton
-              sx={{ p: "10px" }}
+              sx={{ p: '10px' }}
               aria-label="menu"
               onClick={toggleView}
             >
@@ -64,21 +64,21 @@ export default function BookSearchBar({
             sx={{ ml: 1, flex: 1 }}
             value={bookSearchInput}
             onChange={handleInputChange}
-            placeholder="Buch suchen.."
-            inputProps={{ "aria-label": "search books" }}
+            placeholder="Търсене на книга.."
+            inputProps={{ 'aria-label': 'search books' }}
             data-cy="rental_input_searchbook"
           />
-          <Tooltip title="Suche">
-            <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+          <Tooltip title="Търсене">
+            <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
               <SearchIcon />
             </IconButton>
           </Tooltip>
           <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-          <Tooltip title="Neues Buch erzeugen">
+          <Tooltip title="Създаване на нова книга">
             <IconButton
               color="primary"
               data-cy="create_book_button"
-              sx={{ p: "10px" }}
+              sx={{ p: '10px' }}
               aria-label="new-book"
               onClick={handleNewBook}
             >

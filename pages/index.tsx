@@ -1,18 +1,18 @@
-import Layout from "@/components/layout/Layout";
-import TitleTile from "@/components/title/TitleTile";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
-import { Inter } from "next/font/google";
+import Layout from '@/components/layout/Layout';
+import TitleTile from '@/components/title/TitleTile';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import { Inter } from 'next/font/google';
 
-import { publicNavItems } from "@/components/layout/navigationItems";
-import { useRouter } from "next/router";
+import { publicNavItems } from '@/components/layout/navigationItems';
+import { useRouter } from 'next/router';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
   const router = useRouter();
   const onClick = (e: any, slug: string) => {
-    console.log("Selected", slug);
+    console.log('Selected', slug);
     router.push(slug);
   };
 
@@ -33,9 +33,9 @@ export default function Home() {
               id="title_headline"
               data-cy="indexpage"
               align="center"
-              sx={{ fontWeight: "bold", fontSize: 50 }}
+              sx={{ fontWeight: 'bold', fontSize: 50 }}
             >
-              Open Libry - die <b>einfache</b> Bücherei Verwaltung
+              Open Libry
             </Typography>
           </Grid>
 
@@ -58,9 +58,9 @@ export default function Home() {
                     md={3}
                     justifyContent="center"
                     sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      position: "relative",
+                      display: 'flex',
+                      justifyContent: 'center',
+                      position: 'relative',
                       mb: 0,
                       my: 5,
                     }}
@@ -74,10 +74,10 @@ export default function Home() {
                   </Grid>
                 );
               })}
-            </Grid>{" "}
+            </Grid>{' '}
           </Grid>
         </Grid>
-      </Layout>{" "}
+      </Layout>{' '}
     </div>
   );
 }

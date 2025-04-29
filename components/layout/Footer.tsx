@@ -1,16 +1,16 @@
-import { Link } from "@mui/material";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
+import { Link } from '@mui/material';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 
 export default function Footer() {
   return (
     <Box
       sx={{
         flexGrow: 1,
-        textAlign: "center",
-        paddingBottom: "24px",
-        paddingTop: "48px",
+        textAlign: 'center',
+        paddingBottom: '24px',
+        paddingTop: '48px',
       }}
     >
       <Grid
@@ -32,7 +32,7 @@ export default function Footer() {
           </Grid>
           <Grid item xs={12} md={4}>
             <Typography variant="body2">
-              <Link href="https://openlibry.de">Datenschutz</Link>
+              <Link href="https://openlibry.de">Поверителност</Link>
             </Typography>
           </Grid>
         </Grid>

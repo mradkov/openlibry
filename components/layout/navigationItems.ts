@@ -1,6 +1,10 @@
 export const publicNavItems = [
-  { title: "Leihe", subtitle: "Entleihe und Rückgabe", slug: "/rental" },
-  { title: "Nutzer", subtitle: "Verwaltung der User", slug: "/user" },
-  { title: "Bücher", subtitle: "Bücher Datenbank", slug: "/book" },
-  { title: "Reports", subtitle: "Überblick über Bestand", slug: "/reports" },
+  { title: 'Наем', subtitle: 'Наемане и връщане', slug: '/rental' },
+  {
+    title: 'Потребители',
+    subtitle: 'Управление на потребители',
+    slug: '/user',
+  },
+  { title: 'Книги', subtitle: 'База данни за книги', slug: '/book' },
+  { title: 'Доклади', subtitle: 'Преглед на наличностите', slug: '/reports' },
 ];

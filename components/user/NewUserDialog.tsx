@@ -1,4 +1,4 @@
-import AddCircleIcon from "@mui/icons-material/AddCircle";
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import {
   Button,
   Checkbox,
@@ -6,9 +6,9 @@ import {
   DialogContent,
   FormControlLabel,
   TextField,
-} from "@mui/material";
-import Dialog from "@mui/material/Dialog";
-import * as React from "react";
+} from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import * as React from 'react';
 
 export interface NewUserDialogProps {
   open: boolean;
@@ -23,7 +23,9 @@ export default function NewUserDialog(props: NewUserDialogProps) {
   const [idValue, setIdValue] = React.useState(maxUserID);
   const [idAuto, setIdAuto] = React.useState(true);
 
-  const checkBoxLabel = { inputProps: { "aria-label": "Eigene ID verwenden" } };
+  const checkBoxLabel = {
+    inputProps: { 'aria-label': 'Използване на собствено ID' },
+  };
   return (
     <Dialog
       onClose={() => setOpen(false)}
@@ -32,10 +34,10 @@ export default function NewUserDialog(props: NewUserDialogProps) {
       fullWidth
       maxWidth="sm"
     >
-      <DialogContent sx={{ display: "flex", flexDirection: "column", m: 2 }}>
+      <DialogContent sx={{ display: 'flex', flexDirection: 'column', m: 2 }}>
         <TextField
           id="item-name"
-          label="Nutzer ID"
+          label="Потребителско ID"
           variant="standard"
           disabled={idAuto}
           value={idValue}
@@ -47,14 +49,14 @@ export default function NewUserDialog(props: NewUserDialogProps) {
           control={
             <Checkbox
               id="item-description"
-              inputProps={{ "aria-label": "controlled" }}
+              inputProps={{ 'aria-label': 'controlled' }}
               checked={idAuto}
               onChange={(e) => {
                 setIdAuto(e.target.checked);
               }}
             />
           }
-          label="Automatische ID"
+          label="Автоматично ID"
         />
       </DialogContent>
       <DialogActions>
@@ -66,7 +68,7 @@ export default function NewUserDialog(props: NewUserDialogProps) {
             onCreate(idValue, idAuto);
           }}
         >
-          Neuen User erzeugen
+          Създаване на нов потребител
         </Button>
       </DialogActions>
     </Dialog>

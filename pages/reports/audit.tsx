@@ -1,28 +1,28 @@
-import Layout from "@/components/layout/Layout";
-import { translations } from "@/entities/fieldTranslations";
-import Box from "@mui/material/Box";
-import { deDE as coreDeDE } from "@mui/material/locale";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { DataGrid, GridToolbar, deDE } from "@mui/x-data-grid";
-import { PrismaClient } from "@prisma/client";
-import { useEffect, useState } from "react";
+import Layout from '@/components/layout/Layout';
+import { translations } from '@/entities/fieldTranslations';
+import Box from '@mui/material/Box';
+import { bgBG as coreBgBG } from '@mui/material/locale';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { DataGrid, GridToolbar, bgBG } from '@mui/x-data-grid';
+import { PrismaClient } from '@prisma/client';
+import { useEffect, useState } from 'react';
 
-import { AuditType } from "@/entities/AuditType";
-import { getAllAudit } from "@/entities/audit";
-import { convertDateToTimeString } from "@/utils/dateutils";
-import { Typography } from "@mui/material";
-import type {} from "@mui/x-data-grid/themeAugmentation";
+import { AuditType } from '@/entities/AuditType';
+import { getAllAudit } from '@/entities/audit';
+import { convertDateToTimeString } from '@/utils/dateutils';
+import { Typography } from '@mui/material';
+import type {} from '@mui/x-data-grid/themeAugmentation';
 
 const prisma = new PrismaClient();
 
 const theme = createTheme(
   {
     palette: {
-      primary: { main: "#1976d2" },
+      primary: { main: '#1976d2' },
     },
   },
-  deDE, // x-data-grid translations
-  coreDeDE // core translations
+  bgBG, // x-data-grid translations
+  coreBgBG // core translations
 );
 
 interface AuditPropsType {
@@ -38,15 +38,15 @@ export default function Audit({ audits }: AuditPropsType) {
   const [reportDataAvailable, setReportDataAvailable] = useState(false);
 
   //TODO find a better way for dynamic layouts
-  function getWidth(columnName: string = "") {
+  function getWidth(columnName: string = '') {
     switch (columnName) {
-      case "id":
+      case 'id':
         return 20;
         break;
-      case "eventType":
+      case 'eventType':
         return 150;
         break;
-      case "eventContent":
+      case 'eventContent':
         return 280;
         break;
       default:
@@ -60,7 +60,7 @@ export default function Audit({ audits }: AuditPropsType) {
       const colTitles = audits[0];
       const fields = Object.keys(colTitles) as any;
       const columns = fields.map((f: string) => {
-        const fieldTranslation = (translations as any)["audits"][f];
+        const fieldTranslation = (translations as any)['audits'][f];
         const col = {
           field: f,
           headerName: fieldTranslation,
@@ -84,15 +84,15 @@ export default function Audit({ audits }: AuditPropsType) {
     }
   }, []);
 
-  console.log("Audits received: ", reportDataAvailable, audits);
+  console.log('Audits received: ', reportDataAvailable, audits);
 
   return (
     <Layout>
       <ThemeProvider theme={theme}>
         <Box
           sx={{
-            backgroundColor: "#CFCFCF",
-            width: "100%",
+            backgroundColor: '#CFCFCF',
+            width: '100%',
             mt: 5,
           }}
         >
@@ -104,7 +104,7 @@ export default function Audit({ audits }: AuditPropsType) {
               slots={{ toolbar: GridToolbar }}
             />
           ) : (
-            <Typography>Keine Daten verfügbar</Typography>
+            <Typography>Няма налични данни</Typography>
           )}
         </Box>
       </ThemeProvider>

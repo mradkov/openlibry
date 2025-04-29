@@ -1,19 +1,19 @@
-import Typography from "@mui/material/Typography";
+import Typography from '@mui/material/Typography';
 
-import { Avatar, Checkbox, Grid, Paper } from "@mui/material";
+import { Avatar, Checkbox, Grid, Paper } from '@mui/material';
 
-import { UserType } from "@/entities/UserType";
-import palette from "@/styles/palette";
+import { UserType } from '@/entities/UserType';
+import palette from '@/styles/palette';
 
-import Accordion from "@mui/material/Accordion";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
 
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-import { RentalsUserType } from "@/entities/RentalsUserType";
-import { useEffect } from "react";
-import UserDetailsCard from "./UserDetailsCard";
+import { RentalsUserType } from '@/entities/RentalsUserType';
+import { useEffect } from 'react';
+import UserDetailsCard from './UserDetailsCard';
 
 type UserAdminListPropsType = {
   users: Array<UserType>;
@@ -73,7 +73,7 @@ export default function UserAdminList({
                 alignItems="center"
                 justifyContent="flex-start"
               >
-                <Grid item xs={1} sx={{ width: "100%", height: "100%" }}>
+                <Grid item xs={1} sx={{ width: '100%', height: '100%' }}>
                   <Checkbox
                     checked={checkBoxValue ? checkBoxValue : false}
                     id={userID}
@@ -81,16 +81,16 @@ export default function UserAdminList({
                     onChange={() => {
                       setChecked({ ...checked, [userID]: !checkBoxValue });
                     }}
-                    inputProps={{ "aria-label": "controlled" }}
+                    inputProps={{ 'aria-label': 'controlled' }}
                   />
                 </Grid>
-                <Grid item xs={11} sx={{ width: "100%", height: "100%" }}>
+                <Grid item xs={11} sx={{ width: '100%', height: '100%' }}>
                   <Accordion
                     elevation={0}
                     sx={{
-                      width: "100%",
-                      display: "flex",
-                      flexDirection: "column",
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
                     }}
                     key={u.id}
                   >
@@ -99,7 +99,7 @@ export default function UserAdminList({
                       aria-controls="panel1a-content"
                       id="panel1a-header"
                     >
-                      {" "}
+                      {' '}
                       <Grid
                         container
                         direction="row"
@@ -120,12 +120,12 @@ export default function UserAdminList({
                         </Grid>
                         <Grid>
                           <Typography>
-                            {u.lastName + ", " + u.firstName}
+                            {u.lastName + ', ' + u.firstName}
                           </Typography>
                           <Typography variant="caption">
-                            {"Klasse " +
+                            {'Клас ' +
                               u.schoolGrade +
-                              " - " +
+                              ' - ' +
                               u.schoolTeacherName}
                           </Typography>
                         </Grid>

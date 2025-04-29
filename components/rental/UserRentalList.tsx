@@ -1,37 +1,37 @@
-import Grid from "@mui/material/Grid";
+import Grid from '@mui/material/Grid';
 
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
-import FormControl from "@mui/material/FormControl";
-import Input from "@mui/material/Input";
-import InputAdornment from "@mui/material/InputAdornment";
-import InputLabel from "@mui/material/InputLabel";
-import Paper from "@mui/material/Paper";
-import { Dispatch, useState } from "react";
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import SettingsSuggestIcon from '@mui/icons-material/SettingsSuggest';
+import FormControl from '@mui/material/FormControl';
+import Input from '@mui/material/Input';
+import InputAdornment from '@mui/material/InputAdornment';
+import InputLabel from '@mui/material/InputLabel';
+import Paper from '@mui/material/Paper';
+import { Dispatch, useState } from 'react';
 
-import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
-import ClearIcon from "@mui/icons-material/Clear";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import UpdateIcon from "@mui/icons-material/Update";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import ClearIcon from '@mui/icons-material/Clear';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import UpdateIcon from '@mui/icons-material/Update';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
 
-import { BookType } from "@/entities/BookType";
-import { UserType } from "@/entities/UserType";
+import { BookType } from '@/entities/BookType';
+import { UserType } from '@/entities/UserType';
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Divider,
   Tooltip,
-} from "@mui/material";
-import OverdueIcon from "./OverdueIcon";
+} from '@mui/material';
+import OverdueIcon from './OverdueIcon';
 
-import { RentalsUserType } from "@/entities/RentalsUserType";
-import { hasOverdueBooks } from "@/utils/hasOverdueBooks";
-import dayjs from "dayjs";
-import "dayjs/locale/de";
-import RentSearchParams from "./RentSearchParams";
+import { RentalsUserType } from '@/entities/RentalsUserType';
+import { hasOverdueBooks } from '@/utils/hasOverdueBooks';
+import dayjs from 'dayjs';
+import 'dayjs/locale/de';
+import RentSearchParams from './RentSearchParams';
 
 type UserPropsType = {
   users: Array<UserType>;
@@ -47,7 +47,7 @@ type UserPropsType = {
 
 const preventDefault = (event: React.SyntheticEvent) => event.preventDefault();
 
-const defaultSearchParams = { overdue: false, grade: "" };
+const defaultSearchParams = { overdue: false, grade: '' };
 
 export default function UserRentalList({
   users,
@@ -60,7 +60,7 @@ export default function UserRentalList({
   searchFieldRef,
   handleBookSearchSetFocus,
 }: UserPropsType) {
-  const [userSearchInput, setUserSearchInput] = useState("");
+  const [userSearchInput, setUserSearchInput] = useState('');
 
   const [returnedBooks, setReturnedBooks] = useState({});
   const [showDetailSearch, setShowDetailSearch] = useState(false);
@@ -70,7 +70,7 @@ export default function UserRentalList({
   const handleClear = (e: any) => {
     e.preventDefault();
     setUserExpanded(false);
-    setUserSearchInput("");
+    setUserSearchInput('');
   };
 
   let selectedSingleUserId: number = -1;
@@ -83,18 +83,18 @@ export default function UserRentalList({
       if (selectedSingleUserId > -1) {
         setUserExpanded(selectedSingleUserId);
       }
-      console.log("user func: ", handleBookSearchSetFocus);
+      console.log('user func: ', handleBookSearchSetFocus);
       handleBookSearchSetFocus();
     } else if (e.key == 'Escape') {
       setUserExpanded(false);
-      setUserSearchInput("");
+      setUserSearchInput('');
     }
-  }
+  };
 
   const handleExpandedUser =
     (userID: number) => (event: React.SyntheticEvent, isExpanded: boolean) => {
       setUserExpanded(isExpanded ? userID : false);
-      console.log("Expanded user", userID);
+      console.log('Expanded user', userID);
     };
 
   const booksForUser = (id: number): Array<RentalsUserType> => {
@@ -148,7 +148,7 @@ export default function UserRentalList({
 
   function searchAndRemoveKlasse(inputString: string) {
     // Create a regex pattern to find "klasse?" followed by a number
-    const regex = /klasse\?\s?(\d+)/gi;
+    const regex = /клас\?\s?(\d+)/gi;
 
     // Initialize variables to store whether the string is found and the number
     let foundKlasse = false;
@@ -162,7 +162,7 @@ export default function UserRentalList({
     }
 
     // Remove the found string from the original string
-    const updatedString = inputString.replace(regex, "").trim();
+    const updatedString = inputString.replace(regex, '').trim();
 
     return {
       foundKlasse,
@@ -175,7 +175,7 @@ export default function UserRentalList({
     selectedSingleUserId = -1;
     if (searchString.length == 0) return users; //nothing to do
     const lowerCaseSearch = searchString.toLowerCase();
-    const searchTokens = lowerCaseSearch.split(" ");
+    const searchTokens = lowerCaseSearch.split(' ');
     //console.log("Search tokens", searchTokens);
     const searchPattern = { klasse: 0, overdue: false };
     // Create a regex pattern to find "klasse?" followed by a number
@@ -183,9 +183,9 @@ export default function UserRentalList({
       searchAndRemoveKlasse(lowerCaseSearch);
     foundKlasse ? (searchPattern.klasse = klasseNumber) : 0;
     let finalString = updatedString;
-    if (updatedString.indexOf("fällig?") > -1) {
+    if (updatedString.indexOf('дължимо?') > -1) {
       searchPattern.overdue = true;
-      finalString = updatedString.replace("fällig?", "").trim();
+      finalString = updatedString.replace('дължимо?', '').trim();
     }
 
     //console.log("Search check:", searchPattern, finalString);
@@ -230,7 +230,7 @@ export default function UserRentalList({
 
   return (
     <div>
-      {" "}
+      {' '}
       <Grid
         container
         alignItems="center"
@@ -243,10 +243,10 @@ export default function UserRentalList({
               htmlFor="user-search-input-label"
               data-cy="rental_input_searchuser"
             >
-              Suche NutzerIn{" "}
+              Търсене на потребител{' '}
             </InputLabel>
             <Input
-              placeholder="Name, ID, klasse?, fällig?"
+              placeholder="Име, ID, клас?, дължимо?"
               sx={{ my: 0.5 }}
               id="user-search-input"
               inputRef={searchFieldRef}
@@ -258,7 +258,7 @@ export default function UserRentalList({
               endAdornment={
                 userSearchInput && (
                   <InputAdornment position="end">
-                    <Tooltip title="Suche löschen">
+                    <Tooltip title="Изчистване на търсенето">
                       <IconButton edge="end" onMouseDown={handleClear}>
                         <ClearIcon fontSize="small" />
                       </IconButton>
@@ -269,24 +269,24 @@ export default function UserRentalList({
               value={userSearchInput}
               onChange={handleInputChange}
               onKeyUp={handleKeyUp}
-            />{" "}
+            />{' '}
           </FormControl>
         </Grid>
         <Grid item>
           <Typography variant="caption" color="primary">
             {userExpanded
-              ? " Ausgewählt: " + getUserFromID(userExpanded).firstName
-              : ""}
+              ? ' Избран потребител: ' + getUserFromID(userExpanded).firstName
+              : ''}
           </Typography>
         </Grid>
         <Grid item>
-          {" "}
+          {' '}
           <IconButton
             aria-label="search-settings"
             color="primary"
             onClick={() => setShowDetailSearch(!showDetailSearch)}
           >
-            {" "}
+            {' '}
             <SettingsSuggestIcon />
           </IconButton>
         </Grid>
@@ -328,13 +328,13 @@ export default function UserRentalList({
                     gutterBottom
                   >
                     {u.firstName +
-                      " " +
+                      ' ' +
                       u.lastName +
                       (rentalsUser.length > 0
-                        ? ", " +
-                        rentalsUser.length +
-                        (rentalsUser.length > 1 ? " Bücher" : " Buch")
-                        : "")}
+                        ? ', ' +
+                          rentalsUser.length +
+                          (rentalsUser.length > 1 ? ' книги' : ' книга')
+                        : '')}
                   </Typography>
                 </Grid>
                 <Grid item>
@@ -345,7 +345,7 @@ export default function UserRentalList({
                         color="text.primary"
                         gutterBottom
                       >
-                        {"Nr. " + u.id + ", "} {"Klasse " + u.schoolGrade}{" "}
+                        {'№ ' + u.id + ', '} {'Клас ' + u.schoolGrade}{' '}
                       </Typography>
                     </Grid>
                     <Grid>
@@ -364,8 +364,8 @@ export default function UserRentalList({
                 sx={{ px: 1, my: 1 }}
               >
                 {rentalsUser.map((r: RentalsUserType) => (
-                  <span key={"span" + r.id}>
-                    {" "}
+                  <span key={'span' + r.id}>
+                    {' '}
                     <Paper elevation={0} key={r.id} sx={{ my: 1 }}>
                       <Grid
                         container
@@ -374,12 +374,12 @@ export default function UserRentalList({
                         justifyContent="flex-start"
                         sx={{ px: 1 }}
                       >
-                        {" "}
+                        {' '}
                         <Grid item xs={2}>
-                          <Tooltip title="Zurückgeben">
+                          <Tooltip title="Връщане">
                             <IconButton
                               onClick={() => {
-                                if (!userExpanded) return; //something went wrong and no user is available to return the book
+                                if (!userExpanded) return; //нещо се обърка и няма потребител, който да върне книгата
                                 handleReturnBookButton(r.id, userExpanded);
                                 const time = Date.now();
                                 const newbook = {};
@@ -389,7 +389,7 @@ export default function UserRentalList({
                                   ...newbook,
                                 });
                               }}
-                              aria-label="zurückgeben"
+                              aria-label="връщане"
                             >
                               <ReturnedIcon key={r.id} />
                             </IconButton>
@@ -398,12 +398,12 @@ export default function UserRentalList({
                         <Grid item xs={8}>
                           <Typography sx={{ m: 1 }}>{r.title},</Typography>
                           <Typography variant="caption">
-                            bis {dayjs(r.dueDate).format("DD.MM.YYYY")},{" "}
-                            {r.renewalCount}x verlängert
+                            до {dayjs(r.dueDate).format('DD.MM.YYYY')},{' '}
+                            {r.renewalCount}x удължено
                           </Typography>
                         </Grid>
                         <Grid item xs={2}>
-                          <Tooltip title="Verlängern">
+                          <Tooltip title="Удължаване">
                             <IconButton
                               aria-label="extend"
                               onClick={() => {

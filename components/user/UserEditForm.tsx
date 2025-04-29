@@ -1,24 +1,24 @@
-import Box from "@mui/material/Box";
-import * as React from "react";
-import { Dispatch, useState } from "react";
+import Box from '@mui/material/Box';
+import * as React from 'react';
+import { Dispatch, useState } from 'react';
 
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import MoreTimeIcon from "@mui/icons-material/MoreTime";
-import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import ListItem from "@mui/material/ListItem";
-import Typography from "@mui/material/Typography";
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import MoreTimeIcon from '@mui/icons-material/MoreTime';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import ListItem from '@mui/material/ListItem';
+import Typography from '@mui/material/Typography';
 
-import { UserType } from "@/entities/UserType";
-import SaveAltIcon from "@mui/icons-material/SaveAlt";
-import ListItemText from "@mui/material/ListItemText";
+import { UserType } from '@/entities/UserType';
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import ListItemText from '@mui/material/ListItemText';
 
-import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import EditIcon from "@mui/icons-material/Edit";
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import EditIcon from '@mui/icons-material/Edit';
 
-import { BookType } from "@/entities/BookType";
-import palette from "@/styles/palette";
+import { BookType } from '@/entities/BookType';
+import palette from '@/styles/palette';
 import {
   Checkbox,
   Divider,
@@ -27,12 +27,12 @@ import {
   Paper,
   TextField,
   Tooltip,
-} from "@mui/material";
+} from '@mui/material';
 
 const bull = (
   <Box
     component="span"
-    sx={{ display: "inline-block", mx: "2px", transform: "scale(0.8)" }}
+    sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
   >
     •
   </Box>
@@ -73,14 +73,12 @@ export default function UserEditForm({
   const [userBooks, setUserBooks] = useState(books);
 
   const [editButtonLabel, setEditButtonLabel] = useState(
-    initiallyEditable ? "Abbrechen" : "Editieren"
+    initiallyEditable ? 'Отказ' : 'Редактиране'
   );
   const [returnedBooks, setReturnedBooks] = useState({});
 
   const toggleEditButton = () => {
-    editable
-      ? setEditButtonLabel("Editieren")
-      : setEditButtonLabel("Abbrechen");
+    editable ? setEditButtonLabel('Редактиране') : setEditButtonLabel('Отказ');
     setEditable(!editable);
   };
 
@@ -97,7 +95,7 @@ export default function UserEditForm({
     <Paper sx={{ mt: 5, px: 4 }}>
       <Divider sx={{ mb: 3 }}>
         <Typography variant="body1" color={palette.info.main}>
-          Daten
+          Данни
         </Typography>
       </Divider>
       <Grid container spacing={3}>
@@ -106,7 +104,7 @@ export default function UserEditForm({
             required
             id="firstName"
             name="firstName"
-            label="Vorname"
+            label="Име"
             defaultValue={user.firstName}
             disabled={!editable}
             fullWidth
@@ -122,7 +120,7 @@ export default function UserEditForm({
             required
             id="lastName"
             name="lastName"
-            label="Nachname"
+            label="Фамилия"
             defaultValue={user.lastName}
             disabled={!editable}
             fullWidth
@@ -139,7 +137,7 @@ export default function UserEditForm({
             required
             id="schoolGrade"
             name="schoolGrade"
-            label="Klasse"
+            label="Клас"
             defaultValue={user.schoolGrade}
             disabled={!editable}
             fullWidth
@@ -154,7 +152,7 @@ export default function UserEditForm({
           <TextField
             id="schoolTeacherName"
             name="schoolTeacherName"
-            label="Lehrkraft"
+            label="Учител"
             defaultValue={user.schoolTeacherName}
             disabled={!editable}
             fullWidth
@@ -171,11 +169,11 @@ export default function UserEditForm({
           <TextField
             id="createdAt"
             name="createdAt"
-            label="Erzeugt am"
+            label="Създаден на"
             defaultValue={
-              "User erstellt am " +
+              'Потребител създаден на ' +
               user.createdAt +
-              " mit Ausweisnummer " +
+              ' с номер на карта ' +
               user.id
             }
             disabled={true}
@@ -187,7 +185,7 @@ export default function UserEditForm({
           <TextField
             id="lastUpdated"
             name="lastUpdated"
-            label="Letztes Update"
+            label="Последна актуализация"
             defaultValue={user.updatedAt}
             disabled={true}
             fullWidth
@@ -209,13 +207,13 @@ export default function UserEditForm({
                 }}
               />
             }
-            label="Aktiv"
+            label="Активен"
           />
         </Grid>
       </Grid>
       <Divider sx={{ mb: 3 }}>
         <Typography variant="body1" color={palette.info.main}>
-          Geliehene Bücher
+          Заемани книги
         </Typography>
       </Divider>
       <Grid
@@ -226,11 +224,11 @@ export default function UserEditForm({
         spacing={2}
       >
         <Grid item xs={12}>
-          {" "}
+          {' '}
           {userBooks.map((b: BookType, index: number) => {
-            return "id" in b ? (
+            return 'id' in b ? (
               <ListItem key={b.id}>
-                <Tooltip title="Zurückgeben">
+                <Tooltip title="Връщане">
                   <IconButton
                     onClick={() => {
                       returnBook(b.id!);
@@ -239,7 +237,7 @@ export default function UserEditForm({
                       (newbook as any)[b.id!] = time;
                       setReturnedBooks({ ...returnedBooks, ...newbook });
                     }}
-                    aria-label="zurückgeben"
+                    aria-label="върни"
                   >
                     <ReturnedIcon key={b.id} id={b.id!} />
                   </IconButton>
@@ -259,7 +257,7 @@ export default function UserEditForm({
                   </IconButton>
                 </Tooltip>
                 <ListItemText>
-                  {b.title + ", " + b.renewalCount + "x verlängert"}
+                  {b.title + ', ' + b.renewalCount + 'x verlängert'}
                 </ListItemText>
               </ListItem>
             ) : (
@@ -281,7 +279,7 @@ export default function UserEditForm({
               }}
               startIcon={<SaveAltIcon />}
             >
-              Speichern
+              Запази
             </Button>
           )}
         </Grid>
@@ -292,10 +290,10 @@ export default function UserEditForm({
               onClick={deleteUser}
               startIcon={<DeleteForeverIcon />}
             >
-              Löschen
+              Изтрий
             </Button>
           )}
-        </Grid>{" "}
+        </Grid>{' '}
       </Grid>
     </Paper>
   );
