@@ -1,76 +1,53 @@
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import {
-  Button,
-  Checkbox,
-  DialogActions,
-  DialogContent,
-  FormControlLabel,
-  TextField,
-} from '@mui/material';
-import Dialog from '@mui/material/Dialog';
-import * as React from 'react';
+import { UserPlus } from 'lucide-react';
+import { Dispatch, SetStateAction, useState } from 'react';
+import { Button } from '../ui/button';
+import { Checkbox } from '../ui/checkbox';
+import { Dialog, DialogContent } from '../ui/dialog';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 
 export interface NewUserDialogProps {
   open: boolean;
-  setOpen: any;
+  setOpen: Dispatch<SetStateAction<boolean>>;
   maxUserID: number;
   onCreate: (idValue: number, idAuto: boolean) => void;
-  //onCreate: (autoID: boolean, value: string) => void;
 }
 
 export default function NewUserDialog(props: NewUserDialogProps) {
   const { onCreate, open, maxUserID, setOpen } = props;
-  const [idValue, setIdValue] = React.useState(maxUserID);
-  const [idAuto, setIdAuto] = React.useState(true);
+  const [idValue, setIdValue] = useState(maxUserID);
+  const [idAuto, setIdAuto] = useState(true);
 
-  const checkBoxLabel = {
-    inputProps: { 'aria-label': 'Използване на собствено ID' },
-  };
   return (
-    <Dialog
-      onClose={() => setOpen(false)}
-      open={open}
-      sx={{ m: 2 }}
-      fullWidth
-      maxWidth="sm"
-    >
-      <DialogContent sx={{ display: 'flex', flexDirection: 'column', m: 2 }}>
-        <TextField
-          id="item-name"
-          label="Потребителско ID"
-          variant="standard"
+    <Dialog onOpenChange={setOpen} open={open}>
+      <DialogContent>
+        <Label htmlFor="idValue">Потребителско ID</Label>
+        <Input
+          id="idValue"
           disabled={idAuto}
           value={idValue}
           onChange={(e) => {
             setIdValue(parseInt(e.target.value) ? parseInt(e.target.value) : 0);
           }}
         />
-        <FormControlLabel
-          control={
-            <Checkbox
-              id="item-description"
-              inputProps={{ 'aria-label': 'controlled' }}
-              checked={idAuto}
-              onChange={(e) => {
-                setIdAuto(e.target.checked);
-              }}
-            />
-          }
-          label="Автоматично ID"
-        />
-      </DialogContent>
-      <DialogActions>
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            checked={idAuto}
+            onCheckedChange={(c) => {
+              setIdAuto(c === true);
+            }}
+            id="idAuto"
+          />
+          <Label htmlFor="idAuto">Автоматично ID</Label>
+        </div>
         <Button
-          startIcon={<AddCircleIcon />}
-          variant="text"
           onClick={() => {
-            //console.log("Create new user", idAuto, idValue);
             onCreate(idValue, idAuto);
           }}
         >
-          Създаване на нов потребител
+          <UserPlus /> Създаване на нов потребител
         </Button>
-      </DialogActions>
+      </DialogContent>
     </Dialog>
   );
 }

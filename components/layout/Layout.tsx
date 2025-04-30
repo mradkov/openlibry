@@ -1,3 +1,4 @@
+import { Toaster } from '../ui/sonner';
 import { Footer } from './footer';
 import { Navigation } from './navigation';
 
@@ -11,6 +12,7 @@ export default function Layout({ children }: LayoutProps) {
       <Navigation />
       <main className="grow p-7 flex flex-col">{children}</main>
       <Footer />
+      <Toaster closeButton richColors />
     </div>
   );
 }

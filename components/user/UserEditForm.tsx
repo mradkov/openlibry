@@ -1,42 +1,27 @@
-import Box from '@mui/material/Box';
-import * as React from 'react';
 import { Dispatch, useState } from 'react';
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import MoreTimeIcon from '@mui/icons-material/MoreTime';
-import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
-import Typography from '@mui/material/Typography';
 
 import { UserType } from '@/entities/UserType';
-import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import ListItemText from '@mui/material/ListItemText';
 
 import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import EditIcon from '@mui/icons-material/Edit';
 
 import { BookType } from '@/entities/BookType';
-import palette from '@/styles/palette';
-import {
-  Checkbox,
-  Divider,
-  FormControlLabel,
-  Grid,
-  Paper,
-  TextField,
-  Tooltip,
-} from '@mui/material';
 
-const bull = (
-  <Box
-    component="span"
-    sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-  >
-    •
-  </Box>
-);
+import { cn } from '@/lib/utils';
+import { Grid, Tooltip } from '@mui/material';
+import { AlertOctagon, Edit, Save, SquareX, Trash2, Undo } from 'lucide-react';
+import { dayjs } from '../../lib/dayjs';
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
+import { Button } from '../ui/button';
+import { Checkbox } from '../ui/checkbox';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Separator } from '../ui/separator';
 
 type UserEditFormPropType = {
   user: UserType;
@@ -48,11 +33,6 @@ type UserEditFormPropType = {
   extendBook: (bookid: number, book: BookType) => void;
   initiallyEditable?: boolean;
 };
-
-interface ReturnBooksType {
-  bookid: number;
-  time: Date;
-}
 
 type ReturnedIconPropsType = {
   id: number;
@@ -70,17 +50,10 @@ export default function UserEditForm({
   const [editable, setEditable] = useState(
     initiallyEditable ? initiallyEditable : false
   );
+  const [showDelete, setShowDelete] = useState(false);
   const [userBooks, setUserBooks] = useState(books);
 
-  const [editButtonLabel, setEditButtonLabel] = useState(
-    initiallyEditable ? 'Отказ' : 'Редактиране'
-  );
   const [returnedBooks, setReturnedBooks] = useState({});
-
-  const toggleEditButton = () => {
-    editable ? setEditButtonLabel('Редактиране') : setEditButtonLabel('Отказ');
-    setEditable(!editable);
-  };
 
   const ReturnedIcon = ({ id }: ReturnedIconPropsType) => {
     //console.log("Rendering icon ", id, returnedBooks);
@@ -92,130 +65,152 @@ export default function UserEditForm({
   };
 
   return (
-    <Paper sx={{ mt: 5, px: 4 }}>
-      <Divider sx={{ mb: 3 }}>
-        <Typography variant="body1" color={palette.info.main}>
-          Данни
-        </Typography>
-      </Divider>
-      <Grid container spacing={3}>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
+    <div className="space-y-4">
+      <h2 className="font-bold text-center">{`Потребител с ID: ${user.id}`}</h2>
+      <div className="grid md:grid-cols-2 gap-4">
+        <div className="space-y-1">
+          <Label htmlFor="firstName">Име*</Label>
+          <Input
             id="firstName"
-            name="firstName"
-            label="Име"
-            defaultValue={user.firstName}
+            required
             disabled={!editable}
-            fullWidth
             autoComplete="given-name"
-            variant="standard"
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setUserData({ ...user, firstName: event.target.value });
+            value={user.firstName}
+            onChange={(e) => {
+              setUserData({ ...user, firstName: e.target.value });
             }}
           />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            required
+        </div>
+        <div className="space-y-1">
+          <Label htmlFor="lastName">Фамилия*</Label>
+          <Input
             id="lastName"
-            name="lastName"
-            label="Фамилия"
-            defaultValue={user.lastName}
-            disabled={!editable}
-            fullWidth
-            autoComplete="family-name"
-            variant="standard"
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setUserData({ ...user, lastName: event.target.value });
-            }}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6}>
-          <TextField
             required
+            disabled={!editable}
+            autoComplete="family-name"
+            value={user.lastName}
+            onChange={(e) => {
+              setUserData({ ...user, lastName: e.target.value });
+            }}
+          />
+        </div>
+        <div className="space-y-1">
+          <Label htmlFor="phone">Телефон*</Label>
+          <Input
             id="phone"
-            name="phone"
-            label="Телефон"
-            defaultValue={user.phone}
+            required
             disabled={!editable}
-            fullWidth
-            autoComplete="shipping address-level2"
-            variant="standard"
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setUserData({ ...user, phone: event.target.value });
+            autoComplete="tel"
+            type="tel"
+            value={user.phone}
+            onChange={(e) => {
+              setUserData({ ...user, phone: e.target.value });
             }}
           />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            id="email"
-            name="email"
-            label="Електронна поща"
-            defaultValue={user.eMail}
-            disabled={!editable}
-            fullWidth
-            variant="standard"
-            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-              setUserData({
-                ...user,
-                eMail: event.target.value,
-              });
-            }}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            id="createdAt"
-            name="createdAt"
-            label="Създаден на"
-            defaultValue={
-              'Потребител създаден на ' +
-              user.createdAt +
-              ' с номер на карта ' +
-              user.id
-            }
-            disabled={true}
-            fullWidth
-            variant="standard"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <TextField
-            id="lastUpdated"
-            name="lastUpdated"
-            label="Последна актуализация"
-            defaultValue={user.updatedAt}
-            disabled={true}
-            fullWidth
-            variant="standard"
-          />
-        </Grid>
+        </div>
 
-        <Grid item xs={12} md={6}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                color="secondary"
-                name="saveActive"
-                disabled={!editable}
-                checked={user.active}
-                onClick={() => {
-                  const toggleValue = !user.active;
-                  setUserData({ ...user, active: toggleValue });
-                }}
-              />
-            }
-            label="Активен"
+        <div className="space-y-1">
+          <Label htmlFor="eMail">Електронна поща</Label>
+          <Input
+            id="eMail"
+            disabled={!editable}
+            autoComplete="email"
+            type="email"
+            value={user.eMail ?? ''}
+            onChange={(e) => {
+              setUserData({ ...user, eMail: e.target.value });
+            }}
           />
-        </Grid>
-      </Grid>
-      <Divider sx={{ mb: 3 }}>
-        <Typography variant="body1" color={palette.info.main}>
-          Заемани книги
-        </Typography>
-      </Divider>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            disabled={!editable}
+            checked={user.active}
+            onCheckedChange={(c) => {
+              setUserData({ ...user, active: c === true });
+            }}
+            id="isActive"
+          />
+          <Label htmlFor="isActive">Активен</Label>
+        </div>
+
+        {showDelete ? (
+          <Alert
+            variant="destructive"
+            className={cn(!editable && 'opacity-30')}
+          >
+            <AlertOctagon className="h-4 w-4" />
+            <AlertTitle>Изтриване на потребител</AlertTitle>
+            <AlertDescription>
+              След изтрване на потребителя информацията не може да се
+              възстанови!
+              <div className="space-x-2">
+                <Button
+                  onClick={() => setShowDelete(false)}
+                  variant="outline"
+                  className="text-foreground"
+                  size="sm"
+                >
+                  <Undo />
+                  Отмени
+                </Button>
+                <Button
+                  onClick={deleteUser}
+                  className="bg-destructive hover:bg-destructive/90"
+                  size="sm"
+                >
+                  <Trash2 />
+                  Изтрий
+                </Button>
+              </div>
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <Button
+            onClick={() => setShowDelete(true)}
+            disabled={!editable}
+            variant="link"
+            className="w-fit italic text-destructive text-xs p-0"
+            size="sm"
+          >
+            Изтриване на потребител
+          </Button>
+        )}
+
+        <p>{`Създаден на ${dayjs(user.createdAt).format('D MMMM YYYY')}`}</p>
+        <p>{`Последна актуализация на ${dayjs(user.updatedAt).format(
+          'D MMMM YYYY'
+        )}`}</p>
+
+        {editable ? (
+          <>
+            <Button onClick={() => setEditable(false)} variant="outline">
+              <SquareX />
+              Откажи
+            </Button>
+            <Button
+              onClick={() => {
+                saveUser();
+                setEditable(false);
+              }}
+            >
+              <Save />
+              Запази
+            </Button>
+          </>
+        ) : (
+          <Button onClick={() => setEditable(true)} variant="outline">
+            <Edit />
+            Редактирай
+          </Button>
+        )}
+      </div>
+
+      <Separator />
+
+      <h2 className="font-bold text-center">Взети книги</h2>
+
       <Grid
         container
         direction="row"
@@ -257,7 +252,7 @@ export default function UserEditForm({
                   </IconButton>
                 </Tooltip>
                 <ListItemText>
-                  {b.title + ', ' + b.renewalCount + 'x verlängert'}
+                  {b.title + ', ' + b.renewalCount + 'x удължено'}
                 </ListItemText>
               </ListItem>
             ) : (
@@ -265,36 +260,7 @@ export default function UserEditForm({
             );
           })}
         </Grid>
-        <Grid item xs={12} md={4}>
-          <Button onClick={toggleEditButton} startIcon={<EditIcon />}>
-            {editButtonLabel}
-          </Button>
-        </Grid>
-        <Grid item xs={12} md={4}>
-          {editable && (
-            <Button
-              onClick={() => {
-                saveUser();
-                toggleEditButton();
-              }}
-              startIcon={<SaveAltIcon />}
-            >
-              Запази
-            </Button>
-          )}
-        </Grid>
-        <Grid item xs={12} md={4}>
-          {editable && (
-            <Button
-              color="error"
-              onClick={deleteUser}
-              startIcon={<DeleteForeverIcon />}
-            >
-              Изтрий
-            </Button>
-          )}
-        </Grid>{' '}
       </Grid>
-    </Paper>
+    </div>
   );
 }

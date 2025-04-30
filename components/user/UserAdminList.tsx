@@ -1,50 +1,29 @@
-import Typography from '@mui/material/Typography';
-
-import { Avatar, Checkbox, Grid, Paper } from '@mui/material';
-
 import { UserType } from '@/entities/UserType';
-import palette from '@/styles/palette';
-
-import Accordion from '@mui/material/Accordion';
-import AccordionDetails from '@mui/material/AccordionDetails';
-import AccordionSummary from '@mui/material/AccordionSummary';
-
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import { RentalsUserType } from '@/entities/RentalsUserType';
-import { useEffect } from 'react';
-import UserDetailsCard from './UserDetailsCard';
+import { Book, BookUser, Smartphone, UserCog } from 'lucide-react';
+import Link from 'next/link';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '../ui/accordion';
+
+import { buttonVariants } from '../ui/button';
 
 type UserAdminListPropsType = {
   users: Array<UserType>;
   rentals: Array<RentalsUserType>;
   searchString: string;
-  checked: any;
-  setChecked: any;
 };
 
 export default function UserAdminList({
   users,
   rentals,
   searchString,
-  checked,
-  setChecked,
 }: UserAdminListPropsType) {
-  //attach amount of rented books to the user
-
   const rentalAmount: { [key: number]: number } = {};
-
-  //initialise user checked array
-
-  useEffect(() => {
-    const checkSet: { [key: string]: boolean } = users.reduce((acc, obj) => {
-      const userID = obj.id!.toString();
-      acc[userID] = false; // Initialize each key-value pair using the "id" field
-      return acc;
-    }, {} as { [key: string]: boolean });
-    setChecked(checkSet);
-    //console.log("Initialised user checkboxes", checkSet);
-  }, [users]);
 
   rentals.map((r: any) => {
     if (r.userid in rentalAmount) {
@@ -53,93 +32,82 @@ export default function UserAdminList({
   });
 
   return (
-    <div>
-      {users.map((u: UserType) => {
-        const lowerCaseSearch = searchString.toLowerCase();
-        //console.log("Checked", checked);
-        const userID = u.id!.toString();
-        const checkBoxValue =
-          userID in checked ? (checked[userID] as boolean) : false;
-        if (
-          u.lastName.toLowerCase().includes(lowerCaseSearch) ||
-          u.firstName.toLowerCase().includes(lowerCaseSearch) ||
-          u.id!.toString().includes(lowerCaseSearch)
+    <Accordion type="multiple">
+      {users
+        .filter(
+          (user) =>
+            user.lastName.toLowerCase().includes(searchString) ||
+            user.firstName.toLowerCase().includes(searchString) ||
+            user.phone.toLowerCase().includes(searchString) ||
+            user.id!.toString().includes(searchString)
         )
-          return (
-            <Paper key={u.id} sx={{ mt: 0.5 }}>
-              <Grid
-                container
-                direction="row"
-                alignItems="center"
-                justifyContent="flex-start"
-              >
-                <Grid item xs={1} sx={{ width: '100%', height: '100%' }}>
-                  <Checkbox
-                    checked={checkBoxValue ? checkBoxValue : false}
-                    id={userID}
-                    key={userID}
-                    onChange={() => {
-                      setChecked({ ...checked, [userID]: !checkBoxValue });
-                    }}
-                    inputProps={{ 'aria-label': 'controlled' }}
-                  />
-                </Grid>
-                <Grid item xs={11} sx={{ width: '100%', height: '100%' }}>
-                  <Accordion
-                    elevation={0}
-                    sx={{
-                      width: '100%',
-                      display: 'flex',
-                      flexDirection: 'column',
-                    }}
-                    key={u.id}
-                  >
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      aria-controls="panel1a-content"
-                      id="panel1a-header"
-                    >
-                      {' '}
-                      <Grid
-                        container
-                        direction="row"
-                        alignItems="center"
-                        justifyContent="flex-start  "
-                        sx={{ px: 10 }}
-                      >
-                        <Grid item sx={{ px: 3 }}>
-                          {rentalAmount[u.id!] != undefined ? (
-                            <Avatar sx={{ bgcolor: palette.secondary.dark }}>
-                              {rentalAmount[u.id!]}
-                            </Avatar>
-                          ) : (
-                            <Avatar sx={{ bgcolor: palette.secondary.light }}>
-                              0
-                            </Avatar>
-                          )}
-                        </Grid>
-                        <Grid>
-                          <Typography>
-                            {u.lastName + ', ' + u.firstName}
-                          </Typography>
-                          <Typography variant="caption">{u.phone}</Typography>
-                        </Grid>
-                      </Grid>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      <UserDetailsCard
-                        user={u}
-                        rentals={rentals.filter(
-                          (r: any) => parseInt(r.userid) == u.id
-                        )}
-                      />
-                    </AccordionDetails>
-                  </Accordion>
-                </Grid>
-              </Grid>
-            </Paper>
-          );
-      })}
-    </div>
+        .map((user) => (
+          <AccordionItem key={user.id} value={user.id!.toString()}>
+            <AccordionTrigger className="hover:no-underline text-base">
+              <div className="flex space-x-2 items-center">
+                <div className="relative p-2">
+                  <BookUser className="size-7" />
+                  {rentalAmount[user.id!] && (
+                    <div className="absolute bg-chart-2 flex items-center justify-center rounded-full text-xs p-0.5 right-0 top-0 size-5 text-white">
+                      {rentalAmount[user.id!]}
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <p>{`${user.firstName} ${user.lastName}`}</p>
+                  <p className="flex items-center">
+                    <Smartphone className="size-3 mr-1" />
+                    {user.phone}
+                  </p>
+                </div>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="text-base space-y-1 px-3">
+              <UserDetailsCard
+                user={user}
+                rentals={rentals.filter(
+                  (r: any) => parseInt(r.userid) == user.id
+                )}
+              />
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+    </Accordion>
+  );
+}
+
+interface UserDetailsCardPropType {
+  user: UserType;
+  rentals: Array<any>;
+}
+
+function UserDetailsCard({ user, rentals }: UserDetailsCardPropType) {
+  return (
+    <>
+      <p>Взети книги:</p>
+      {rentals.length == 0 ? (
+        <p>Няма</p>
+      ) : (
+        <>
+          {rentals?.map(({ id, title }) => {
+            return (
+              <p key={id} className="flex items-center space-x-2">
+                <Book className="size-5" />
+                {title}
+              </p>
+            );
+          })}
+        </>
+      )}
+
+      <Link
+        href={'/user/' + user.id}
+        className={buttonVariants({ variant: 'outline' })}
+      >
+        <UserCog />
+        Още
+      </Link>
+    </>
   );
 }

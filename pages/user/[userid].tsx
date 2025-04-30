@@ -1,15 +1,9 @@
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-
 import Layout from '@/components/layout/Layout';
 import { useEffect, useState } from 'react';
 import { getUser } from '../../entities/user';
 
 import { getRentedBooksForUser } from '@/entities/book';
-
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
-import Snackbar from '@mui/material/Snackbar';
 import { useRouter } from 'next/router';
-import { forwardRef } from 'react';
 
 import {
   convertDateToDayString,
@@ -24,25 +18,13 @@ import { BookType } from '@/entities/BookType';
 import { UserType } from '@/entities/UserType';
 import { Typography } from '@mui/material';
 import { GetServerSidePropsContext } from 'next/types';
+import { toast } from 'sonner';
 
 type UserDetailPropsType = {
   user: UserType;
   books: Array<BookType>;
   extensionDays: number;
 };
-
-const theme = createTheme({
-  palette: {
-    primary: { main: '#1976d2' },
-  },
-});
-
-const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
-  props,
-  ref
-) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
 
 export default function UserDetail({
   user,
@@ -52,9 +34,6 @@ export default function UserDetail({
   const router = useRouter();
 
   const [userData, setUserData] = useState(user);
-  const [returnBookSnackbar, setReturnBookSnackbar] = useState(false);
-
-  const [extendBookSnackbar, setExtendBookSnackbar] = useState(false);
 
   useEffect(() => {
     setUserData(user);
@@ -69,29 +48,6 @@ export default function UserDetail({
       ? router.query.userid[0]
       : router.query.userid
   );
-  //console.log("User Page", userid);
-  //console.log("User, Books", user, books);
-
-  const handleCloseReturnBookSnackbar = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setReturnBookSnackbar(false);
-  };
-
-  const handleCloseExtendBookSnackbar = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setExtendBookSnackbar(false);
-  };
 
   const handleSaveButton = () => {
     console.log('Saving user ', userData);
@@ -124,7 +80,7 @@ export default function UserDetail({
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        setReturnBookSnackbar(true);
+        toast.success('Книгата е върната!');
       });
   };
 
@@ -153,7 +109,7 @@ export default function UserDetail({
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        setExtendBookSnackbar(true);
+        toast.info('Наемът на книгата е удължен!');
       });
     //T
   };
@@ -176,44 +132,15 @@ export default function UserDetail({
 
   return (
     <Layout>
-      <ThemeProvider theme={theme}>
-        <UserEditForm
-          user={userData}
-          books={books}
-          setUserData={setUserData}
-          deleteUser={handleDeleteButton}
-          saveUser={handleSaveButton}
-          returnBook={handleReturnBookButton}
-          extendBook={handleExtendBookButton}
-          initiallyEditable={true}
-        />
-        <Snackbar
-          open={returnBookSnackbar}
-          autoHideDuration={8000}
-          onClose={handleCloseReturnBookSnackbar}
-        >
-          <Alert
-            onClose={handleCloseReturnBookSnackbar}
-            severity="success"
-            sx={{ width: '100%' }}
-          >
-            Книгата е върната, страхотно!
-          </Alert>
-        </Snackbar>
-        <Snackbar
-          open={extendBookSnackbar}
-          autoHideDuration={8000}
-          onClose={handleCloseExtendBookSnackbar}
-        >
-          <Alert
-            onClose={handleCloseExtendBookSnackbar}
-            severity="success"
-            sx={{ width: '100%' }}
-          >
-            Наемът на книгата е удължен!
-          </Alert>
-        </Snackbar>
-      </ThemeProvider>
+      <UserEditForm
+        user={userData}
+        books={books}
+        setUserData={setUserData}
+        deleteUser={handleDeleteButton}
+        saveUser={handleSaveButton}
+        returnBook={handleReturnBookButton}
+        extendBook={handleExtendBookButton}
+      />
     </Layout>
   );
 }
