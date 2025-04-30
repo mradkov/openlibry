@@ -1,24 +1,24 @@
-import Layout from "@/components/layout/Layout";
-import { translations } from "@/entities/fieldTranslations";
-import Box from "@mui/material/Box";
-import { deDE as coreDeDE } from "@mui/material/locale";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { DataGrid, GridToolbar, deDE } from "@mui/x-data-grid";
-import { PrismaClient } from "@prisma/client";
-import { useEffect, useState } from "react";
+import Layout from '@/components/layout/Layout';
+import { translations } from '@/entities/fieldTranslations';
+import Box from '@mui/material/Box';
+import { deDE as coreDeDE } from '@mui/material/locale';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { DataGrid, GridToolbar, deDE } from '@mui/x-data-grid';
+import { PrismaClient } from '@prisma/client';
+import { useEffect, useState } from 'react';
 
-import { BookType } from "@/entities/BookType";
-import { getAllBooks } from "@/entities/book";
-import { convertDateToDayString } from "@/utils/dateutils";
-import { Typography } from "@mui/material";
-import type {} from "@mui/x-data-grid/themeAugmentation";
+import { BookType } from '@/entities/BookType';
+import { getAllBooks } from '@/entities/book';
+import { convertDateToDayString } from '@/utils/dateutils';
+import { Typography } from '@mui/material';
+import type {} from '@mui/x-data-grid/themeAugmentation';
 
 const prisma = new PrismaClient();
 
 const theme = createTheme(
   {
     palette: {
-      primary: { main: "#1976d2" },
+      primary: { main: '#1976d2' },
     },
   },
   deDE, // x-data-grid translations
@@ -38,15 +38,15 @@ export default function Books({ books }: BookPropsType) {
   const [reportDataAvailable, setReportDataAvailable] = useState(false);
 
   //TODO find a better way for dynamic layouts
-  function getWidth(columnName: string = "") {
+  function getWidth(columnName: string = '') {
     switch (columnName) {
-      case "ID":
+      case 'ID':
         return 40;
         break;
-      case "title":
+      case 'title':
         return 350;
         break;
-      case "lastName":
+      case 'lastName':
         return 180;
         break;
       default:
@@ -60,7 +60,7 @@ export default function Books({ books }: BookPropsType) {
       const colTitles = books[0];
       const fields = Object.keys(colTitles) as any;
       const columns = fields.map((f: string) => {
-        const fieldTranslation = (translations as any)["books"][f];
+        const fieldTranslation = (translations as any)['books'][f];
         const col = {
           field: f,
           headerName: fieldTranslation,
@@ -89,12 +89,12 @@ export default function Books({ books }: BookPropsType) {
       <ThemeProvider theme={theme}>
         <Box
           sx={{
-            backgroundColor: "#CFCFCF",
-            width: "100%",
+            backgroundColor: '#CFCFCF',
+            width: '100%',
             mt: 5,
           }}
         >
-          {" "}
+          {' '}
           {reportDataAvailable ? (
             <DataGrid
               autoHeight
@@ -119,8 +119,8 @@ export async function getServerSideProps() {
     newBook.updatedAt = convertDateToDayString(b.updatedAt);
     newBook.rentedDate = b.rentedDate
       ? convertDateToDayString(b.rentedDate)
-      : "";
-    newBook.dueDate = b.dueDate ? convertDateToDayString(b.dueDate) : "";
+      : '';
+    newBook.dueDate = b.dueDate ? convertDateToDayString(b.dueDate) : '';
     //temp TODO
     return newBook;
   });

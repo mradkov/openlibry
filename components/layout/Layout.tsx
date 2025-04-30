@@ -1,7 +1,5 @@
-import Container from "@mui/material/Container";
-
-import TopBar from "./TopBar";
-import Footer from "./Footer";
+import { Footer } from './footer';
+import { Navigation } from './navigation';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -9,9 +7,9 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   return (
-    <div>
-      <TopBar />
-      <Container maxWidth="lg">{children}</Container>
+    <div className="flex min-h-screen flex-col container mx-auto">
+      <Navigation />
+      <main className="grow p-7 flex flex-col">{children}</main>
       <Footer />
     </div>
   );

@@ -1,80 +1,29 @@
 import Layout from '@/components/layout/Layout';
-import TitleTile from '@/components/title/TitleTile';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-
 import { publicNavItems } from '@/components/layout/navigationItems';
-import { useRouter } from 'next/router';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 export default function Home() {
-  const router = useRouter();
-  const onClick = (e: any, slug: string) => {
-    console.log('Selected', slug);
-    router.push(slug);
-  };
-
   return (
-    <div style={{ backgroundImage: `url(/splashbanner.jpg)` }}>
-      <Layout>
-        <Grid
-          container
-          alignItems="center"
-          direction="column"
-          sx={{
-            py: 4,
-          }}
-        >
-          <Grid item>
-            <Typography
-              variant="h1"
-              id="title_headline"
-              data-cy="indexpage"
-              align="center"
-              sx={{ fontWeight: 'bold', fontSize: 50 }}
+    <Layout>
+      <div className="grid place-content-center grow">
+        <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-7">
+          {publicNavItems.map(({ slug, title, subtitle }) => (
+            <Link
+              key={slug}
+              href={slug}
+              className={cn(
+                buttonVariants({ variant: 'default' }),
+                'flex-col size-56'
+              )}
             >
-              Open Libry
-            </Typography>
-          </Grid>
-
-          <Grid container alignItems="center" sx={{ pt: 6, mt: 8 }}>
-            <Grid
-              container
-              direction="row"
-              alignItems="center"
-              justifyContent="center"
-              sx={{ px: 10 }}
-            >
-              {publicNavItems.map((p) => {
-                //console.log("index_" + p.slug.substring(1) + "_button");
-                return (
-                  <Grid
-                    item
-                    key={p.slug}
-                    xs={12}
-                    sm={6}
-                    md={3}
-                    justifyContent="center"
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      position: 'relative',
-                      mb: 0,
-                      my: 5,
-                    }}
-                  >
-                    <TitleTile
-                      title={p.title}
-                      subtitle={p.subtitle}
-                      slug={p.slug}
-                      onClick={(e: any) => onClick(e, p.slug)}
-                    />
-                  </Grid>
-                );
-              })}
-            </Grid>{' '}
-          </Grid>
-        </Grid>
-      </Layout>{' '}
-    </div>
+              <span className="text-lg">{title}</span>
+              <span className="text-sm">{subtitle}</span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </Layout>
   );
 }

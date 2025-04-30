@@ -1,25 +1,25 @@
-import { ThemeProvider, useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import { ThemeProvider, useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
-import Grid from "@mui/material/Grid";
-import { useRouter } from "next/router";
+import Grid from '@mui/material/Grid';
+import { useRouter } from 'next/router';
 
-import Layout from "@/components/layout/Layout";
-import { useState } from "react";
+import Layout from '@/components/layout/Layout';
+import { useState } from 'react';
 
-import { getAllBooks } from "@/entities/book";
-import { PrismaClient } from "@prisma/client";
+import { getAllBooks } from '@/entities/book';
+import { PrismaClient } from '@prisma/client';
 
-import { convertDateToDayString, currentTime } from "@/utils/dateutils";
+import { convertDateToDayString, currentTime } from '@/utils/dateutils';
 
-import { BookType } from "@/entities/BookType";
+import { BookType } from '@/entities/BookType';
 
-import BookSummaryCard from "@/components/book/BookSummaryCard";
+import BookSummaryCard from '@/components/book/BookSummaryCard';
 
-import BookSearchBar from "@/components/book/BookSearchBar";
-import BookSummaryRow from "@/components/book/BookSummaryRow";
-import { Button } from "@mui/material";
-import itemsjs from "itemsjs";
+import BookSearchBar from '@/components/book/BookSearchBar';
+import BookSummaryRow from '@/components/book/BookSummaryRow';
+import { Button } from '@mui/material';
+import itemsjs from 'itemsjs';
 
 const prisma = new PrismaClient();
 /*
@@ -53,10 +53,10 @@ export default function Books({
 }: BookPropsType) {
   const theme = useTheme();
   const router = useRouter();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [renderedBooks, setRenderedBooks] = useState(books);
-  const [bookSearchInput, setBookSearchInput] = useState("");
+  const [bookSearchInput, setBookSearchInput] = useState('');
   const [detailView, setDetailView] = useState(true);
   const [bookCreating, setBookCreating] = useState(false);
   const [searchResultNumber, setSearchResultNumber] = useState(0);
@@ -69,99 +69,99 @@ export default function Books({
     gridItemProps.xl = 12;
   }
   const searchEngine = itemsjs(books, {
-    searchableFields: ["title", "author", "subtitle", "searchableTopics", "id"],
+    searchableFields: ['title', 'author', 'subtitle', 'searchableTopics', 'id'],
   });
 
   async function searchBooks(searchString: string) {
     const foundBooks = searchEngine.search({
-      sort: "name_asc",
+      sort: 'name_asc',
       per_page: maxBooks,
       // full text search
       query: searchString,
     });
     //console.log("Searched books", books);
 
-    console.log("Found books", foundBooks);
+    console.log('Found books', foundBooks);
     setPageIndex(numberBooksToShow);
     setRenderedBooks(foundBooks.data.items);
     setSearchResultNumber(foundBooks.pagination.total);
   }
 
   const handleCreateNewBook = () => {
-    console.log("Creating a new book");
+    console.log('Creating a new book');
     setBookCreating(true);
     const book: BookType = {
-      title: "",
-      subtitle: "",
-      author: "",
+      title: '',
+      subtitle: '',
+      author: '',
       renewalCount: 0,
-      rentalStatus: "available",
-      topics: ";",
+      rentalStatus: 'available',
+      topics: ';',
       rentedDate: currentTime(),
       dueDate: currentTime(),
     };
 
-    fetch("/api/book", {
-      method: "POST",
+    fetch('/api/book', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(book),
     })
       .then((res) => res.json())
       .then((data) => {
         setBookCreating(false);
-        router.push("book/" + data.id);
-        console.log("Book created", data);
+        router.push('book/' + data.id);
+        console.log('Book created', data);
       });
   };
 
   const handleCopyBook = (book: BookType) => {
-    console.log("Creating a new book from an existing book");
+    console.log('Creating a new book from an existing book');
     setBookCreating(true);
     const newBook: BookType = {
       title: book.title,
       subtitle: book.subtitle,
       author: book.author,
       renewalCount: 0,
-      rentalStatus: "available",
+      rentalStatus: 'available',
       topics: book.topics,
       rentedDate: currentTime(),
       dueDate: currentTime(),
     };
 
-    fetch("/api/book", {
-      method: "POST",
+    fetch('/api/book', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(newBook),
     })
       .then((res) => res.json())
       .then((data) => {
         setBookCreating(false);
-        router.push("book/" + data.id);
-        console.log("Book created", data);
+        router.push('book/' + data.id);
+        console.log('Book created', data);
       });
   };
 
   const handleReturnBook = (id: number, userid: number) => {
-    console.log("Return  book");
+    console.log('Return  book');
 
     fetch(`/api/book/${id}/user/${userid}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("Book returned, relationship deleted", data, id, userid);
+        console.log('Book returned, relationship deleted', data, id, userid);
         const newRenderedBooks = renderedBooks.map((b) => {
-          console.log("Compare rendered books", b.id, id);
-          return b.id === id ? { ...b, rentalStatus: "available" } : b;
+          console.log('Compare rendered books', b.id, id);
+          return b.id === id ? { ...b, rentalStatus: 'available' } : b;
         });
-        console.log("New rendered books", newRenderedBooks, renderedBooks);
+        console.log('New rendered books', newRenderedBooks, renderedBooks);
         setRenderedBooks(newRenderedBooks);
       });
   };
@@ -179,23 +179,23 @@ export default function Books({
     const newView = !detailView;
     setDetailView(newView);
     setPageIndex(numberBooksToShow);
-    console.log("Detail view render toggled", newView);
+    console.log('Detail view render toggled', newView);
   };
 
   const DetailCardContainer = ({ renderedBooks }: any) => {
     return (
       <Grid container spacing={2} alignItems="stretch">
         {renderedBooks.slice(0, pageIndex).map((b: BookType) => (
-          <Grid item style={{ display: "flex" }} {...gridItemProps} key={b.id}>
+          <Grid item style={{ display: 'flex' }} {...gridItemProps} key={b.id}>
             <BookSummaryCard
               book={b}
               returnBook={() => handleReturnBook(b.id!, b.userId!)}
             />
           </Grid>
-        ))}{" "}
+        ))}{' '}
         {renderedBooks.length - pageIndex > 0 && (
           <Button onClick={() => setPageIndex(pageIndex + numberBooksToShow)}>
-            {"Weitere Bücher..." +
+            {'Weitere Bücher...' +
               Math.max(0, renderedBooks.length - pageIndex).toString()}
           </Button>
         )}
@@ -207,7 +207,7 @@ export default function Books({
     return (
       <Grid
         container
-        sx={{ width: "100%" }}
+        sx={{ width: '100%' }}
         direction="column"
         justifyContent="center"
         alignItems="top"
@@ -221,7 +221,7 @@ export default function Books({
         ))}
         {renderedBooks.length - pageIndex > 0 && (
           <Button onClick={() => setPageIndex(pageIndex + numberBooksToShow)}>
-            {"Weitere Bücher..." +
+            {'Weitere Bücher...' +
               Math.max(0, renderedBooks.length - pageIndex).toString()}
           </Button>
         )}
@@ -266,9 +266,9 @@ export async function getServerSideProps() {
     newBook.updatedAt = convertDateToDayString(b.updatedAt);
     newBook.rentedDate = b.rentedDate
       ? convertDateToDayString(b.rentedDate)
-      : "";
-    newBook.dueDate = b.dueDate ? convertDateToDayString(b.dueDate) : "";
-    newBook.searchableTopics = b.topics ? b.topics.split(";") : ""; //otherwise the itemsjs search doesn't work, but not sure if I can override the type?
+      : '';
+    newBook.dueDate = b.dueDate ? convertDateToDayString(b.dueDate) : '';
+    newBook.searchableTopics = b.topics ? b.topics.split(';') : ''; //otherwise the itemsjs search doesn't work, but not sure if I can override the type?
 
     return newBook;
   });

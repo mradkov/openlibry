@@ -1,42 +1,16 @@
-import { Link } from '@mui/material';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
+import { cn } from '@/lib/utils';
+import { buttonVariants } from '../ui/button';
 
-export default function Footer() {
+export function Footer() {
   return (
-    <Box
-      sx={{
-        flexGrow: 1,
-        textAlign: 'center',
-        paddingBottom: '24px',
-        paddingTop: '48px',
-      }}
-    >
-      <Grid
-        container
-        alignItems="center"
-        justifyContent="space-around"
-        rowSpacing={5}
+    <footer className="flex items-center justify-center">
+      <a
+        href="https://openlibry.de"
+        target="_blank"
+        className={cn(buttonVariants({ variant: 'link' }), 'text-sm')}
       >
-        <Grid container item columnSpacing={2} xs={12} md="auto">
-          <Grid item xs={12} md={4}>
-            <Typography variant="body2">
-              <Link href="https://openlibry.de">Copyright</Link>
-            </Typography>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Typography variant="body2">
-              <Link href="https://openlibry.de">Impressum</Link>
-            </Typography>
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Typography variant="body2">
-              <Link href="https://openlibry.de">Поверителност</Link>
-            </Typography>
-          </Grid>
-        </Grid>
-      </Grid>
-    </Box>
+        Open Libry
+      </a>
+    </footer>
   );
 }

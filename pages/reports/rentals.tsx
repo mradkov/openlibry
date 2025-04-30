@@ -1,24 +1,24 @@
-import Layout from "@/components/layout/Layout";
-import { getRentedBooksWithUsers } from "@/entities/book";
-import { translations } from "@/entities/fieldTranslations";
-import Box from "@mui/material/Box";
-import { deDE as coreDeDE } from "@mui/material/locale";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { DataGrid, GridToolbar, deDE } from "@mui/x-data-grid";
-import { PrismaClient } from "@prisma/client";
-import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import Layout from '@/components/layout/Layout';
+import { getRentedBooksWithUsers } from '@/entities/book';
+import { translations } from '@/entities/fieldTranslations';
+import Box from '@mui/material/Box';
+import { deDE as coreDeDE } from '@mui/material/locale';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { DataGrid, GridToolbar, deDE } from '@mui/x-data-grid';
+import { PrismaClient } from '@prisma/client';
+import dayjs from 'dayjs';
+import { useEffect, useState } from 'react';
 
-import { convertDateToDayString } from "@/utils/dateutils";
-import { Typography } from "@mui/material";
-import type {} from "@mui/x-data-grid/themeAugmentation";
+import { convertDateToDayString } from '@/utils/dateutils';
+import { Typography } from '@mui/material';
+import type {} from '@mui/x-data-grid/themeAugmentation';
 
 const prisma = new PrismaClient();
 
 const theme = createTheme(
   {
     palette: {
-      primary: { main: "#1976d2" },
+      primary: { main: '#1976d2' },
     },
   },
   deDE, // x-data-grid translations
@@ -38,15 +38,15 @@ export default function Rentals({ rentals }: RentalsPropsType) {
   const [reportDataAvailable, setReportDataAvailable] = useState(false);
 
   //TODO find a better way for dynamic layouts
-  function getWidth(columnName: string = "") {
+  function getWidth(columnName: string = '') {
     switch (columnName) {
-      case "ID":
+      case 'ID':
         return 40;
         break;
-      case "title":
+      case 'title':
         return 350;
         break;
-      case "lastName":
+      case 'lastName':
         return 180;
         break;
       default:
@@ -60,7 +60,7 @@ export default function Rentals({ rentals }: RentalsPropsType) {
       const colTitles = rentals[0];
       const fields = Object.keys(colTitles) as any;
       const columns = fields.map((f: string) => {
-        const fieldTranslation = (translations as any)["rentals"][f];
+        const fieldTranslation = (translations as any)['rentals'][f];
         const col = {
           field: f,
           headerName: fieldTranslation,
@@ -87,12 +87,12 @@ export default function Rentals({ rentals }: RentalsPropsType) {
       <ThemeProvider theme={theme}>
         <Box
           sx={{
-            backgroundColor: "#CFCFCF",
-            width: "100%",
+            backgroundColor: '#CFCFCF',
+            width: '100%',
             mt: 5,
           }}
         >
-          {" "}
+          {' '}
           {reportDataAvailable ? (
             <DataGrid
               autoHeight
@@ -115,7 +115,7 @@ export async function getServerSideProps() {
     //calculate remaining days for the rental
     const due = dayjs(r.dueDate);
     const today = dayjs();
-    const diff = today.diff(due, "days");
+    const diff = today.diff(due, 'days');
 
     return {
       id: r.id,
