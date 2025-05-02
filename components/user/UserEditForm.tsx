@@ -1,23 +1,31 @@
 import { Dispatch, useState } from 'react';
 
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import MoreTimeIcon from '@mui/icons-material/MoreTime';
-import IconButton from '@mui/material/IconButton';
-import ListItem from '@mui/material/ListItem';
-
 import { UserType } from '@/entities/UserType';
-import ListItemText from '@mui/material/ListItemText';
-
-import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
 
 import { BookType } from '@/entities/BookType';
 
 import { cn } from '@/lib/utils';
-import { Grid, Tooltip } from '@mui/material';
-import { AlertOctagon, Edit, Save, SquareX, Trash2, Undo } from 'lucide-react';
+import {
+  AlertOctagon,
+  BookCheck,
+  CalendarPlus,
+  Edit,
+  Save,
+  SquareX,
+  Trash2,
+  Undo,
+} from 'lucide-react';
 import { dayjs } from '../../lib/dayjs';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 import { Button } from '../ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '../ui/card';
 import { Checkbox } from '../ui/checkbox';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
@@ -54,15 +62,6 @@ export default function UserEditForm({
   const [userBooks, setUserBooks] = useState(books);
 
   const [returnedBooks, setReturnedBooks] = useState({});
-
-  const ReturnedIcon = ({ id }: ReturnedIconPropsType) => {
-    //console.log("Rendering icon ", id, returnedBooks);
-    if (id in returnedBooks) {
-      return <CheckCircleIcon color="success" />;
-    } else {
-      return <ArrowCircleLeftIcon />;
-    }
-  };
 
   return (
     <div className="space-y-4">
@@ -211,56 +210,58 @@ export default function UserEditForm({
 
       <h2 className="font-bold text-center">Взети книги</h2>
 
-      <Grid
-        container
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-        spacing={2}
-      >
-        <Grid item xs={12}>
-          {' '}
-          {userBooks.map((b: BookType, index: number) => {
-            return 'id' in b ? (
-              <ListItem key={b.id}>
-                <Tooltip title="Връщане">
-                  <IconButton
-                    onClick={() => {
-                      returnBook(b.id!);
-                      const time = Date.now();
-                      const newbook = {};
-                      (newbook as any)[b.id!] = time;
-                      setReturnedBooks({ ...returnedBooks, ...newbook });
-                    }}
-                    aria-label="върни"
-                  >
-                    <ReturnedIcon key={b.id} id={b.id!} />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Verlängern">
-                  <IconButton
-                    onClick={() => {
-                      if (!b.id) return;
-                      extendBook(b.id, b);
-                      const newBooks = [...books];
-                      newBooks[index].renewalCount++;
-                      setUserBooks(newBooks);
-                    }}
-                    aria-label="verlängern"
-                  >
-                    <MoreTimeIcon key={b.id} />
-                  </IconButton>
-                </Tooltip>
-                <ListItemText>
-                  {b.title + ', ' + b.renewalCount + 'x удължено'}
-                </ListItemText>
-              </ListItem>
-            ) : (
-              <div>ID not found</div>
-            );
-          })}
-        </Grid>
-      </Grid>
+      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4 mb-4">
+        {userBooks.map((b: BookType, index: number) => {
+          return 'id' in b ? (
+            <Card key={b.id}>
+              <CardHeader>
+                <CardTitle>{b.title}</CardTitle>
+                <CardDescription>{b.author}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p>
+                  Взета на:
+                  <b>{dayjs(b.rentedDate).format('D MMMM YYYY')}</b>
+                </p>
+                <p>
+                  До: <b>{dayjs(b.dueDate).format('D MMMM YYYY')}</b>
+                </p>
+                {b.renewalCount && b.renewalCount > 0 ? (
+                  <p>{`Наемът е удължаван ${b.renewalCount} пъти`}</p>
+                ) : null}
+              </CardContent>
+              <CardFooter className="gap-2">
+                <Button
+                  onClick={() => {
+                    returnBook(b.id!);
+                    const time = Date.now();
+                    const newbook = {};
+                    (newbook as any)[b.id!] = time;
+                    setReturnedBooks({ ...returnedBooks, ...newbook });
+                  }}
+                >
+                  <BookCheck /> Върни
+                </Button>
+
+                <Button
+                  onClick={() => {
+                    if (!b.id) return;
+                    extendBook(b.id, b);
+                    const newBooks = [...books];
+                    newBooks[index].renewalCount++;
+                    setUserBooks(newBooks);
+                  }}
+                  variant="outline"
+                >
+                  <CalendarPlus /> Удължи
+                </Button>
+              </CardFooter>
+            </Card>
+          ) : (
+            <div>ID not found</div>
+          );
+        })}
+      </div>
     </div>
   );
 }

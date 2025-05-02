@@ -117,7 +117,10 @@ export default function Rental({
 
     console.log('Extension days: ', extensionDays);
     //extend logic
-    const newDueDate = extendDays(new Date(), extensionDays);
+    const newDueDate = extendDays(
+      book.dueDate ? new Date(book.dueDate) : new Date(),
+      extensionDays
+    );
     newbook.dueDate = newDueDate.toDate();
     newbook.renewalCount = newbook.renewalCount + 1;
 

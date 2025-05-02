@@ -92,6 +92,7 @@ export async function getRentedBooksForUser(client: PrismaClient, id: number) {
       },
       select: {
         id: true,
+        author: true,
         title: true,
         dueDate: true,
         rentedDate: true,
