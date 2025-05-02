@@ -1,28 +1,21 @@
+import { BookPlus, LayoutGrid, LayoutList, Search } from 'lucide-react';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
 import {
-  Divider,
-  IconButton,
-  InputBase,
-  Paper,
   Tooltip,
-  Typography,
-} from '@mui/material';
-
-import GridViewIcon from '@mui/icons-material/GridView';
-import QueueIcon from '@mui/icons-material/Queue';
-import SearchIcon from '@mui/icons-material/Search';
-import ViewListIcon from '@mui/icons-material/ViewList';
-
-import Grid from '@mui/material/Grid';
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../ui/tooltip';
 
 interface BookSearchBarPropType {
-  handleInputChange: React.ChangeEventHandler<
-    HTMLTextAreaElement | HTMLInputElement
-  >;
+  handleInputChange: (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  ) => Promise<void>;
   handleNewBook: React.MouseEventHandler<HTMLButtonElement>;
   bookSearchInput: string;
   toggleView: React.MouseEventHandler<HTMLButtonElement>;
   detailView: boolean;
-  searchResultNumber: number;
 }
 
 export default function BookSearchBar({
@@ -31,64 +24,49 @@ export default function BookSearchBar({
   bookSearchInput,
   toggleView,
   detailView,
-  searchResultNumber,
 }: BookSearchBarPropType) {
   return (
-    <Grid
-      container
-      direction="row"
-      alignItems="center"
-      justifyContent="center"
-      sx={{ px: 10, my: 5 }}
-    >
-      <Grid item>
-        <Paper
-          component="form"
-          sx={{
-            p: '2px 4px',
-            display: 'flex',
-            alignItems: 'center',
-            width: 400,
-          }}
-        >
-          <Tooltip title="Превключване на изгледа">
-            <IconButton
-              sx={{ p: '10px' }}
-              aria-label="menu"
-              onClick={toggleView}
-            >
-              {detailView ? <GridViewIcon /> : <ViewListIcon />}
-            </IconButton>
+    <div className="flex items-center space-x-4 mb-4">
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <Button onClick={toggleView} variant="ghost" size="icon">
+              {detailView ? (
+                <LayoutGrid className="size-6" />
+              ) : (
+                <LayoutList className="size-6" />
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Превключване на изгледа</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
+      <div className="relative grow flex items-center">
+        <Input
+          value={bookSearchInput}
+          onChange={async (e) => await handleInputChange(e)}
+          placeholder="Търсене на книга.."
+        />
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <Search className="absolute right-1.5 top-1.5 text-input" />
+            </TooltipTrigger>
+            <TooltipContent>Търсене</TooltipContent>
           </Tooltip>
-          <InputBase
-            sx={{ ml: 1, flex: 1 }}
-            value={bookSearchInput}
-            onChange={handleInputChange}
-            placeholder="Търсене на книга.."
-            inputProps={{ 'aria-label': 'search books' }}
-            data-cy="rental_input_searchbook"
-          />
-          <Tooltip title="Търсене">
-            <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
-              <SearchIcon />
-            </IconButton>
-          </Tooltip>
-          <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-          <Tooltip title="Създаване на нова книга">
-            <IconButton
-              color="primary"
-              data-cy="create_book_button"
-              sx={{ p: '10px' }}
-              aria-label="new-book"
-              onClick={handleNewBook}
-            >
-              <QueueIcon />
-            </IconButton>
-          </Tooltip>
-          <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-          <Typography variant="caption">{searchResultNumber}</Typography>
-        </Paper>
-      </Grid>
-    </Grid>
+        </TooltipProvider>
+      </div>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger className="m-0">
+            <Button variant="ghost" size="icon" onClick={handleNewBook}>
+              <BookPlus className="size-6" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Създаване на нова книга</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    </div>
   );
 }

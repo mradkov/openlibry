@@ -1,30 +1,24 @@
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Avatar, IconButton, Tooltip } from '@mui/material';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
 import { BookType } from '@/entities/BookType';
-
-import palette from '@/styles/palette';
-import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
-import TaskAltIcon from '@mui/icons-material/TaskAlt';
-import { CardHeader, CardMedia } from '@mui/material';
-
-const bull = (
-  <Box
-    component="span"
-    sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-  >
-    •
-  </Box>
-);
+import { BookCheck, BookUp2 } from 'lucide-react';
+import { Button, buttonVariants } from '../ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '../ui/card';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../ui/tooltip';
 
 interface BookSummaryCardPropType {
   book: BookType;
@@ -37,79 +31,55 @@ export default function BookSummaryCard({
 }: BookSummaryCardPropType) {
   const [src, setSrc] = useState('/coverimages/default_1.png');
 
-  const selectedBook = book;
-
-  const getAvatarIcon = (b: BookType) => {
-    return b.rentalStatus == 'rented' ? (
-      <Avatar sx={{ bgcolor: palette.error.main }} aria-label="avatar">
-        <CancelPresentationIcon />
-      </Avatar>
-    ) : (
-      <Avatar sx={{ bgcolor: palette.info.main }} aria-label="avatar">
-        <TaskAltIcon />
-      </Avatar>
-    );
-  };
-
   return (
-    <Card
-      raised
-      key={book.id}
-      sx={{
-        maxWidth: 280,
-        minWidth: 275,
-        margin: '0 auto',
-        padding: '0.1em',
-        display: 'flex',
-        justifyContent: 'space-between',
-        flexDirection: 'column',
-      }}
-    >
-      <CardHeader
-        avatar={getAvatarIcon(selectedBook)}
-        action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
-        title={'Книга id ' + selectedBook.id}
-      />
-      <CardMedia sx={{ position: 'relative' }}>
-        <Image
-          src={src}
-          width={320}
-          height={200}
-          alt=""
-          style={{ objectFit: 'cover' }}
-        />
-      </CardMedia>
+    <Card key={book.id}>
+      <CardHeader>
+        <div className="flex text-muted-foreground text-sm space-x-2">
+          {book.rentalStatus === 'rented' ? (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <BookUp2 className="text-chart-5" />
+                </TooltipTrigger>
+                <TooltipContent>Книгата е заета</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <BookCheck className="text-chart-2" />
+                </TooltipTrigger>
+                <TooltipContent>Книгата е налична</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+          {book.libraryId ? <span>{`ID: ${book.libraryId}`}</span> : null}
+        </div>
+        <CardTitle>{`${book.title}${
+          book.subtitle ? ` (${book.subtitle})` : ''
+        }`}</CardTitle>
+        <CardDescription>{book.author}</CardDescription>
+      </CardHeader>
+
       <CardContent>
-        <Typography
-          variant="h5"
-          color="text.secondary"
-          data-cy="book_title"
-          gutterBottom
-        >
-          {selectedBook.title}
-        </Typography>
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          {selectedBook.author}
-        </Typography>
+        <Image src={src} width={320} height={200} alt="book-cover" />
+        <p>{book.summary}</p>
       </CardContent>
-      <CardActions>
-        <Link href={'/book/' + book.id} passHref>
-          <Tooltip title="Детайли за книгата">
-            <Button size="small" data-cy="book_card_editbutton">
-              Детайли
-            </Button>
-          </Tooltip>
+      <CardFooter className="space-x-4">
+        <Link
+          href={'/book/' + book.id}
+          className={buttonVariants({ variant: 'outline' })}
+        >
+          Детайли
         </Link>
-        {book.rentalStatus != 'available' ? (
-          <Button size="small" onClick={returnBook}>
+        {book.rentalStatus !== 'available' ? (
+          <Button onClick={returnBook}>
+            <BookCheck />
             Върни
           </Button>
         ) : null}
-      </CardActions>
+      </CardFooter>
     </Card>
   );
 }

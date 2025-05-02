@@ -1,7 +1,3 @@
-import { ThemeProvider, useTheme } from '@mui/material/styles';
-import useMediaQuery from '@mui/material/useMediaQuery';
-
-import Grid from '@mui/material/Grid';
 import { useRouter } from 'next/router';
 
 import Layout from '@/components/layout/Layout';
@@ -18,23 +14,9 @@ import BookSummaryCard from '@/components/book/BookSummaryCard';
 
 import BookSearchBar from '@/components/book/BookSearchBar';
 import BookSummaryRow from '@/components/book/BookSummaryRow';
-import { Button } from '@mui/material';
-import itemsjs from 'itemsjs';
+import { Button } from '@/components/ui/button';
 
 const prisma = new PrismaClient();
-/*
-const theme = createTheme({
-  palette: {
-    primary: { main: "#1976d2" },
-  },
-});*/
-const gridItemProps = {
-  xs: 12,
-  sm: 12,
-  md: 6,
-  lg: 4,
-  xl: 4,
-};
 
 interface SearchableBookType extends BookType {
   searchableTopics: Array<string>;
@@ -51,9 +33,7 @@ export default function Books({
   numberBooksToShow,
   maxBooks,
 }: BookPropsType) {
-  const theme = useTheme();
   const router = useRouter();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [renderedBooks, setRenderedBooks] = useState(books);
   const [bookSearchInput, setBookSearchInput] = useState('');
@@ -62,29 +42,18 @@ export default function Books({
   const [searchResultNumber, setSearchResultNumber] = useState(0);
   const [pageIndex, setPageIndex] = useState(numberBooksToShow);
 
-  if (isMobile) {
-    gridItemProps.sm = 12;
-    gridItemProps.md = 12;
-    gridItemProps.lg = 12;
-    gridItemProps.xl = 12;
-  }
-  const searchEngine = itemsjs(books, {
-    searchableFields: ['title', 'author', 'subtitle', 'searchableTopics', 'id'],
-  });
-
-  async function searchBooks(searchString: string) {
-    const foundBooks = searchEngine.search({
-      sort: 'name_asc',
-      per_page: maxBooks,
-      // full text search
-      query: searchString,
-    });
-    //console.log("Searched books", books);
-
+  function searchBooks(searchString: string) {
+    const foundBooks = books.filter(
+      (book) =>
+        book.title.toLowerCase().includes(searchString) ||
+        book.author.toLowerCase().includes(searchString) ||
+        book.subtitle?.toLowerCase().includes(searchString) ||
+        book.id?.toString().toLowerCase().includes(searchString)
+    );
     console.log('Found books', foundBooks);
     setPageIndex(numberBooksToShow);
-    setRenderedBooks(foundBooks.data.items);
-    setSearchResultNumber(foundBooks.pagination.total);
+    setRenderedBooks(foundBooks);
+    setSearchResultNumber(foundBooks.length);
   }
 
   const handleCreateNewBook = () => {
@@ -166,12 +135,12 @@ export default function Books({
       });
   };
 
-  const handleInputChange = (
+  const handleInputChange = async (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
-    const searchString = e.target.value;
+    const searchString = e.target.value.toLowerCase();
     setPageIndex(numberBooksToShow);
-    const result = searchBooks(searchString);
+    searchBooks(searchString);
     setBookSearchInput(searchString);
   };
 
@@ -184,68 +153,67 @@ export default function Books({
 
   const DetailCardContainer = ({ renderedBooks }: any) => {
     return (
-      <Grid container spacing={2} alignItems="stretch">
+      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
         {renderedBooks.slice(0, pageIndex).map((b: BookType) => (
-          <Grid item style={{ display: 'flex' }} {...gridItemProps} key={b.id}>
-            <BookSummaryCard
-              book={b}
-              returnBook={() => handleReturnBook(b.id!, b.userId!)}
-            />
-          </Grid>
-        ))}{' '}
-        {renderedBooks.length - pageIndex > 0 && (
-          <Button onClick={() => setPageIndex(pageIndex + numberBooksToShow)}>
-            {'Weitere Bücher...' +
-              Math.max(0, renderedBooks.length - pageIndex).toString()}
-          </Button>
-        )}
-      </Grid>
+          <BookSummaryCard
+            book={b}
+            key={b.id}
+            returnBook={() => handleReturnBook(b.id!, b.userId!)}
+          />
+        ))}
+      </div>
     );
   };
 
   const SummaryRowContainer = ({ renderedBooks }: any) => {
     return (
-      <Grid
-        container
-        sx={{ width: '100%' }}
-        direction="column"
-        justifyContent="center"
-        alignItems="top"
-      >
+      <div className="divide-y">
         {renderedBooks.slice(0, pageIndex).map((b: BookType) => (
           <BookSummaryRow
             key={b.id}
             book={b}
             handleCopyBook={() => handleCopyBook(b)}
+            returnBook={() => handleReturnBook(b.id!, b.userId!)}
           />
         ))}
-        {renderedBooks.length - pageIndex > 0 && (
-          <Button onClick={() => setPageIndex(pageIndex + numberBooksToShow)}>
-            {'Weitere Bücher...' +
-              Math.max(0, renderedBooks.length - pageIndex).toString()}
-          </Button>
-        )}
-      </Grid>
+      </div>
     );
   };
 
   return (
     <Layout>
-      <ThemeProvider theme={theme}>
-        <BookSearchBar
-          handleInputChange={handleInputChange}
-          handleNewBook={handleCreateNewBook}
-          bookSearchInput={bookSearchInput}
-          toggleView={toggleView}
-          detailView={detailView}
-          searchResultNumber={searchResultNumber}
-        />
-        {detailView ? (
-          <DetailCardContainer renderedBooks={renderedBooks} />
-        ) : (
-          <SummaryRowContainer renderedBooks={renderedBooks} />
-        )}
-      </ThemeProvider>
+      <BookSearchBar
+        handleInputChange={handleInputChange}
+        handleNewBook={handleCreateNewBook}
+        bookSearchInput={bookSearchInput}
+        toggleView={toggleView}
+        detailView={detailView}
+      />
+      <h2 className="text-center font-bold mb-4">
+        {searchResultNumber > 0
+          ? `Намерени са ${searchResultNumber} книги`
+          : 'Няма намерени книги'}
+      </h2>
+      {detailView ? (
+        <DetailCardContainer renderedBooks={renderedBooks} />
+      ) : (
+        <SummaryRowContainer renderedBooks={renderedBooks} />
+      )}
+      {renderedBooks.length - pageIndex > 0 && (
+        <Button
+          onClick={() => setPageIndex(pageIndex + numberBooksToShow)}
+          className="mt-4"
+          variant="outline"
+        >
+          {`Покажи още ${Math.min(
+            numberBooksToShow,
+            renderedBooks.length - pageIndex
+          )} от ${Math.max(
+            0,
+            renderedBooks.length - pageIndex
+          ).toString()} книги`}
+        </Button>
+      )}
     </Layout>
   );
 }

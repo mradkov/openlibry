@@ -7,8 +7,6 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
-
-import palette from '@/styles/palette';
 import { Divider, Grid, Paper, Tooltip } from '@mui/material';
 
 import { BookType } from '@/entities/BookType';
@@ -123,9 +121,7 @@ export default function BookEditForm({
         </Grid>{' '}
       </Grid>
       <Divider sx={{ mb: 3 }}>
-        <Typography variant="body1" color={palette.info.main}>
-          Основни данни за книгата
-        </Typography>
+        <Typography variant="body1">Основни данни за книгата</Typography>
       </Divider>
       <Grid container direction="row" justifyContent="center" alignItems="top">
         {' '}
