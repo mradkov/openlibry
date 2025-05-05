@@ -15,6 +15,7 @@ import BookSummaryCard from '@/components/book/BookSummaryCard';
 import BookSearchBar from '@/components/book/BookSearchBar';
 import BookSummaryRow from '@/components/book/BookSummaryRow';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 const prisma = new PrismaClient();
 
@@ -48,6 +49,8 @@ export default function Books({
         book.title.toLowerCase().includes(searchString) ||
         book.author.toLowerCase().includes(searchString) ||
         book.subtitle?.toLowerCase().includes(searchString) ||
+        book.libraryId?.toLowerCase().includes(searchString) ||
+        book.barcode?.toLowerCase().includes(searchString) ||
         book.id?.toString().toLowerCase().includes(searchString)
     );
     console.log('Found books', foundBooks);
@@ -132,6 +135,7 @@ export default function Books({
         });
         console.log('New rendered books', newRenderedBooks, renderedBooks);
         setRenderedBooks(newRenderedBooks);
+        toast.success('Книгата е върната!');
       });
   };
 

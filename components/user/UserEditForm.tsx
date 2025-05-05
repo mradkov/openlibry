@@ -15,9 +15,10 @@ import {
   Trash2,
   Undo,
 } from 'lucide-react';
+import Link from 'next/link';
 import { dayjs } from '../../lib/dayjs';
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
-import { Button } from '../ui/button';
+import { Button, buttonVariants } from '../ui/button';
 import {
   Card,
   CardContent,
@@ -42,9 +43,6 @@ type UserEditFormPropType = {
   initiallyEditable?: boolean;
 };
 
-type ReturnedIconPropsType = {
-  id: number;
-};
 export default function UserEditForm({
   user,
   books,
@@ -215,7 +213,14 @@ export default function UserEditForm({
           return 'id' in b ? (
             <Card key={b.id}>
               <CardHeader>
-                <CardTitle>{b.title}</CardTitle>
+                <CardTitle>
+                  <Link
+                    href={`/book/${b.id}`}
+                    className={cn(buttonVariants({ variant: 'link' }), 'p-0')}
+                  >
+                    {b.title}
+                  </Link>
+                </CardTitle>
                 <CardDescription>{b.author}</CardDescription>
               </CardHeader>
               <CardContent>

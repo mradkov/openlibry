@@ -47,6 +47,7 @@ model Book {
   updatedAt               DateTime  @updatedAt
   id                      Int       @id @default(autoincrement())
   libraryId               String?
+  barcode                 String?
   rentalStatus            String    @default("available")
   rentedDate              DateTime  @default(now())
   dueDate                 DateTime?

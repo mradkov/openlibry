@@ -5,7 +5,17 @@ import { addAudit } from './audit';
 
 const extensionDays = parseInt(process.env.EXTENSION_DURATION_DAYS!) || 21;
 export async function getBook(client: PrismaClient, id: number) {
-  return await client.book.findUnique({ where: { id } });
+  return await client.book.findUnique({
+    where: { id },
+    include: {
+      user: {
+        select: {
+          lastName: true,
+          firstName: true,
+        },
+      },
+    },
+  });
 }
 
 export async function getAllTopics(client: PrismaClient) {
@@ -34,6 +44,14 @@ export async function getAllBooks(client: PrismaClient) {
           id: 'desc',
         },
       ],
+      include: {
+        user: {
+          select: {
+            lastName: true,
+            firstName: true,
+          },
+        },
+      },
     });
   } catch (e) {
     if (

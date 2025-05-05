@@ -1,7 +1,8 @@
-import { BookType } from "@/entities/BookType";
-import { translations } from "@/entities/fieldTranslations";
-import { TextField } from "@mui/material";
-import { Dispatch } from "react";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { BookType } from '@/entities/BookType';
+import { translations } from '@/entities/fieldTranslations';
+import { Dispatch } from 'react';
 
 type BookTextFieldProps = {
   fieldType: string;
@@ -17,18 +18,20 @@ const BookTextField = ({
   book,
 }: BookTextFieldProps) => {
   return (
-    <TextField
-      id={fieldType}
-      name={fieldType}
-      label={(translations["books"] as any)[fieldType]}
-      defaultValue={(book as any)[fieldType]}
-      disabled={!editable}
-      fullWidth
-      variant="standard"
-      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-        setBookData({ ...book, [fieldType]: event.target.value });
-      }}
-    />
+    <div className="space-y-1">
+      <Label htmlFor={fieldType}>
+        {(translations['books'] as any)[fieldType]}
+      </Label>
+      <Input
+        id={fieldType}
+        name={fieldType}
+        value={(book as any)[fieldType]}
+        disabled={!editable}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          setBookData({ ...book, [fieldType]: event.target.value });
+        }}
+      />
+    </div>
   );
 };
 

@@ -1,11 +1,8 @@
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-
 import Layout from '@/components/layout/Layout';
 import { useState } from 'react';
 import { getAllTopics, getBook } from '../../entities/book';
 
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
-import Snackbar from '@mui/material/Snackbar';
 import { useRouter } from 'next/router';
 import { forwardRef } from 'react';
 
@@ -13,22 +10,20 @@ import { convertStringToDay, replaceBookDateString } from '@/utils/dateutils';
 import { PrismaClient } from '@prisma/client';
 
 import BookEditForm from '@/components/book/BookEditForm';
+import { buttonVariants } from '@/components/ui/button';
 import { BookType } from '@/entities/BookType';
 import { UserType } from '@/entities/UserType';
 import { Typography } from '@mui/material';
+import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 import { GetServerSidePropsContext } from 'next/types';
+import { toast } from 'sonner';
 
 const deleteSafetySeconds = process.env.NEXT_PUBLIC_DELETE_SAFETY_SECONDS
   ? parseInt(process.env.NEXT_PUBLIC_DELETE_SAFETY_SECONDS)
   : 3;
 
 console.log('Delete seconds', process.env.NEXT_PUBLIC_DELETE_SAFETY_SECONDS);
-
-const theme = createTheme({
-  palette: {
-    primary: { main: '#1976d2' },
-  },
-});
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
   props,
@@ -47,8 +42,6 @@ export default function BookDetail({ user, book, topics }: BookDetailProps) {
   const router = useRouter();
 
   const [bookData, setBookData] = useState<BookType>(book);
-  const [returnBookSnackbar, setReturnBookSnackbar] = useState(false);
-  const [saveBookSnackbar, setSaveBookSnackbar] = useState(false);
 
   if (!router.query.bookid) {
     return <Typography>ID not found</Typography>;
@@ -59,28 +52,6 @@ export default function BookDetail({ user, book, topics }: BookDetailProps) {
       ? router.query.bookid[0]
       : router.query.bookid
   );
-
-  const handleCloseReturnBookSnackbar = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setReturnBookSnackbar(false);
-  };
-
-  const handleCloseSaveBookSnackbar = (
-    event?: React.SyntheticEvent | Event,
-    reason?: string
-  ) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setSaveBookSnackbar(false);
-  };
 
   const handleSaveButton = () => {
     console.log('Saving book ', bookData);
@@ -100,24 +71,8 @@ export default function BookDetail({ user, book, topics }: BookDetailProps) {
     })
       .then((res) => res.json())
       .then((data) => {
-        setSaveBookSnackbar(true);
+        toast.success('Книгата е запазена!');
         router.push('/book');
-      });
-  };
-
-  const handleReturnBookButton = (userid: number) => {
-    console.log('Returning book ', bookid);
-
-    fetch('/api/book/' + bookid + '/user/' + userid, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setReturnBookSnackbar(true);
       });
   };
 
@@ -133,48 +88,26 @@ export default function BookDetail({ user, book, topics }: BookDetailProps) {
       .then((res) => res.json())
       .then((data) => {
         console.log('Delete operation performed on ', bookid, data);
+        toast.warning('Книгата е изтрита!');
         router.push('/book');
       });
   };
 
   return (
     <Layout>
-      <ThemeProvider theme={theme}>
-        <BookEditForm
-          book={bookData}
-          setBookData={setBookData}
-          deleteBook={handleDeleteButton}
-          deleteSafetySeconds={deleteSafetySeconds}
-          saveBook={handleSaveButton}
-          topics={topics}
-        />
-        <Snackbar
-          open={returnBookSnackbar}
-          autoHideDuration={4000}
-          onClose={handleCloseReturnBookSnackbar}
-        >
-          <Alert
-            onClose={handleCloseReturnBookSnackbar}
-            severity="success"
-            sx={{ width: '100%' }}
-          >
-            Книгата е върната, страхотно!
-          </Alert>
-        </Snackbar>
-        <Snackbar
-          open={saveBookSnackbar}
-          autoHideDuration={4000}
-          onClose={handleCloseSaveBookSnackbar}
-        >
-          <Alert
-            onClose={handleCloseSaveBookSnackbar}
-            severity="success"
-            sx={{ width: '100%' }}
-          >
-            Книгата е запазена, добре свършена работа!
-          </Alert>
-        </Snackbar>
-      </ThemeProvider>
+      <BookEditForm
+        book={bookData}
+        setBookData={setBookData}
+        deleteBook={handleDeleteButton}
+        deleteSafetySeconds={deleteSafetySeconds}
+        saveBook={handleSaveButton}
+        topics={topics}
+      />
+      <div className="text-right">
+        <Link href="/book" className={buttonVariants({ variant: 'outline' })}>
+          <ArrowLeft /> Назад
+        </Link>
+      </div>
     </Layout>
   );
 }

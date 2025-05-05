@@ -1,7 +1,8 @@
-import { BookType } from "@/entities/BookType";
-import { translations } from "@/entities/fieldTranslations";
-import { TextField } from "@mui/material";
-import { Dispatch } from "react";
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { BookType } from '@/entities/BookType';
+import { translations } from '@/entities/fieldTranslations';
+import { Dispatch } from 'react';
 
 interface BookMultiTextPropsType {
   fieldType: string;
@@ -17,20 +18,20 @@ const BookMultiText = ({
   book,
 }: BookMultiTextPropsType) => {
   return (
-    <TextField
-      id={fieldType}
-      multiline
-      maxRows={4}
-      name={fieldType}
-      label={(translations["books"] as any)[fieldType]}
-      defaultValue={(book as any)[fieldType]}
-      disabled={!editable}
-      fullWidth
-      variant="standard"
-      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-        setBookData({ ...book, [fieldType]: event.target.value });
-      }}
-    />
+    <div className="md:col-span-2">
+      <Label htmlFor={fieldType}>
+        {(translations['books'] as any)[fieldType]}
+      </Label>
+      <Textarea
+        id={fieldType}
+        name={fieldType}
+        value={(book as any)[fieldType]}
+        disabled={!editable}
+        onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
+          setBookData({ ...book, [fieldType]: event.target.value });
+        }}
+      />
+    </div>
   );
 };
 

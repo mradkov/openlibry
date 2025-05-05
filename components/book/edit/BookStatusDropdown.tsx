@@ -1,14 +1,14 @@
-import { BookType } from "@/entities/BookType";
-import { translations } from "@/entities/fieldTranslations";
+import { Label } from '@/components/ui/label';
 import {
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
   Select,
-  SelectChangeEvent,
-} from "@mui/material";
-import { Dispatch } from "react";
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { BookType } from '@/entities/BookType';
+import { translations } from '@/entities/fieldTranslations';
+import { Dispatch } from 'react';
 
 type BookTextFieldProps = {
   fieldType: string;
@@ -26,40 +26,41 @@ const BookStatusDropdown = ({
   //use these statusses for the book with according translations
 
   const status = [
-    "available",
-    "rented",
-    "broken",
-    "presentation",
-    "ordered",
-    "lost",
-    "remote",
+    'available',
+    'rented',
+    'broken',
+    'presentation',
+    'ordered',
+    'lost',
+    'remote',
   ];
 
   return (
-    <Grid item xs={12} sm={6}>
-      <FormControl fullWidth>
-        <InputLabel id="book-status-label">Status</InputLabel>
-        <Select
-          labelId="book-status-label"
-          id="book-status"
-          value={(book as any)[fieldType]}
-          disabled={!editable}
-          defaultValue={(book as any)[fieldType]}
-          label="Status"
-          onChange={(event: SelectChangeEvent<HTMLInputElement>) => {
-            setBookData({ ...book, [fieldType]: event.target.value });
-          }}
-        >
+    <div className="space-y-1">
+      <Label htmlFor={fieldType}>
+        {(translations['books'] as any)[fieldType]}
+      </Label>
+      <Select
+        value={(book as any)[fieldType]}
+        disabled={!editable}
+        onValueChange={(value) => {
+          setBookData({ ...book, [fieldType]: value });
+        }}
+      >
+        <SelectTrigger className="w-full">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
           {status.map((s: string) => {
             return (
-              <MenuItem key={s} value={s}>
-                {(translations as any)["rentalStatus"][s]}
-              </MenuItem>
+              <SelectItem key={s} value={s}>
+                {(translations as any)['rentalStatus'][s]}
+              </SelectItem>
             );
           })}
-        </Select>
-      </FormControl>
-    </Grid>
+        </SelectContent>
+      </Select>
+    </div>
   );
 };
 
