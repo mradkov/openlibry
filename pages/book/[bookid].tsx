@@ -10,12 +10,10 @@ import { convertStringToDay, replaceBookDateString } from '@/utils/dateutils';
 import { PrismaClient } from '@prisma/client';
 
 import BookEditForm from '@/components/book/BookEditForm';
-import { buttonVariants } from '@/components/ui/button';
+import { BackButton } from '@/components/layout/back-button';
 import { BookType } from '@/entities/BookType';
 import { UserType } from '@/entities/UserType';
 import { Typography } from '@mui/material';
-import { ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
 import { GetServerSidePropsContext } from 'next/types';
 import { toast } from 'sonner';
 
@@ -104,9 +102,7 @@ export default function BookDetail({ user, book, topics }: BookDetailProps) {
         topics={topics}
       />
       <div className="text-right">
-        <Link href="/book" className={buttonVariants({ variant: 'outline' })}>
-          <ArrowLeft /> Назад
-        </Link>
+        <BackButton />
       </div>
     </Layout>
   );

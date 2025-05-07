@@ -1,5 +1,5 @@
-import { RentalsUserType } from "@/entities/RentalsUserType";
-import ErrorIcon from "@mui/icons-material/Error";
+import { RentalsUserType } from '@/entities/RentalsUserType';
+import { CircleAlert } from 'lucide-react';
 
 interface OverdueIconPropsType {
   rentalsUser: Array<RentalsUserType>;
@@ -19,9 +19,9 @@ export default function OverdueIcon({ rentalsUser }: OverdueIconPropsType) {
     });
   }
   return overdue && alertOverdue ? (
-    <ErrorIcon fontSize="small" color="secondary" />
+    <CircleAlert className="text-destructive" />
   ) : overdue ? (
-    <ErrorIcon fontSize="small" color="primary" />
+    <CircleAlert />
   ) : (
     <></>
   );

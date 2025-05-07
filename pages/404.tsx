@@ -1,5 +1,5 @@
 import Layout from '@/components/layout/Layout';
-import Typography from '@mui/material/Typography';
+import { TriangleAlert } from 'lucide-react';
 import { Inter } from 'next/font/google';
 
 import { useRouter } from 'next/router';
@@ -11,14 +11,10 @@ export default function Home() {
 
   return (
     <Layout>
-      {' '}
-      <Typography
-        variant="h1"
-        align="center"
-        sx={{ fontWeight: 'bold', fontSize: 30 }}
-      >
-        Die Seite konnte leider nicht gefunden werden - ist der Link korrekt?
-      </Typography>
+      <div className="flex flex-col items-center justify-center gap-2 grow">
+        <TriangleAlert className="size-8" />
+        <p className="font-semibold">Страницата не може да бъде намерена</p>
+      </div>
     </Layout>
   );
 }

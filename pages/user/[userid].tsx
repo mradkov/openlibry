@@ -13,13 +13,11 @@ import {
 } from '@/utils/dateutils';
 import { PrismaClient } from '@prisma/client';
 
-import { buttonVariants } from '@/components/ui/button';
+import { BackButton } from '@/components/layout/back-button';
 import UserEditForm from '@/components/user/UserEditForm';
 import { BookType } from '@/entities/BookType';
 import { UserType } from '@/entities/UserType';
 import { Typography } from '@mui/material';
-import { ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
 import { GetServerSidePropsContext } from 'next/types';
 import { toast } from 'sonner';
 
@@ -88,13 +86,7 @@ export default function UserDetail({
   };
 
   const handleExtendBookButton = (bookid: number, book: BookType) => {
-    //we don't need to update the dates
-
-    //console.log("Extended date", book, extendWeeks(book.dueDate as Date, 2));
-
     const newbook = replaceBookStringDate(book) as any;
-    //extend logic
-
     const newDueDate = extendDays(
       book.dueDate ? new Date(book.dueDate) : new Date(),
       extensionDays
@@ -103,8 +95,7 @@ export default function UserDetail({
     newbook.dueDate = newDueDate.toDate();
     newbook.renewalCount = newbook.renewalCount + 1;
 
-    //console.log("Saving an extended book", newbook);
-    delete newbook.user; //don't need the user here
+    delete newbook.user;
 
     fetch('/api/book/' + bookid, {
       method: 'PUT',
@@ -118,7 +109,6 @@ export default function UserDetail({
         console.log(data);
         toast.info('Наемът на книгата е удължен!');
       });
-    //T
   };
 
   const handleDeleteButton = () => {
@@ -149,9 +139,7 @@ export default function UserDetail({
         extendBook={handleExtendBookButton}
       />
       <div className="text-right">
-        <Link href="/user" className={buttonVariants({ variant: 'outline' })}>
-          <ArrowLeft /> Назад
-        </Link>
+        <BackButton />
       </div>
     </Layout>
   );

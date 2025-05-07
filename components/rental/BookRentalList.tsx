@@ -1,27 +1,26 @@
-import MenuBookIcon from '@mui/icons-material/MenuBook';
-import { Grid, Tooltip } from '@mui/material';
-import FormControl from '@mui/material/FormControl';
-import Input from '@mui/material/Input';
-import InputAdornment from '@mui/material/InputAdornment';
-import InputLabel from '@mui/material/InputLabel';
-import Paper from '@mui/material/Paper';
-import { useEffect, useState } from 'react';
-
-import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft';
-import ClearIcon from '@mui/icons-material/Clear';
-import UpdateIcon from '@mui/icons-material/Update';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-
-import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
+import { useState } from 'react';
 
 import { BookType } from '@/entities/BookType';
 import { UserType } from '@/entities/UserType';
-import userNameForBook from '@/utils/userNameForBook';
-import dayjs from 'dayjs';
-import 'dayjs/locale/de';
 
-import itemsjs from 'itemsjs';
+import { dayjs } from '@/lib/dayjs';
+import { cn } from '@/lib/utils';
+import { Book, BookCheck, BookUp2, CalendarPlus } from 'lucide-react';
+import Link from 'next/link';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '../ui/accordion';
+import { Button, buttonVariants } from '../ui/button';
+import { Input } from '../ui/input';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '../ui/tooltip';
 
 interface BookPropsType {
   books: Array<BookType>;
@@ -30,255 +29,173 @@ interface BookPropsType {
   handleReturnBookButton: (bookid: number, userid: number) => void;
   handleRentBookButton: (id: number, userid: number) => void;
   userExpanded: number | false;
-  searchFieldRef: any;
-  handleUserSearchSetFocus: () => void;
+  numberBooksToShow: number;
 }
 
-export default function BookRentalList({
+export function BookRentalList({
   books,
   users,
   handleExtendBookButton,
   handleReturnBookButton,
   handleRentBookButton,
   userExpanded,
-  searchFieldRef,
-  handleUserSearchSetFocus,
+  numberBooksToShow,
 }: BookPropsType) {
-  const [bookSearchInput, setBookSearchInput] = useState('');
   const [renderedBooks, setRenderedBooks] = useState(books);
-  const [returnedBooks, setReturnedBooks] = useState({});
-  const searchEngine = itemsjs(books, {
-    searchableFields: ['title', 'author', 'subtitle', 'id'],
-  });
-
-  useEffect(() => {
-    searchBooks(bookSearchInput);
-  }, [books, bookSearchInput]);
-
-  async function searchBooks(searchString: string) {
-    const resultBooks = [] as Array<BookType>;
-    const foundBooks = searchEngine.search({
-      per_page: 20,
-      sort: 'name_asc',
-      // full text search
-      query: searchString,
-    });
-    //console.log("Found books", foundBooks);
-    setRenderedBooks(foundBooks.data.items);
+  const [bookSearchInput, setBookSearchInput] = useState('');
+  const [searchResultNumber, setSearchResultNumber] = useState(0);
+  const [pageIndex, setPageIndex] = useState(numberBooksToShow);
+  function searchBooks(searchString: string) {
+    const foundBooks = books.filter(
+      (book) =>
+        book.title.toLowerCase().includes(searchString) ||
+        book.author.toLowerCase().includes(searchString) ||
+        book.subtitle?.toLowerCase().includes(searchString) ||
+        book.libraryId?.toLowerCase().includes(searchString) ||
+        book.barcode?.toLowerCase().includes(searchString) ||
+        book.id?.toString().toLowerCase().includes(searchString)
+    );
+    setPageIndex(numberBooksToShow);
+    setRenderedBooks(foundBooks);
+    setSearchResultNumber(foundBooks.length);
   }
 
-  const handleClear = (e: any) => {
-    e.preventDefault();
-    setBookSearchInput('');
-  };
-
-  const handleInputChange = (
+  const handleInputChange = async (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
-    setBookSearchInput(e.target.value);
-    //set rendered books
-    searchBooks(e.target.value);
-  };
-
-  const handleKeyUp = (e: React.KeyboardEvent): void => {
-    if (e.key == 'Escape') {
-      if (bookSearchInput == '') {
-        handleUserSearchSetFocus();
-      } else {
-        setBookSearchInput('');
-      }
-    }
-  };
-
-  const ReturnedIcon = () => {
-    //console.log("Rendering icon ", id, returnedBooks);
-    return <ArrowCircleLeftIcon />; /*
-    if (id in returnedBooks) {
-      return <CheckCircleIcon color="success" />;
-    } else {
-      return <ArrowCircleLeftIcon />;
-    }*/
-  };
-
-  const ExtendedIcon = () => {
-    return <UpdateIcon />; //console.log("Rendering icon ", id, returnedBooks);
-    /*if (id in returnedBooks) {
-      return <CheckCircleIcon color="success" />;
-    } else {
-      return <UpdateIcon />;
-    }*/
+    const searchString = e.target.value.toLowerCase();
+    setPageIndex(numberBooksToShow);
+    searchBooks(searchString);
+    setBookSearchInput(searchString);
   };
 
   return (
     <div>
-      <FormControl variant="standard">
-        <InputLabel htmlFor="book-search-input-label">
-          Търсене на книга
-        </InputLabel>
-        <Input
-          id="book-search-input"
-          inputRef={searchFieldRef}
-          startAdornment={
-            <InputAdornment position="start">
-              <MenuBookIcon />
-            </InputAdornment>
-          }
-          endAdornment={
-            bookSearchInput && (
-              <InputAdornment position="end">
-                <Tooltip title="Suche löschen">
-                  <IconButton edge="end" onMouseDown={handleClear}>
-                    <ClearIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </InputAdornment>
-            )
-          }
-          value={bookSearchInput}
-          onChange={handleInputChange}
-          onKeyUp={handleKeyUp}
-        />
-      </FormControl>
-      <Grid
-        container
-        direction="column"
-        alignItems="stretch"
-        justifyContent="flex-start"
-        sx={{ px: 0.5, my: 0.5 }}
-      >
-        {renderedBooks.slice(0, 100).map((b: any) => (
-          <div key={b.id}>
-            <Paper elevation={2} sx={{ my: 0.5 }}>
-              <Grid
-                item
-                container
-                direction="column"
-                alignItems="flex-start"
-                justifyContent="flex-start"
-              >
-                <Grid
-                  container
-                  item
-                  direction="row"
-                  alignItems="center"
-                  justifyContent="space-between"
+      <Input
+        placeholder="Книга (заглавие, номер, баркод, ISBN)"
+        id="bookInput"
+        value={bookSearchInput}
+        onChange={handleInputChange}
+        className="h-10"
+      />
+      <p className="text-sm text-secondary-foreground h-5">
+        {bookSearchInput.length > 0
+          ? searchResultNumber > 0
+            ? `Намерени са ${searchResultNumber} книги`
+            : 'Няма намерени книги'
+          : ''}
+      </p>
+
+      <Accordion type="multiple">
+        {renderedBooks.slice(0, pageIndex).map((b) => (
+          <AccordionItem key={b.id} value={b.id?.toString() ?? ''}>
+            <AccordionTrigger className="text-base">
+              <div className="flex grow">
+                <p className="grow">
+                  {`${b.title}${b.subtitle && ` (${b.subtitle})`} - ${
+                    b.author
+                  }`}{' '}
+                </p>
+                {userExpanded && b.rentalStatus === 'available' ? (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRentBookButton(b.id!, userExpanded);
+                          }}
+                        >
+                          <BookUp2 className="size-5" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Вземи</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ) : null}
+                <Link
+                  onClick={(e) => e.stopPropagation()}
+                  href={'/book/' + b.id}
+                  className={buttonVariants({
+                    variant: 'ghost',
+                    size: 'icon',
+                  })}
                 >
-                  <Grid item>
-                    <Typography sx={{ m: 0.5 }}>{b.title}</Typography>
-                  </Grid>
-                  <Grid>
-                    <Grid
-                      container
-                      direction="row"
-                      alignItems="flex-start"
-                      justifyContent="flex-start"
-                      sx={{ px: 0.5 }}
-                    >
-                      <Grid item>
-                        {!(b.rentalStatus == 'available') && (
-                          <Tooltip title="Удължаване">
-                            <IconButton
-                              aria-label="extend"
-                              onClick={() => {
-                                console.log(
-                                  'Book rental list, extend button',
-                                  b
-                                );
-                                handleExtendBookButton(b.id!, b);
-                                const time = Date.now();
-                                const newbook = {};
-                                (newbook as any)[b.id!] = time;
-                                setReturnedBooks({
-                                  ...returnedBooks,
-                                  ...newbook,
-                                });
-                              }}
-                            >
-                              <ExtendedIcon key={b.id} />
-                            </IconButton>
-                          </Tooltip>
-                        )}
-                      </Grid>
-                      <Grid item>
-                        {!(b.rentalStatus == 'available') && (
-                          <Tooltip title="Връщане">
-                            <IconButton
-                              onClick={() => {
-                                const result = handleReturnBookButton(
-                                  b.id!,
-                                  b.userId! //TODO not sure if this is actually needed
-                                );
-                                console.log('Result of the return:', result);
-                                const time = Date.now();
-                                const newbook = {};
-                                (newbook as any)[b.id!] = time;
-                                setReturnedBooks({
-                                  ...returnedBooks,
-                                  ...newbook,
-                                });
-                              }}
-                              aria-label="връщане"
-                            >
-                              <ReturnedIcon key={b.id} />
-                            </IconButton>
-                          </Tooltip>
-                        )}
-                      </Grid>
-                      {userExpanded && b.rentalStatus == 'available' && (
-                        <Grid container item>
-                          <Tooltip title="Наемане">
-                            <IconButton
-                              onClick={() => {
-                                console.log('Rent click', b);
-                                handleRentBookButton(b.id!, userExpanded!);
-                                const time = Date.now();
-                                const newbook = {};
-                                (newbook as any)[b.id!] = time;
-                                setReturnedBooks({
-                                  ...returnedBooks,
-                                  ...newbook,
-                                });
-                              }}
-                              aria-label="наемане"
-                            >
-                              <PlaylistAddIcon />
-                            </IconButton>
-                          </Tooltip>
-                        </Grid>
+                  <Book className="size-5" />
+                </Link>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="text-base">
+              {!!b.libraryId && <p>{`ID: ${b.libraryId}`}</p>}
+              {!!b.isbn && <p>{`ISBN: ${b.isbn}`}</p>}
+
+              {b.userId ? (
+                <div className="flex items-center">
+                  <p className="grow">
+                    Взета от{' '}
+                    <Link
+                      href={`/user/${b.userId}`}
+                      className={cn(
+                        buttonVariants({ variant: 'link' }),
+                        'p-0 font-bold'
                       )}
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                  {' '}
-                  <Typography sx={{ m: 0.5 }} variant="body2">
-                    Подзаглавие: {b.subtitle}
-                  </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  {' '}
-                  <Typography sx={{ m: 0.5 }} variant="body2">
-                    Книга № {b.id}
-                    {!(
-                      b.rentalStatus == 'available' || b.rentalStatus == 'lost'
-                    ) && (
-                      <span>
-                        {' '}
-                        - заета до {dayjs(b.dueDate).format(
-                          'DD.MM.YYYY'
-                        )} от {userNameForBook(users, b.userId!)}
-                      </span>
-                    )}
-                    {b.rentalStatus == 'available' && (
-                      <span> -{' ' + b.author}</span>
-                    )}
-                  </Typography>
-                </Grid>
-              </Grid>
-            </Paper>
-          </div>
+                    >{`${b.user?.firstName} ${b.user?.lastName}`}</Link>{' '}
+                    до <b>{dayjs(b.dueDate).format('D MMMM YYYY')}</b>
+                  </p>
+
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() =>
+                            handleReturnBookButton(b.id!, b.userId!)
+                          }
+                        >
+                          <BookCheck className="size-5" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Върни</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleExtendBookButton(b.id!, b)}
+                        >
+                          <CalendarPlus className="size-5" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Удължи</TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+              ) : null}
+            </AccordionContent>
+          </AccordionItem>
         ))}
-      </Grid>
+      </Accordion>
+      {renderedBooks.length - pageIndex > 0 && (
+        <Button
+          onClick={() => setPageIndex(pageIndex + numberBooksToShow)}
+          className="mt-4"
+          variant="outline"
+        >
+          {`Покажи още ${Math.min(
+            numberBooksToShow,
+            renderedBooks.length - pageIndex
+          )} от ${Math.max(
+            0,
+            renderedBooks.length - pageIndex
+          ).toString()} книги`}
+        </Button>
+      )}
     </div>
   );
 }

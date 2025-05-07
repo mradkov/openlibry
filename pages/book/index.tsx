@@ -26,14 +26,9 @@ interface SearchableBookType extends BookType {
 interface BookPropsType {
   books: Array<SearchableBookType>;
   numberBooksToShow: number;
-  maxBooks: number;
 }
 
-export default function Books({
-  books,
-  numberBooksToShow,
-  maxBooks,
-}: BookPropsType) {
+export default function Books({ books, numberBooksToShow }: BookPropsType) {
   const router = useRouter();
 
   const [renderedBooks, setRenderedBooks] = useState(books);
@@ -53,7 +48,6 @@ export default function Books({
         book.barcode?.toLowerCase().includes(searchString) ||
         book.id?.toString().toLowerCase().includes(searchString)
     );
-    console.log('Found books', foundBooks);
     setPageIndex(numberBooksToShow);
     setRenderedBooks(foundBooks);
     setSearchResultNumber(foundBooks.length);
