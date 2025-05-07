@@ -1,3 +1,5 @@
+import { Event } from './AuditType';
+
 export const translations = {
   users: {
     createdAt: 'Създадено',
@@ -14,7 +16,7 @@ export const translations = {
     createdAt: 'Създадено',
     updatedAt: 'Променено',
     id: 'id',
-    libraryId: 'Номер по номенклатура',
+    libraryId: 'Каталожен номер',
     rentalStatus: 'Статус',
     rentedDate: 'Дата на заемане',
     dueDate: 'Краен срок',
@@ -67,5 +69,18 @@ export const translations = {
     ordered: 'Поръчана',
     lost: 'Изгубена',
     remote: 'Друга библиотека',
+  },
+  events: {
+    [Event.ADD_BOOK]: 'Добавена кнга',
+    [Event.UPDATE_BOOK]: 'Обновена кнга',
+    [Event.DELETE_BOOK]: 'Изтрита кнга',
+    [Event.EXTEND_BOOK]: 'Допълнение към кнга',
+    [Event.RETURN_BOOK]: 'Върната кнга',
+    [Event.RENT_BOOK]: 'Заета кнга',
+    [Event.ADD_USER]: 'Добавен потребител',
+    [Event.UPDATE_USER]: 'Обновен потребител',
+    [Event.DISABLE_USER]: 'Деактивиран потребител',
+    [Event.ENABLE_USER]: 'Актвиран потребител',
+    [Event.DELETE_USER]: 'Изтрит потребител',
   },
 };

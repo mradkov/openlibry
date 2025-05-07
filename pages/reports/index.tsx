@@ -1,45 +1,23 @@
 import Layout from '@/components/layout/Layout';
 import { getAllBooks, getRentedBooksWithUsers } from '@/entities/book';
-import { deDE as coreDeDE } from '@mui/material/locale';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { deDE } from '@mui/x-data-grid';
 import { PrismaClient } from '@prisma/client';
-import dayjs from 'dayjs';
 import { getAllUsers } from '../../entities/user';
 
-import BookLabelsCard from '@/components/reports/BookLabelsCard';
-import Dashboard from '@/components/reports/Dashboard';
-import TagCloudDashboard from '@/components/reports/TagCloud';
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { BookType } from '@/entities/BookType';
 import { UserType } from '@/entities/UserType';
+import { dayjs } from '@/lib/dayjs';
 import { convertDateToDayString } from '@/utils/dateutils';
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Grid,
-  TextField,
-  Typography,
-} from '@mui/material';
-import type {} from '@mui/x-data-grid/themeAugmentation';
 import router from 'next/router';
-import { useState } from 'react';
 
 const prisma = new PrismaClient();
-
-const theme = createTheme(
-  {
-    palette: {
-      primary: { main: '#1976d2' },
-    },
-    spacing: 4,
-  },
-  deDE, // x-data-grid translations
-  coreDeDE // core translations
-);
-
-const cardHeight = 210;
 
 interface ReportPropsType {
   users: Array<UserType>;
@@ -66,103 +44,39 @@ type LinkCardProps = {
 
 const LinkCard = ({ title, subtitle, buttonTitle, link }: LinkCardProps) => {
   return (
-    <Card variant="outlined" sx={{ minWidth: 275, minHeight: cardHeight }}>
-      <CardContent>
-        <Typography variant="h5" component="div">
-          {title}
-        </Typography>
-
-        <Typography variant="body2">{subtitle}</Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small" onClick={() => router.push(link)}>
+    <Card>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{subtitle}</CardDescription>
+      </CardHeader>
+      <CardFooter>
+        <Button variant="outline" onClick={() => router.push(link)}>
           {buttonTitle}
         </Button>
-      </CardActions>
-    </Card>
-  );
-};
-
-const LabelCard = ({
-  title,
-  subtitle,
-  link,
-  startLabel,
-  totalNumber,
-  setStartLabel,
-}: ReportCardProps) => {
-  return (
-    <Card variant="outlined" sx={{ minWidth: 275, minHeight: cardHeight }}>
-      <CardContent>
-        <Typography variant="h5" component="div">
-          {title}
-        </Typography>
-
-        <TextField
-          id="outlined-number"
-          label="Брой етикети"
-          key="book_report_number_input"
-          type="number"
-          value={startLabel}
-          error={startLabel! > totalNumber}
-          helperText={startLabel! > totalNumber ? 'Толкова няма?' : ''}
-          onChange={(e: any) => {
-            setStartLabel(parseInt(e.target.value));
-          }}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          sx={{ mt: 5 }}
-        />
-
-        <Typography variant="body2">{subtitle}</Typography>
-      </CardContent>
-      <CardActions>
-        <Button
-          size="small"
-          onClick={() =>
-            window.open(
-              link + '/?start=0' + '&end=' + Math.floor(startLabel!),
-              '_blank'
-            )
-          }
-        >
-          Създай PDF
-        </Button>
-      </CardActions>
+      </CardFooter>
     </Card>
   );
 };
 
 export default function Reports({ users, books, rentals }: ReportPropsType) {
-  const [startLabel, setStartLabel] = useState(100);
-  const [startUserLabel, setStartUserLabel] = useState(10);
-  const [topicsFilter, setTopicsFilter] = useState(null);
-  const [idFilter, setIdFilter] = useState(0);
-
   const ReportCard = ({
     title,
     subtitle,
-    unit,
     link,
     totalNumber,
   }: ReportCardProps) => {
     return (
-      <Card variant="outlined" sx={{ minWidth: 275, minHeight: cardHeight }}>
-        <CardContent>
-          <Typography variant="h5" component="div">
-            {title}
-          </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            {totalNumber}
-          </Typography>
-          <Typography variant="body2">{subtitle}</Typography>
-        </CardContent>
-        <CardActions>
-          <Button size="small" onClick={() => router.push(link)}>
-            Създай таблица
+      <Card>
+        <CardHeader>
+          <CardTitle>{`${title} - ${totalNumber}`}</CardTitle>
+          <CardDescription>{subtitle}</CardDescription>
+        </CardHeader>
+
+        <CardFooter>
+          <Button variant="outline" onClick={() => router.push(link)}>
+            Виж всички
           </Button>
-        </CardActions>
+        </CardFooter>
       </Card>
     );
   };
@@ -199,106 +113,48 @@ export default function Reports({ users, books, rentals }: ReportPropsType) {
 
   return (
     <Layout>
-      <ThemeProvider theme={theme}>
-        <TagCloudDashboard tagsSet={tagSet} />
-
-        <Grid
-          container
-          direction="row"
-          alignItems="center"
-          justifyContent="center"
-          spacing={3}
-        >
-          <Grid item xs={12} md={6} lg={4} sx={{}}>
-            <ReportCard
-              title="Потребители"
-              subtitle="Списък на всички потребители"
-              unit="users"
-              totalNumber={users.length}
-              link="reports/users"
-            />
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            <ReportCard
-              title="Книги"
-              subtitle="Списък на всички книги"
-              unit="books"
-              totalNumber={books.length}
-              link="reports/books"
-            />
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            <ReportCard
-              title="Наеми"
-              subtitle="Списък на всички наеми"
-              unit="rentals"
-              totalNumber={rentals.length}
-              link="reports/rentals"
-            />
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            <LinkCard
-              title="Експорт в Excel"
-              subtitle="Експорт на данни в Excel"
-              buttonTitle="Изтегли Excel"
-              link="api/excel"
-            />
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            <LinkCard
-              title="Импорт от Excel"
-              subtitle="Импорт на данни от Excel"
-              buttonTitle="Качи Excel"
-              link="reports/xlsimport"
-            />
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            <ReportCard
-              title="История"
-              subtitle="Активности на книги/потребители"
-              unit="audits"
-              totalNumber={1000}
-              link="reports/audit"
-            />
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            <BookLabelsCard
-              title="Етикети за книги"
-              subtitle=""
-              unit="Етикети"
-              link="api/report/booklabels"
-              totalNumber={books.length}
-              startLabel={startLabel}
-              setStartLabel={setStartLabel}
-              idFilter={idFilter}
-              setIdFilter={setIdFilter}
-              topicsFilter={topicsFilter}
-              setTopicsFilter={setTopicsFilter}
-              allTopics={tagSet}
-            />
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            <LabelCard
-              title="Карти"
-              subtitle="Списък на всички карти"
-              unit="Етикети"
-              link="api/report/userlabels"
-              totalNumber={users.length}
-              startLabel={startUserLabel}
-              setStartLabel={setStartUserLabel}
-            />
-          </Grid>
-          <Grid item xs={12} md={6} lg={4}>
-            <LinkCard
-              title="Напомняния"
-              subtitle="Отпечатване на всички напомняния"
-              buttonTitle="Създай Word"
-              link="/api/report/reminder"
-            />
-          </Grid>
-        </Grid>
-        <Dashboard users={users} rentals={rentals} books={books} />
-      </ThemeProvider>
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <ReportCard
+          title="Потребители"
+          subtitle="Списък на всички потребители"
+          unit="users"
+          totalNumber={users.length}
+          link="reports/users"
+        />
+        <ReportCard
+          title="Книги"
+          subtitle="Списък на всички книги"
+          unit="books"
+          totalNumber={books.length}
+          link="reports/books"
+        />
+        <ReportCard
+          title="Наеми"
+          subtitle="Списък на всички наеми"
+          unit="rentals"
+          totalNumber={rentals.length}
+          link="reports/rentals"
+        />
+        <LinkCard
+          title="Експорт в Excel"
+          subtitle="Експорт на данни в Excel"
+          buttonTitle="Изтегли Excel"
+          link="api/excel"
+        />
+        <LinkCard
+          title="Импорт от Excel"
+          subtitle="Импорт на данни от Excel"
+          buttonTitle="Качи Excel"
+          link="reports/xlsimport"
+        />
+        <ReportCard
+          title="История"
+          subtitle="Активности на книги/потребители"
+          unit="audits"
+          totalNumber={1000}
+          link="reports/audit"
+        />
+      </div>
     </Layout>
   );
 }

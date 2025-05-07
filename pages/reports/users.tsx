@@ -1,128 +1,56 @@
 import Layout from '@/components/layout/Layout';
-import { translations } from '@/entities/fieldTranslations';
-import Box from '@mui/material/Box';
-import { deDE as coreDeDE } from '@mui/material/locale';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { DataGrid, GridToolbar, deDE } from '@mui/x-data-grid';
 import { PrismaClient } from '@prisma/client';
-import { useEffect, useState } from 'react';
 
+import { BackButton } from '@/components/layout/back-button';
+import { DataTable } from '@/components/ui/data-table';
 import { UserType } from '@/entities/UserType';
 import { getAllUsers } from '@/entities/user';
-import { convertDateToDayString } from '@/utils/dateutils';
-import { Typography } from '@mui/material';
+import { dayjs } from '@/lib/dayjs';
 import type {} from '@mui/x-data-grid/themeAugmentation';
+import { ColumnDef } from '@tanstack/react-table';
 
 const prisma = new PrismaClient();
-
-const theme = createTheme(
-  {
-    palette: {
-      primary: { main: '#1976d2' },
-    },
-  },
-  deDE, // x-data-grid translations
-  coreDeDE // core translations
-);
 
 interface UsersPropsType {
   users: Array<UserType>;
 }
 
-interface ReportKeyType {
-  translations: string;
-}
+const columns: ColumnDef<UserType>[] = [
+  {
+    accessorKey: 'id',
+    header: 'ID',
+  },
+  {
+    accessorKey: 'createdAt',
+    header: 'Създаден',
+  },
+  {
+    accessorKey: 'updatetAt',
+    header: 'Обновен',
+  },
+  { accessorKey: 'firstName', header: 'Име' },
+  { accessorKey: 'lastName', header: 'Фамилия' },
+  { accessorKey: 'phone', header: 'Телефон' },
+  { accessorKey: 'eMail', header: 'Ел. поща' },
+  { accessorFn: (u) => (u.active ? '✅' : '❌'), header: 'Активен' },
+];
 
 export default function Users({ users }: UsersPropsType) {
-  const [reportData, setReportData] = useState({ columns: [], rows: [] });
-  const [reportDataAvailable, setReportDataAvailable] = useState(false);
-
-  //TODO find a better way for dynamic layouts
-  function getWidth(columnName: string = '') {
-    switch (columnName) {
-      case 'ID':
-        return 40;
-        break;
-      case 'title':
-        return 350;
-        break;
-      case 'lastName':
-        return 180;
-        break;
-      default:
-        return 100;
-    }
-  }
-
-  useEffect(() => {
-    setReportDataAvailable(users.length > 0);
-    if (users && users.length > 0) {
-      const colTitles = users[0];
-      const fields = Object.keys(colTitles) as any;
-      const columns = fields.map((f: string) => {
-        const fieldTranslation = (translations as any)['users'][f];
-        const col = {
-          field: f,
-          headerName: fieldTranslation,
-          width: getWidth(f),
-        };
-        return col;
-      });
-
-      const rows = users.map((r: any) => {
-        const rowCopy = {
-          id: r.id,
-          ...r,
-        };
-        //console.log("Row Copy", rowCopy);
-        return rowCopy;
-      });
-      //console.log("columns", columns);
-      if (rows) {
-        setReportData({ columns: columns, rows: rows as any }); //TODO do TS magic
-      }
-    }
-  }, []);
-
   return (
     <Layout>
-      <ThemeProvider theme={theme}>
-        <Box
-          sx={{
-            backgroundColor: '#CFCFCF',
-            width: '100%',
-            mt: 5,
-          }}
-        >
-          {' '}
-          {reportDataAvailable ? (
-            <DataGrid
-              autoHeight
-              columns={reportData.columns}
-              rows={reportData.rows}
-              slots={{ toolbar: GridToolbar }}
-            />
-          ) : (
-            <Typography>Keine Daten verfügbar</Typography>
-          )}
-        </Box>
-      </ThemeProvider>
+      <DataTable columns={columns} data={users} />
+      <div className="text-right mt-4">
+        <BackButton />
+      </div>
     </Layout>
   );
 }
 
 export async function getServerSideProps() {
-  const allUsers = await getAllUsers(prisma);
-
-  const users = allUsers.map((u) => {
-    const newUser = { ...u } as any; //define a better type there with conversion of Date to string
-    newUser.createdAt = convertDateToDayString(u.createdAt);
-    newUser.updatedAt = convertDateToDayString(u.updatedAt);
-    return newUser;
-  });
-
-  //console.log(allRentals);
-
-  // Pass data to the page via props
+  const users = (await getAllUsers(prisma)).map((u) => ({
+    ...u,
+    createdAt: u.createdAt ? dayjs(u.createdAt).format('D MMMM YYYY') : null,
+    updatedAt: u.updatedAt ? dayjs(u.updatedAt).format('D MMMM YYYY') : null,
+  }));
   return { props: { users } };
 }

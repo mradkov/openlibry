@@ -1,129 +1,56 @@
 import Layout from '@/components/layout/Layout';
-import { translations } from '@/entities/fieldTranslations';
-import Box from '@mui/material/Box';
-import { deDE as coreDeDE } from '@mui/material/locale';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { DataGrid, GridToolbar, deDE } from '@mui/x-data-grid';
 import { PrismaClient } from '@prisma/client';
-import { useEffect, useState } from 'react';
 
+import { BackButton } from '@/components/layout/back-button';
+import { DataTable } from '@/components/ui/data-table';
 import { BookType } from '@/entities/BookType';
 import { getAllBooks } from '@/entities/book';
-import { convertDateToDayString } from '@/utils/dateutils';
-import { Typography } from '@mui/material';
-import type {} from '@mui/x-data-grid/themeAugmentation';
+import { translations } from '@/entities/fieldTranslations';
+import { dayjs } from '@/lib/dayjs';
+import { ColumnDef } from '@tanstack/react-table';
 
 const prisma = new PrismaClient();
-
-const theme = createTheme(
-  {
-    palette: {
-      primary: { main: '#1976d2' },
-    },
-  },
-  deDE, // x-data-grid translations
-  coreDeDE // core translations
-);
 
 interface BookPropsType {
   books: Array<BookType>;
 }
 
-interface ReportKeyType {
-  translations: string;
-}
-
 export default function Books({ books }: BookPropsType) {
-  const [reportData, setReportData] = useState({ columns: [], rows: [] });
-  const [reportDataAvailable, setReportDataAvailable] = useState(false);
-
-  //TODO find a better way for dynamic layouts
-  function getWidth(columnName: string = '') {
-    switch (columnName) {
-      case 'ID':
-        return 40;
-        break;
-      case 'title':
-        return 350;
-        break;
-      case 'lastName':
-        return 180;
-        break;
-      default:
-        return 100;
-    }
-  }
-
-  useEffect(() => {
-    setReportDataAvailable(books.length > 0);
-    if (books && books.length > 0) {
-      const colTitles = books[0];
-      const fields = Object.keys(colTitles) as any;
-      const columns = fields.map((f: string) => {
-        const fieldTranslation = (translations as any)['books'][f];
-        const col = {
-          field: f,
-          headerName: fieldTranslation,
-          width: getWidth(f),
-        };
-        return col;
-      });
-
-      const rows = books.map((r: any) => {
-        const rowCopy = {
-          id: r.id,
-          ...r,
-        };
-        //console.log("Row Copy", rowCopy);
-        return rowCopy;
-      });
-      //console.log("columns", columns);
-      if (rows) {
-        setReportData({ columns: columns, rows: rows as any }); //TODO do TS magic
-      }
-    }
-  }, []);
+  const columns: ColumnDef<BookType>[] = [
+    {
+      accessorKey: 'title',
+      header: 'Заглавие',
+    },
+    {
+      accessorKey: 'author',
+      header: 'Автор',
+    },
+    {
+      accessorFn: (r) => translations.rentalStatus[r.rentalStatus],
+      header: 'Статус',
+    },
+    { accessorKey: 'libraryId', header: 'Каталожен номер' },
+    { accessorKey: 'isbn', header: 'ISBN' },
+  ];
 
   return (
     <Layout>
-      <ThemeProvider theme={theme}>
-        <Box
-          sx={{
-            backgroundColor: '#CFCFCF',
-            width: '100%',
-            mt: 5,
-          }}
-        >
-          {' '}
-          {reportDataAvailable ? (
-            <DataGrid
-              autoHeight
-              columns={reportData.columns}
-              rows={reportData.rows}
-              slots={{ toolbar: GridToolbar }}
-            />
-          ) : (
-            <Typography>Keine Daten verfügbar</Typography>
-          )}
-        </Box>
-      </ThemeProvider>
+      <DataTable columns={columns} data={books} />
+      <div className="text-right mt-4">
+        <BackButton />
+      </div>
     </Layout>
   );
 }
 
 export async function getServerSideProps() {
-  const allBooks = await getAllBooks(prisma);
-  const books = allBooks.map((b) => {
-    const newBook = { ...b } as any; //define a better type there with conversion of Date to string
-    newBook.createdAt = convertDateToDayString(b.createdAt);
-    newBook.updatedAt = convertDateToDayString(b.updatedAt);
-    newBook.rentedDate = b.rentedDate
-      ? convertDateToDayString(b.rentedDate)
-      : '';
-    newBook.dueDate = b.dueDate ? convertDateToDayString(b.dueDate) : '';
-    //temp TODO
-    return newBook;
-  });
-  // Pass data to the page via props
+  const books = (await getAllBooks(prisma)).map((b) => ({
+    ...b,
+    createdAt: b.createdAt ? dayjs(b.createdAt).format('D MMMM YYYY') : null,
+    updatedAt: b.updatedAt ? dayjs(b.updatedAt).format('D MMMM YYYY') : null,
+    rentedDate: b.rentedDate ? dayjs(b.rentedDate).format('D MMMM YYYY') : null,
+    dueDate: b.dueDate ? dayjs(b.dueDate).format('D MMMM YYYY') : null,
+  }));
+
   return { props: { books } };
 }

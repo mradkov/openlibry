@@ -30,6 +30,7 @@
     "@radix-ui/react-tooltip": "^1.2.4",
     "@react-pdf/renderer": "^3.1.14",
     "@tailwindcss/postcss": "^4.1.4",
+    "@tanstack/react-table": "^8.21.3",
     "@types/formidable": "^3.4.4",
     "@types/itemsjs": "^2.1.6",
     "@types/pizzip": "^3.0.5",

@@ -1,10 +1,10 @@
 export interface BookType {
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
   id?: number;
   libraryId?: string;
   barcode?: string;
-  rentalStatus: string;
+  rentalStatus: RentalStatus;
   rentedDate: Date | string;
   dueDate?: Date | string;
   renewalCount: number;
@@ -31,3 +31,25 @@ export interface BookType {
   userId?: number;
   user?: { firstName?: string; lastName?: string };
 }
+
+export type Rental = {
+  title: string;
+  author: string;
+  id: number;
+  user: {
+    id: number;
+    lastName: string;
+    firstName: string;
+  } | null;
+  dueDate: string | null;
+  renewalCount: number;
+};
+
+export type RentalStatus =
+  | 'available'
+  | 'rented'
+  | 'broken'
+  | 'presentation'
+  | 'ordered'
+  | 'lost'
+  | 'remote';
