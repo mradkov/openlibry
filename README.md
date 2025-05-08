@@ -1,251 +1,165 @@
-# OpenLibry - Die einfache und freie Software für die Schulbibliothek
+# OpenLibry - The Simple and Free Software for School Libraries
 
-OpenLibry ist eine einfache, schnelle und offene Verwaltung für kleine Bibliotheken, z.B. in Schulen. Sie wurde optimiert auf einfache Bedienung in einer trubeligen Umgebung, in der kleine Kinder Bücher abgeben, ausleihen, weitergeben und liegen lassen.
-
-## Idee
-Die Idee entstand in unserer Grundschule, in der OpenBiblio im Einsatz war, eine quelloffene und kostenlose Software, die aber schon seit vielen Jahren nicht mehr gepflegt wird. Viele Eltern und Freiwillige engagieren sich ehrenamtlich, um die Bücher zu katalogisieren, Nutzer-Ausweise zu drucken und zu Ausleihzeiten zur Verfügung zu stehen - trotzdem habe ich keine kostenlose digitale Lösung gefunden, um sie zu unterstützen. So entstand **OpenLibry**.
+OpenLibry is a simple, fast, and open management system for small libraries.
 
 ## Features
 
-- Nutzbar auf Computer, Tablet und Handy
-- On-the-fly-Suche während man tippt nach Büchern, Leihen und NutzerInnen. Einfacher Filter für überfällige Bücher in einer Klasse direkt im Ausleih-Screen
-- Optimiert auf wenige Maus- und Tastaturklicks, insbesondere für die Ausleihe und Rückgabe
-- Cover-Bilder für Bücher können eingefügt werden
-- Einfache Installation in einer lokalen Umgebung oder in einer Cloud
-- Kein komplizierter Schnickschnack mit Nutzerberechtigungen, drölfzig unnötigen Datenfeldern usw.
-- Moderner Software-Stack mit next.js-Oberfläche und einfacher Datenbank
-- Importfunktion für Daten von alten OpenBiblio-Installationen
+- Usable on computers, tablets, and phones
+- On-the-fly search while typing for books, loans, and users. Simple filter for overdue books in a class directly on the borrowing screen
+- Optimized for minimal mouse and keyboard clicks, especially for borrowing and returning books
+- Easy installation in a local environment or in the cloud
+- No complicated user permissions, unnecessary data fields, etc.
+- Modern software stack with a next.js interface and a simple database
 
-## Screenshots
+## Installation and Configuration
 
-Start-Screen
-![Überblick Screenshot](./doc/titel1.jpg)
+- Copy the example environment file: `cp .env_example .env`
+- Configure the server name in a `.env` file in the main folder according to the values in `.env_example`, e.g., `NEXT_PUBLIC_API_URL="http://localhost:3000"`
+- Set the value `AUTH_ENABLED` to `false` initially so that you can log in without authentication for the first time. Via `https://<domain>/auth/register`, you can create the first user and then set `AUTH_ENABLED` to `true`.
 
-Ausleih-Screen
+### Bare Metal Example with Raspberry Pi
 
-![Leihe Screenshot](./doc/screen1.jpg)
+For a local installation without Docker, follow these steps:
 
-Bücherverwaltung-Screen
-
-![Bücher Liste Screenshot](./doc/buch1.jpg)
-
-Edit-Screen
-
-![Bücher Edit Screenshot](./doc/buchedit1.jpg)
-
-
-## Installation und Konfiguration
-
-- Kopiere das Beispiel-Environment-File: `cp .env_example .env`
-- Konfiguriere den Servernamen in einer `.env`-Datei im Hauptordner entsprechend der Werte im `.env_example`, z.B. `NEXT_PUBLIC_API_URL="http://localhost:3000"
-`
-- Der Wert `AUTH_ENABLED` sollte zunächst auf `false` gesetzt werden, so dass man sich beim ersten Login ohne Authentifizierung einloggen kann. Via `https://<domain>/auth/register` kann man dann den ersten User anlegen und danach `AUTH_ENABLED` auf `true` setzen.
-
-### Bare Metal am Beispiel Raspberry Pi
-
-Für eine lokale Installation ohne Docker befolge diese Schritte:
-
-- Update der Distribution: `sudo apt-get update` und `sudo apt-get upgrade`
-- Falls `curl` nicht installiert ist: `apt install curl`
-- Installiere den node version manager NVM: `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash`. Damit sollte `nvm` installiert sein.
- - Installiere den node server: `nvm install --lts`
- - Falls noch kein `git` installiert ist: `sudo apt-get install git-all` 
- - Kopiere das Repository aus github: `git clone https://github.com/jzakotnik/openlibry.git`
- - Nutze das entsprechende Verzeichnis: `cd openlibry`
- - Kopiere das Beispielfile und passe den API-Endpunkt mit dem entsprechenden Servernamen an: `cp .env_example .env` und ggf. `nano .env`
-- Installiere alle notwendigen node-Pakete: `npm install`
-- Erzeuge eine leere Datenbank (SQLite): `npx prisma db push`
-- Starte OpenLibry mit `npm run dev`. Achte darauf, dass der entsprechende Port freigegeben ist und über den Browser zugänglich ist.
+- Update the distribution: `sudo apt-get update` and `sudo apt-get upgrade`
+- If `curl` is not installed: `apt install curl`
+- Install the Node Version Manager (NVM): `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash`. This should install `nvm`.
+- Install the Node server: `nvm install --lts`
+- If `git` is not installed: `sudo apt-get install git-all`
+- Clone the repository from GitHub: `git clone https://github.com/jzakotnik/openlibry.git`
+- Navigate to the appropriate directory: `cd openlibry`
+- Copy the example file and adjust the API endpoint with the appropriate server name: `cp .env_example .env` and optionally `nano .env`
+- Install all necessary Node packages: `npm install`
+- Create an empty database (SQLite): `npx prisma db push`
+- Start OpenLibry with `npm run dev`. Ensure the appropriate port is open and accessible via a browser.
 
 ### Docker
-#### Testbetrieb oder dauerhafte Installation mit Docker (Getestet mit Linux Mint 21.3)
 
-Erledige zunächst folgende Vorarbeiten:
+#### Testing or Permanent Installation with Docker (Tested with Linux Mint 21.3)
 
-Update der Distribution: `sudo apt-get update` und `sudo apt-get upgrade`
+First, complete the following preparations:
 
-Falls curl nicht installiert ist: `sudo apt install curl`
+Update the distribution: `sudo apt-get update` and `sudo apt-get upgrade`
 
-Installiere den node version manager NVM: `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash` 
+If `curl` is not installed: `sudo apt install curl`
 
-Installiere den node server (Vorher Neustart des Terminals notwendig.): `nvm install --lts`
+Install the Node Version Manager (NVM): `curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash`
 
-Falls noch kein git installiert ist: `sudo apt-get install git-all`
+Install the Node server (restart the terminal beforehand): `nvm install --lts`
 
+If `git` is not installed: `sudo apt-get install git-all`
 
-Installiere, falls noch nicht vorhanden, Docker an sich:
+Install Docker if not already installed:
 
 ```
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker.gpg
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu jammy stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt update 
+sudo apt update
 sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 sudo usermod -aG docker ${USER}
 sudo systemctl is-active docker
 ```
 
-Danach ist eine Neuanmeldung/Neustart nötig, damit die Änderungen an den Nutzergruppen (usermod) aktiv werden. 
+Afterward, a re-login or restart is necessary for the user group changes (`usermod`) to take effect.
 
-Anschließend kannst du OpenLibry installieren. Dabei bieten sich zwei Modi an: Entweder ein Sandbox-Modus zum Ausprobieren, bei dem nach Beendigung der Ausführung alles wieder entfernt wird. Oder die dauerhafte Installation, die auch automatisch mit Rechnerstart, bei Abstürzen etc. wieder mit startet.
-Folgende Schritte sind so oder so zu erledigen (Zum Beispiel im Home-Verzeichnis):
+Next, you can install OpenLibry. Two modes are available: a sandbox mode for testing, where everything is removed after execution, or a permanent installation that restarts automatically with the computer, after crashes, etc. The following steps are required in either case (e.g., in the home directory):
 
-- Kopiere das Repository aus github: `git clone https://github.com/jzakotnik/openlibry.git`
-- Wechsle in das dabei dabei entstandene Verzeichnis: `cd openlibry`
-- Anschließend musst du die Konfiguration/individuelle Anpassung von OpenLibry vornehmen: Zum einen müssen Bilddateien mit den Logos deiner Institution hinterlegt werden. Diese befinden sich im "public" Unterordner, du kannst dich dabei an den vorhandenen Beispielbildern orientieren. Weiterhin muss eine ".env"-Datei angelegt werden. (Hinweis: Dateien mit führenden Punkt sind in der grafischen Oberfläche standardmäßig "unsichtbar". Die Tastenkombination "Strg-h" macht sie sichtbar.) Kopiere dazu die vorhandene ".env_example" Datei nochmal in den Ordner und benenne sie dabei um in ".env":
- `cp .env_example .env`
-- Bearbeite die entstandene ".env" Datei mit einem Texteditor und passe die Werte entsprechend an.
-- Anschließend kannst du Docker alle notwendigen Schritte automatisch übernehmen lassen: `docker build --no-cache -t openlibry .`
+- Clone the repository from GitHub: `git clone https://github.com/jzakotnik/openlibry.git`
+- Navigate to the resulting directory: `cd openlibry`
+- Then, configure/customize OpenLibry: First, place image files with your institution's logos in the "public" subfolder, following the example images provided. Next, create a `.env` file. (Note: Files with a leading dot are "hidden" by default in graphical interfaces. Use the "Ctrl-h" shortcut to make them visible.) Copy the existing `.env_example` file into the folder and rename it to `.env`:  
+   `cp .env_example .env`
+- Edit the resulting `.env` file with a text editor and adjust the values accordingly.
+- Let Docker handle all necessary steps automatically: `docker build --no-cache -t openlibry .`
 
-Das weitere Vorgehen unterscheidet sich je nach Absicht:
+The next steps depend on your intent:
 
-**a) Sandbox-Modus zum rückstandsfreien Ausprobieren:** 
+**a) Sandbox Mode for Testing Without Residue:**
 
-- Docker Container starten: `docker run -i --rm -p 3000:3000 -t openlibry`
-- Öffne OpenLibry im Browser und probiere es aus: `http://localhost:3000`
-- Zum Beenden den Prozess in der Konsole abrechen mit der Tastenkombination "Strg-c". 
-- Optional das Docker-Image löschen: `docker image rm openlibry `
+- Start the Docker container: `docker run -i --rm -p 3000:3000 -t openlibry`
+- Open OpenLibry in the browser and test it: `http://localhost:3000`
+- Stop the process in the console with "Ctrl-c" to terminate it.
+- Optionally, delete the Docker image: `docker image rm openlibry`
 
+**b) Permanent Installation**
 
-**b) Dauerhafte Installation**
+- Start the Docker container permanently; it will restart automatically after every reboot, crash, etc.: `docker compose up` (This starts Docker with parameters defined in the `docker-compose.yml` file. Among other things, volumes are set up here to store the user data of your installation. These remain intact after updating your Docker container.)
+- Open OpenLibry in the browser: `http://localhost:3000`
+- If needed, you can manually stop the container to prevent it from restarting automatically: `docker stop openlibry`
+- If needed, you can delete everything related to OpenLibry in Docker: Remove the container and image with: `docker rm openlibry` and `docker image rm openlibry`
 
-- Docker Container dauerhaft starten, er wird dabei auch nach jedem Neustart, Absturz etc. automatisch neu gestartet: `docker compose up` (Hierbei wird Docker gestartet mit Parametern, die in der Datei docker-compose.yml hinterlegt sind. Unter anderem sind hier Volumes angelegt, in welchen die User-Daten deiner Installation liegen. Nach einem Update deines Docker-Containers sind diese dann weiterhin vorhanden.)
-- Öffne OpenLibry im Browser: `http://localhost:3000`
-- Bei Bedarf kannst du die Ausführung dieses Containers manuell stoppen, dann startet er auch nicht sofort automatisch wieder neu: `docker stop openlibry`
-- Bei Bedarf kannst du nach dieser Variante alles zu OpenLibry in Docker wieder löschen:  Du kannst den Container und das Image in Docker wieder entfernen mit: `docker rm openlibry` und `docker image rm openlibry`
+### Installation with nginx as Reverse Proxy and pm2 as Package Manager
 
+An installation guide for configuring with the nginx web server on a subdomain can be found [here](./doc/WebServerInstall.md).
 
+### Initializing with a First User
 
-### Installation mit nginx als reverse proxy und pm2 als Package Manager
+- Set the Auth variable in `.env` to `false` to log in without authentication
+- Create a new user via `/auth/register`
+- Set the Auth variable to `true`
 
-Eine Installationsanleitung für die Konfiguration mit dem Webserver nginx auf einer Subdomain findet sich [hier](./doc/WebServerInstall.md)
+## REST API
 
-### Initialisierung mit einem ersten User
-- Setze die Auth Variable in `.env` auf `false` um sich ohne Authentifizierung anzumelden
-- Via `/auth/register` erzeuge einen neuen User
-- Setze die Auth Variable auf `true`
+The REST API supports the resources `book` and `user`. For both, the corresponding HTTP operations (GET, PUT, POST, DELETE) are available. Borrowing is created by linking `user` and `book`, e.g., `http://localhost:3000/api/book/2001/user/1080` to borrow a book.
 
-## REST-API
+The API can be used to automate the import of users/books from other programs.
 
-Die REST-API kennt die Resourcen `book` und `user`. Für beide gibt es jeweils die entsprechenden http-Operationen (GET, PUT, POST, DELETE). Die Ausleihe entsteht durch die Verknüpfung von `user` und `book`, also z.B. `http://localhost:3000/api/book/2001/user/1080`, um ein Buch auszuleihen.
+Further examples can be found in the [docs](./doc/sampleAPIRequests/) folder.
 
-Die API kann verwendet werden, um User/Bücher aus anderen Programmen automatisiert zu importieren.
+## Import and Export from Excel
 
-Weitere Beispiele sind im [docs](./doc/sampleAPIRequests/)-Folder aufgeführt.
-
-
-## Suche in Antolin Datensatz
-
-Um Bücher einfacher mit dem Schlagwort der Antolin Leseförderung versehen zu können, kann der Antolin Export des Westermann Verlags eingebunden werden. Dazu kann man Westermann/Antolin kontaktieren und bekommt dort einen Link auf eine csv Datei mit dem Export alles Antolin Bücher. Dieser ist im Ordner `/public/antolin/antolingesamt.csv` abzulegen.
-Im Edit-Screen der Bücher kann man dann sehen ob ähnliche Bücher in der Antolin Datenbank vorhanden sind.
-![Antolin Screenshot](./doc/antolin.png). OpenLibry durchsucht dabei die Datenbank nach Datensätzen bei denen der Autor und Titel vorkommmen, insbesondere wenn es keinen direkten Link via ISBN gibt. 
-
-## Konfiguration von Mahnschreiben / Templates
-
-Um automatisierte Mahnschreiben zu erzeugen, verwendet OpenLibry eine Template Bibliothek, welche eine Word Datei als Muster verwendet und dann entsprechende Platzhalter einsetzen kann. Die Platzhalter können im `.env` File konfiguriert. Ein Beispiel ist in folgendem [Template](./public/mahnung-template.docx) zu finden.
-
-
-## Import und Export aus Excel
-
-Um bestehende Daten zu importieren bzw. Daten aus OpenLibry zu exportieren gibt es eine Excel Funktion. Diese kann auch verwendet werden, um Backups zu erzeugen und bei Bedarf wieder zu importieren.
+To import existing data or export data from OpenLibry, there is an Excel function. This can also be used to create backups and re-import them if needed.
 
 ### Excel Export
 
-Für das Erzeugen einer Excel Datei kann auf der Reports Seite die Kachen *Excel Export* angeklickt werden. Dadurch downloadet der Browser ein Excel mit 2 Blättern: Bücher und User. 
+To generate an Excel file, click the _Excel Export_ tile on the Reports page. This downloads an Excel file with two sheets: Books and Users.
 
-Das Worksheet *Userliste* enthält folgende Spalten:
-- Erzeugt am
-- Update am
-- Nummer
-- Nachname
-- Vorname
-- Klasse
-- Lehrkraft
-- Freigeschaltet
-- eMail
+The _User List_ worksheet contains the following columns:
 
-Das Worksheet *Bücherliste* enthält folgende Spalten:
-- Mediennummer
-- Erzeugt am
-- Update am
-- Ausleihstatus
-- Ausgeliehen am
-- Rückgabe am
-- Anzahl Verlängerungen
-- Titel
-- Untertitel
-- Autor
-- Schlagworte
-- Bild
+- Created At
+- Updated At
+- ID
+- Last Name
+- First Name
+- Phone
+- Activated
+- Email
+
+The _Book List_ worksheet contains the following columns:
+
+- ID
+- Created At
+- Updated At
+- Status
+- Borrowed At
+- Return By
+- Renewal Count
+- Title
+- Subtitle
+- Author
+- Library ID
+- Barcode
 - ISBN
 - Edition
-- Verlagsort
-- Seiten
-- Zusammenfassung
-- Min Spieler
-- Verlag
-- Merkmale
-- Beschaffung
-- Publikationsdatum
-- Abmessungen
-- Min Alter
-- Max Alter
-- Material
-- Preis
-- Links
-- Ausgeliehen von
+- Publisher Location
+- Pages
+- Summary
+- Publisher
+- Features
+- Publication Date
+- Dimensions
+- Min Age
+- Max Age
 
-### Excel import
+### Excel Import
 
-Für den Import einer Excel Datei kann auf der Reports Seite die Kachel Excel Import angeklickt werden. Diese führt zu einer Import-Seite.
+To import an Excel file, click the _Excel Import_ tile on the Reports page. This leads to an import page.
 
-Für den Import von Daten gibt es zwei Stufen:
-1. Zunächst kann das Excel hochgeladen werden. Eine Vorschau zeigt an, wieviele User und Bücher importiert werdne und die jeweiligen ersten Zeilen werden dargestellt. Die Spalten des Excel Files müssen denen entsprechen, die auch beim export erzeugt werden. Ein Beispiel-Excel File findet sich [hier](./doc/sample_export.xlsx). Nach dem Upload sieht der Bildschirm so aus: ![Import creen](./doc/excel_import_screen1.png)
+There are two stages for importing data:
 
-2. Wenn die Vorschau wie erwartet aussieht, kann mit dem Button *In die Datenbank importieren* importiert werden. Dabei muss eine leere Datenbank bereits existieren, wie in der Anleitung beschrieben.
+1. First, upload the Excel file. A preview shows how many users and books will be imported, and the respective first rows are displayed. The columns in the Excel file must match those generated during export.
 
-## Import aus OpenBiblio und anderen Tools
+2. If the preview looks as expected, click the _Import into Database_ button to import. A blank database must already exist, as described in the instructions.
 
-Siehe [Open Biblio](https://openbiblio.de/), die [Import-Schritte](./doc/OpenBiblioImport.md)
+## Contact
 
-Das Datenmodell für Bücher beinhaltet aktuell folgende Felder (alle optional bis auf Titel und Autor). Die anderen Felder sind im [Schema](./prisma/schema.prisma) einsehbar:
-| Feld-Name  | Funktion  |
-|---|---|
-|id| Mediennummer|        
-|rentalStatus |Ausleihstatus (available, rented, lost)|
-|rentedDate  |Ausleihdatum|
-|dueDate      |Rückgabedatum|
-|renewalCount |Anzahl Verlängerungen|
-|title        |Titel|
-|subtitle   |Untertitel|
-|author    |Autor(en)|
-|topics    |Schlagwörter mit Semikolon getrennt|
-|imageLink  |Cover Bild|
-|isbn         |ISBN Nummer|           
-|editionDescription|Edition / Band|
-|publisherLocation|Verlagsort|
-|pages              |Anzahl Seiten|    
-|summary             |Zusammenfassung|
-|minPlayers          |Anzahl Spieler (bei Brettspielen)|
-|publisherName   |Verlag|
-|otherPhysicalAttributes|Andere physische Eigenschaften (bei Brettspielen)| 
-|supplierComment       |Quelle, z.B. Spende|
-|publisherDate           |Publikationsdatum|
-|physicalSize            |Abmessungen|
-|minAge                  |Mindestalter|
-|maxAge                  |Höchstalter|
-|additionalMaterial    |Zusätzliches Material, z.B. CD oder DVD|
-|price                   |Preis|
-|externalLinks   |Externe Verknüpfungen|
-
-
-Falls Cover importiert werden:
-ISBN-Service für ISBN-10 und ISBN-13: 
-https://openlibrary.org/isbn/9780140328721
-Cover: 
-https://covers.openlibrary.org/13834659
-
-
-
-## Kontakt
-
-Falls Ihr mitmachen wollt, die Software nutzen wollt oder ein Hosting sucht, schreibt mich gerne unter [info@openlibry.de](info@openlibry.de) an. Falls Ihr die Software finanziell unterstützen wollt, geht es bei [Ko-Fi](https://ko-fi.com/jzakotnik) sehr einfach.
+If you'd like to contribute, use the software, or need hosting, feel free to contact me at [info@openlibry.de](info@openlibry.de). If you'd like to support the software financially, you can do so easily via [Ko-Fi](https://ko-fi.com/jzakotnik).
