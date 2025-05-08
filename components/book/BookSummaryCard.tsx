@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
 
 import { BookType } from '@/entities/BookType';
 import { dayjs } from '@/lib/dayjs';
@@ -31,8 +30,6 @@ export default function BookSummaryCard({
   book,
   returnBook,
 }: BookSummaryCardPropType) {
-  const [src, setSrc] = useState('/coverimages/default_1.png');
-
   return (
     <Card key={book.id}>
       <CardHeader>
@@ -78,7 +75,7 @@ export default function BookSummaryCard({
       </CardHeader>
 
       <CardContent className="grow">
-        <Image src={src} width={320} height={200} alt="book-cover" />
+        <Image src="/default.png" width={320} height={200} alt="book-cover" />
         <p>{book.summary}</p>
       </CardContent>
       {book.userId ? (

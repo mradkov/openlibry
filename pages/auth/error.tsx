@@ -1,64 +1,72 @@
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { Button } from "@mui/material";
-import Avatar from "@mui/material/Avatar";
-import Box from "@mui/material/Box";
-import CssBaseline from "@mui/material/CssBaseline";
-import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
-
+import { buttonVariants } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import { AlertTriangle, BookHeart, Undo2 } from 'lucide-react';
 import type {
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
-} from "next";
-import { getCsrfToken } from "next-auth/react";
-
-import errorsplash from "./errorsplashscreen.jpg";
+} from 'next';
+import { getCsrfToken } from 'next-auth/react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Error({
   csrfToken,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  //const { data: session } = useSession();
-  //console.log("Session", session);
-
   return (
-    <Grid container component="main" sx={{ height: "100vh" }}>
-      <CssBaseline />
-      <Grid
-        item
-        xs={false}
-        sm={4}
-        md={7}
-        sx={{
-          backgroundImage: `url(${errorsplash.src})`,
-          backgroundRepeat: "no-repeat",
-
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        <Box
-          sx={{
-            my: 8,
-            mx: 4,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" color="primary" variant="h5">
-            Falscher Nutzername oder Passwort, versuche es nochmal..
-          </Typography>
-          <Button href="/" variant="contained" color="primary">
-            Login Seite
-          </Button>
-        </Box>
-      </Grid>
-    </Grid>
+    <div className="grid min-h-svh lg:grid-cols-2 container mx-auto">
+      <div className="flex flex-col gap-4 p-6 md:p-10">
+        <div className="flex justify-center gap-2 md:justify-start">
+          <BookHeart className="size-6" />
+        </div>
+        <div className="flex flex-1 items-center justify-center">
+          <div className="w-full max-w-sm">
+            <div className="flex flex-col gap-6">
+              <Card>
+                <CardHeader>
+                  <AlertTriangle className="mx-auto size-6" />
+                  <CardTitle className="text-2xl">
+                    Грешно име или парола
+                  </CardTitle>
+                  <CardDescription>
+                    Въведете отново името и паролата и опитайте пак
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex flex-col gap-6">
+                    <Link
+                      href="/"
+                      className={cn(
+                        buttonVariants({ variant: 'outline' }),
+                        'w-full'
+                      )}
+                    >
+                      <Undo2 className="size-5" />
+                      Вписване
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="relative hidden bg-muted lg:block">
+        <Image
+          src="/splashscreen.jpg"
+          alt="splash"
+          width={900}
+          height={1300}
+          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+        />
+      </div>
+    </div>
   );
 }
 export async function getServerSideProps(context: GetServerSidePropsContext) {
