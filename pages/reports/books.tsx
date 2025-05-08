@@ -15,24 +15,24 @@ interface BookPropsType {
   books: Array<BookType>;
 }
 
-export default function Books({ books }: BookPropsType) {
-  const columns: ColumnDef<BookType>[] = [
-    {
-      accessorKey: 'title',
-      header: 'Заглавие',
-    },
-    {
-      accessorKey: 'author',
-      header: 'Автор',
-    },
-    {
-      accessorFn: (r) => translations.rentalStatus[r.rentalStatus],
-      header: 'Статус',
-    },
-    { accessorKey: 'libraryId', header: 'Каталожен номер' },
-    { accessorKey: 'isbn', header: 'ISBN' },
-  ];
+const columns: ColumnDef<BookType>[] = [
+  {
+    accessorKey: 'title',
+    header: 'Заглавие',
+  },
+  {
+    accessorKey: 'author',
+    header: 'Автор',
+  },
+  {
+    accessorFn: (r) => translations.rentalStatus[r.rentalStatus],
+    header: 'Статус',
+  },
+  { accessorKey: 'libraryId', header: 'Каталожен номер' },
+  { accessorKey: 'isbn', header: 'ISBN' },
+];
 
+export default function Books({ books }: BookPropsType) {
   return (
     <Layout>
       <DataTable columns={columns} data={books} />

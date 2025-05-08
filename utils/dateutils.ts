@@ -1,20 +1,12 @@
-import { BookType } from "@/entities/BookType";
-import { UserType } from "@/entities/UserType";
-import { User } from "@prisma/client";
-import dayjs, { Dayjs } from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
-import timezone from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
-
-export const TIMEZONE = "Europe/Berlin";
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.extend(customParseFormat);
+import { BookType } from '@/entities/BookType';
+import { UserType } from '@/entities/UserType';
+import { dayjs, Dayjs } from '@/lib/dayjs';
+import { User } from '@prisma/client';
 
 export function convertDateToDayString(
   d: string | Date | null | undefined
 ): string {
-  return d ? dayjs(d).format("YYYY-MM-DD") : dayjs().format("YYYY-MM-DD");
+  return d ? dayjs(d).format('YYYY-MM-DD') : dayjs().format('YYYY-MM-DD');
 }
 
 export function convertDayToISOString(d: string): string {
@@ -25,25 +17,25 @@ export function convertDateToTimeString(
   d: string | Date | null | undefined
 ): string {
   return d
-    ? dayjs(d).format("YYYY-MM-DD HH:mm")
-    : dayjs().format("YYYY-MM-DD HH:mm");
+    ? dayjs(d).format('YYYY-MM-DD HH:mm')
+    : dayjs().format('YYYY-MM-DD HH:mm');
 }
 
 export function convertStringToDay(d: string | Date | undefined): Dayjs {
   //console.log("Converting string to dayjs", d, dayjs(d, "YYYY-MM-DD"));
-  return d ? dayjs(d, "YYYY-MM-DD") : dayjs("YYYY-MM-DD");
+  return d ? dayjs(d, 'YYYY-MM-DD') : dayjs('YYYY-MM-DD');
 }
 
 export function extendWeeks(d: Date, weeks: number): Dayjs {
   //console.log("Converting string to dayjs", d, dayjs(d));
-  const newDate = dayjs(d).add(weeks, "week");
+  const newDate = dayjs(d).add(weeks, 'week');
   return newDate;
 }
 
 export function extendDays(d: Date, days: number): Dayjs {
   //console.log("Converting string to dayjs", d, dayjs(d));
-  console.log("Extending book by ", days, d);
-  const newDate = dayjs(d).add(days, "day");
+  console.log('Extending book by ', days, d);
+  const newDate = dayjs(d).add(days, 'day');
   return newDate;
 }
 

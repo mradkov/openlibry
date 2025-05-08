@@ -2,6 +2,7 @@ import { BookType } from '@/entities/BookType';
 import { UserType } from '@/entities/UserType';
 import { getAllBooks } from '@/entities/book';
 import { getAllUsers } from '@/entities/user';
+import { dayjs } from '@/lib/dayjs';
 import {
   convertDateToDayString,
   convertDayToISOString,
@@ -28,7 +29,7 @@ export default async function handle(
   switch (req.method) {
     case 'GET':
       try {
-        const fileName = 'openlibry_export.xlsx';
+        const fileName = `export_${dayjs().format('YYYY-MM-DD_HH-mm-ss')}.xlsx`;
 
         const allUsers = await getAllUsers(prisma);
 
@@ -53,8 +54,8 @@ export default async function handle(
         });
 
         const workbook = new Excel.Workbook();
-        const booksheet = workbook.addWorksheet('Bücherliste');
-        const usersheet = workbook.addWorksheet('Userliste');
+        const booksheet = workbook.addWorksheet('Книги');
+        const usersheet = workbook.addWorksheet('Потребители');
 
         booksheet.columns = xlsbookcolumns;
 
@@ -83,7 +84,7 @@ export default async function handle(
       }
       break;
     case 'POST':
-      const importLog = ['Starte den Transfer in die Datenbank'];
+      const importLog = ['Стартиране на трансфера в базата данни'];
       try {
         const bookData = req.body.bookData.slice(1); //remove top header row of excel
         const userData = req.body.userData.slice(1);
@@ -110,10 +111,13 @@ export default async function handle(
           transaction.push(
             prisma.user.create({
               data: {
-                id: u['Номер'], //TODO refactoring to re-use the mapping from utils xls mapping
-                lastName: u['Фамилия'],
                 firstName: u['Име'],
+                lastName: u['Фамилия'],
                 active: u['Активен'],
+                phone: u['Телефон'],
+                eMail: u['Имейл'],
+                createdAt: convertDayToISOString(u['Създаден на']),
+                updatedAt: convertDayToISOString(u['Актуализиран на']),
               },
             })
           );
@@ -125,32 +129,27 @@ export default async function handle(
             prisma.book.create({
               //TODO this needs a more configurable mapping
               data: {
-                id: b['Медиен номер'],
-                rentalStatus: b['Статус на заемане'],
-                rentedDate: convertDayToISOString(b['Заеман на']),
-                dueDate: convertDayToISOString(b['Връщане на']),
+                rentalStatus: b['Статус'],
+                rentedDate: convertDayToISOString(b['Взета на']),
+                dueDate: convertDayToISOString(b['Взета до']),
                 renewalCount: b['Брой подновявания'],
                 title: b['Заглавие'],
                 subtitle: b['Подзаглавие'],
                 author: b['Автор'],
-                topics: b['Ключови думи'] ? b['Ключови думи'] : '',
-                imageLink: b['Изображение'],
+                barcode: b['Баркод'],
+                libraryId: b['Каталожен номер'],
                 isbn: b['ISBN'],
                 editionDescription: b['Издание'],
-                publisherLocation: b['Място на издаване'],
+                publisherLocation: b['Държава на издаване'],
                 pages: parseInt(b['Страници']),
                 summary: b['Резюме'],
                 publisherName: b['Издател'],
-                otherPhysicalAttributes: b['Характеристики'],
+                otherPhysicalAttributes: b['Други характеристики'],
                 supplierComment: b['Доставчик'],
-                publisherDate: b['Дата на издаване'],
+                publisherDate: b['Дата на публикуване'],
                 physicalSize: b['Размери'],
                 minAge: b['Мин възраст'],
                 maxAge: b['Макс възраст'],
-                additionalMaterial: b['Материали'],
-                price: b['Цена'],
-                externalLinks: b['Връзки'],
-                userId: b['Заеман от'],
               },
             })
           );

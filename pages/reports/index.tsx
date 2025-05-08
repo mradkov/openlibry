@@ -3,7 +3,7 @@ import { getAllBooks, getRentedBooksWithUsers } from '@/entities/book';
 import { PrismaClient } from '@prisma/client';
 import { getAllUsers } from '../../entities/user';
 
-import { Button } from '@/components/ui/button';
+import { buttonVariants } from '@/components/ui/button';
 import {
   Card,
   CardDescription,
@@ -15,7 +15,7 @@ import { BookType } from '@/entities/BookType';
 import { UserType } from '@/entities/UserType';
 import { dayjs } from '@/lib/dayjs';
 import { convertDateToDayString } from '@/utils/dateutils';
-import router from 'next/router';
+import Link from 'next/link';
 
 const prisma = new PrismaClient();
 
@@ -50,9 +50,9 @@ const LinkCard = ({ title, subtitle, buttonTitle, link }: LinkCardProps) => {
         <CardDescription>{subtitle}</CardDescription>
       </CardHeader>
       <CardFooter>
-        <Button variant="outline" onClick={() => router.push(link)}>
+        <Link href={link} className={buttonVariants({ variant: 'outline' })}>
           {buttonTitle}
-        </Button>
+        </Link>
       </CardFooter>
     </Card>
   );
@@ -73,9 +73,9 @@ export default function Reports({ users, books, rentals }: ReportPropsType) {
         </CardHeader>
 
         <CardFooter>
-          <Button variant="outline" onClick={() => router.push(link)}>
+          <Link href={link} className={buttonVariants({ variant: 'outline' })}>
             Виж всички
-          </Button>
+          </Link>
         </CardFooter>
       </Card>
     );

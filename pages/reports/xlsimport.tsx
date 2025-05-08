@@ -1,54 +1,41 @@
+import { BackButton } from '@/components/layout/back-button';
 import Layout from '@/components/layout/Layout';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
-  Divider,
-  Grid,
-  Paper,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
+  TableHeader,
   TableRow,
-  ThemeProvider,
-  Typography,
-  createTheme,
-} from '@mui/material';
-import Button from '@mui/material/Button';
+} from '@/components/ui/table';
 import * as ExcelJS from 'exceljs';
+import { Save } from 'lucide-react';
 import React, { useState } from 'react';
-
-const theme = createTheme({
-  palette: {
-    primary: { main: '#1976d2' },
-  },
-  spacing: 4,
-});
 
 export default function XLSImport() {
   const [bookData, setBookData] = useState<any[]>([]);
   const [excelLoaded, setExcelLoaded] = useState(false);
 
   const [userData, setUserData] = useState<any[]>([]);
-  const [importLog, setImportLog] = useState<string[]>(['Los gehts...']);
+  const [importLog, setImportLog] = useState<string[]>([]);
 
   const DenseTable = ({ data }: any) => {
-    console.log('Rendering table', data);
     return (
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-          <TableHead>
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
             <TableRow>
               {data[0].map((d: any, i: number) => {
-                return <TableCell key={i}>{d}</TableCell>;
+                return <TableHead key={i}>{d}</TableHead>;
               })}
             </TableRow>
-          </TableHead>
+          </TableHeader>
           <TableBody>
-            {data.slice(1, 10).map((row: any) => (
-              <TableRow
-                key={row.name}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
+            {data.slice(1, 11).map((row: any, idx: number) => (
+              <TableRow key={idx}>
                 {Object.keys(row).map((d: any, i: number) => {
                   return <TableCell key={i}>{row[d]}</TableCell>;
                 })}
@@ -56,7 +43,7 @@ export default function XLSImport() {
             ))}
           </TableBody>
         </Table>
-      </TableContainer>
+      </div>
     );
   };
 
@@ -91,51 +78,51 @@ export default function XLSImport() {
       const logs = [] as string[];
       const file = event.target.files ? event.target.files[0] : null;
       console.log('Uploading file', event.target.files);
-      logs.push('Datei wird geladen: ' + file);
+      logs.push('Файлът се зарежда: ' + file);
       if (!file) return;
 
       const workbook = new ExcelJS.Workbook();
       const arrayBuffer = await file.arrayBuffer();
-      logs.push('Excel wird konvertiert');
+      logs.push('Excel файлътр се конвертира');
       await workbook.xlsx.load(arrayBuffer);
-      logs.push('Excel erfolgreich konvertiert');
+      logs.push('Успешно конвертиране');
 
       const worksheetBooks = workbook.worksheets[0];
-      logs.push('Excel Blatt für Bücher gefunden');
+      logs.push('Файлът съдържа списък с книги');
       const worksheetUsers = workbook.worksheets[1];
-      logs.push('Excel Blatt für Nutzer gefunden');
+      logs.push('Файлът съдържа списък с потребители');
 
-      logs.push('Excel Bücher werden in JSON konvertiert');
+      logs.push('Конвертиране на списъка с книги към JSON');
       const booksJson: any[] = convertSheetToJson(worksheetBooks);
       logs.push(
-        'Excel Bücher erfolgreich in JSON konvertiert: ' +
+        'Списъкът с книги е успеншно конвертиран към JSON: ' +
           booksJson.length +
-          ' Bücher gefunden'
+          ' намерени книги'
       );
       setBookData(booksJson);
-      logs.push('Excel User werden in JSON konvertiert');
+      logs.push('Конвертиране на списъка с потребители към JSON');
       const usersJson: any[] = convertSheetToJson(worksheetUsers);
       logs.push(
-        'Excel User erfolgreich in JSON konvertiert: ' +
+        'Списъкът с потребители е успеншно конвертиран към JSON: ' +
           usersJson.length +
-          ' User gefunden'
+          ' намерени потребители'
       );
       setUserData(usersJson);
 
       setExcelLoaded(true);
       setImportLog(logs);
       logs.push(
-        'Excel Import erledigt, Daten können in die Datenbank importiert werden.'
+        'Импортирането на Excel файл е завършено, данните могат да бъдат въведени в базата данни.'
       );
     } catch (e: any) {
-      console.log('Datei Import hat nicht funktioniert');
+      console.error(e);
     }
   };
 
   const handleImportButton = async () => {
     console.log('Importing data into the db');
     const payload = { bookData: bookData, userData: userData };
-    const endpoint = process.env.NEXT_PUBLIC_API_URL + '/api/excel';
+    const endpoint = '/api/excel';
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
@@ -156,77 +143,48 @@ export default function XLSImport() {
 
   return (
     <Layout>
-      <ThemeProvider theme={theme}>
-        <Grid
-          container
-          direction="column"
-          justifyContent="center"
-          alignItems="center"
-          spacing={2}
-          sx={{ m: 2 }}
-        >
-          {' '}
-          <Grid
-            item
-            container
-            xs={2}
-            direction="row"
-            justifyContent="center"
-            alignItems="center"
-            spacing={2}
-            sx={{ m: 2 }}
-          >
-            <Button variant="contained" component="label">
-              Импортиране на Excel
-              <input
-                type="file"
-                hidden
-                accept=".xlsx, .xls"
-                onChange={handleFileUpload}
-              />
-            </Button>{' '}
-            {excelLoaded && (
-              <Button
-                variant="contained"
-                component="label"
-                onClick={handleImportButton}
-              >
-                Импортиране в базата данни
-              </Button>
-            )}
-          </Grid>
-          <Grid item xs={10} sx={{ width: '100%' }}>
-            {' '}
-            <Paper>
-              {importLog.map((i: string, idx: number) => (
-                <Typography key={idx}>{i}</Typography>
-              ))}
-            </Paper>
-          </Grid>
-          {excelLoaded && (
-            <Grid container item>
-              <Divider></Divider>
-              <Typography variant="caption" color="gray">
-                Първите редове на книгите
-              </Typography>
-              {bookData.length > 0 ? (
-                <DenseTable data={bookData} />
-              ) : (
-                'Няма налични данни'
-              )}
-              <Divider></Divider>
-              <Typography variant="caption" color="gray">
-                Първите редове на потребителите
-              </Typography>
-              {userData.length > 0 ? (
-                <DenseTable data={userData} />
-              ) : (
-                'Няма налични данни'
-              )}
-            </Grid>
+      <div className="md:w-60 space-y-2">
+        <Label htmlFor="xls">Зареждане на файл</Label>
+        <Input
+          type="file"
+          id="xls"
+          placeholder=".xlsx, .xls"
+          accept=".xlsx, .xls"
+          onChange={handleFileUpload}
+        />
+        {excelLoaded && (
+          <Button onClick={handleImportButton} className="w-full">
+            <Save />
+            Въведи в базата данни
+          </Button>
+        )}
+      </div>
+
+      <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
+        {importLog.map((i: string, idx: number) => (
+          <li key={idx}>{i}</li>
+        ))}
+      </ul>
+      {excelLoaded && (
+        <div>
+          <p>Книги първи 10 реда</p>
+          {bookData.length > 0 ? (
+            <DenseTable data={bookData} />
+          ) : (
+            'Няма налични данни'
           )}
-        </Grid>
-      </ThemeProvider>
+
+          <p>Потребители първи 10 реда</p>
+          {userData.length > 0 ? (
+            <DenseTable data={userData} />
+          ) : (
+            'Няма налични данни'
+          )}
+        </div>
+      )}
+      <div className="text-right mt-4">
+        <BackButton />
+      </div>
     </Layout>
   );
 }
