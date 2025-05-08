@@ -18,7 +18,6 @@ type BookEditFormPropType = {
   book: BookType;
   setBookData: Dispatch<BookType>;
   deleteBook: React.MouseEventHandler<HTMLButtonElement>;
-  deleteSafetySeconds: number;
   saveBook: React.MouseEventHandler<HTMLButtonElement>;
   topics: string[];
   initiallyEditable?: boolean;

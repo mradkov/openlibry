@@ -6,7 +6,6 @@ import { DataTable } from '@/components/ui/data-table';
 import { UserType } from '@/entities/UserType';
 import { getAllUsers } from '@/entities/user';
 import { dayjs } from '@/lib/dayjs';
-import type {} from '@mui/x-data-grid/themeAugmentation';
 import { ColumnDef } from '@tanstack/react-table';
 
 const prisma = new PrismaClient();

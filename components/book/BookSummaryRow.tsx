@@ -25,18 +25,6 @@ export default function BookSummaryRow({
   handleCopyBook,
   returnBook,
 }: BookSummaryRowPropType) {
-  const BookTopics = ({ topics }: BookTopicsPropType) => {
-    const topicsArray = topics.split(';');
-    return (
-      <div>
-        {topicsArray
-          .filter((t) => t.length > 0)
-          .map((t) => (
-            <Badge></Badge>
-          ))}
-      </div>
-    );
-  };
   const bookTopics = (
     'topics' in book && book.topics != null ? book.topics : ''
   ).split(';');

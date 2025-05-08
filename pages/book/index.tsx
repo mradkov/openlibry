@@ -8,7 +8,7 @@ import { PrismaClient } from '@prisma/client';
 
 import { convertDateToDayString, currentTime } from '@/utils/dateutils';
 
-import { BookType } from '@/entities/BookType';
+import { BookType, RentalStatus } from '@/entities/BookType';
 
 import BookSummaryCard from '@/components/book/BookSummaryCard';
 
@@ -125,7 +125,9 @@ export default function Books({ books, numberBooksToShow }: BookPropsType) {
         console.log('Book returned, relationship deleted', data, id, userid);
         const newRenderedBooks = renderedBooks.map((b) => {
           console.log('Compare rendered books', b.id, id);
-          return b.id === id ? { ...b, rentalStatus: 'available' } : b;
+          return b.id === id
+            ? { ...b, rentalStatus: 'available' as RentalStatus }
+            : b;
         });
         console.log('New rendered books', newRenderedBooks, renderedBooks);
         setRenderedBooks(newRenderedBooks);
@@ -222,10 +224,6 @@ export async function getServerSideProps() {
     ? parseInt(process.env.NUMBER_BOOKS_OVERVIEW)
     : 10;
 
-  const maxBooks = process.env.NUMBER_BOOKS_MAX
-    ? parseInt(process.env.NUMBER_BOOKS_MAX)
-    : 1000000;
-
   const books = allBooks.map((b) => {
     const newBook = { ...b } as any; //define a better type there with conversion of Date to string
     newBook.createdAt = convertDateToDayString(b.createdAt);
@@ -234,10 +232,10 @@ export async function getServerSideProps() {
       ? convertDateToDayString(b.rentedDate)
       : '';
     newBook.dueDate = b.dueDate ? convertDateToDayString(b.dueDate) : '';
-    newBook.searchableTopics = b.topics ? b.topics.split(';') : ''; //otherwise the itemsjs search doesn't work, but not sure if I can override the type?
+    newBook.searchableTopics = b.topics ? b.topics.split(';') : '';
 
     return newBook;
   });
 
-  return { props: { books, numberBooksToShow, maxBooks } };
+  return { props: { books, numberBooksToShow } };
 }

@@ -2,9 +2,7 @@ import Layout from '@/components/layout/Layout';
 import { useState } from 'react';
 import { getAllTopics, getBook } from '../../entities/book';
 
-import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { useRouter } from 'next/router';
-import { forwardRef } from 'react';
 
 import { convertStringToDay, replaceBookDateString } from '@/utils/dateutils';
 import { PrismaClient } from '@prisma/client';
@@ -13,22 +11,9 @@ import BookEditForm from '@/components/book/BookEditForm';
 import { BackButton } from '@/components/layout/back-button';
 import { BookType } from '@/entities/BookType';
 import { UserType } from '@/entities/UserType';
-import { Typography } from '@mui/material';
+
 import { GetServerSidePropsContext } from 'next/types';
 import { toast } from 'sonner';
-
-const deleteSafetySeconds = process.env.NEXT_PUBLIC_DELETE_SAFETY_SECONDS
-  ? parseInt(process.env.NEXT_PUBLIC_DELETE_SAFETY_SECONDS)
-  : 3;
-
-console.log('Delete seconds', process.env.NEXT_PUBLIC_DELETE_SAFETY_SECONDS);
-
-const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
-  props,
-  ref
-) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
 
 interface BookDetailProps {
   user: UserType;
@@ -42,7 +27,7 @@ export default function BookDetail({ user, book, topics }: BookDetailProps) {
   const [bookData, setBookData] = useState<BookType>(book);
 
   if (!router.query.bookid) {
-    return <Typography>ID not found</Typography>;
+    return <div>ID not found</div>;
   }
 
   const bookid = parseInt(
@@ -97,7 +82,6 @@ export default function BookDetail({ user, book, topics }: BookDetailProps) {
         book={bookData}
         setBookData={setBookData}
         deleteBook={handleDeleteButton}
-        deleteSafetySeconds={deleteSafetySeconds}
         saveBook={handleSaveButton}
         topics={topics}
       />

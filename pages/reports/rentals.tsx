@@ -6,7 +6,6 @@ import { BackButton } from '@/components/layout/back-button';
 import { DataTable } from '@/components/ui/data-table';
 import { Rental } from '@/entities/BookType';
 import { dayjs } from '@/lib/dayjs';
-import type {} from '@mui/x-data-grid/themeAugmentation';
 import { ColumnDef } from '@tanstack/react-table';
 
 const prisma = new PrismaClient();

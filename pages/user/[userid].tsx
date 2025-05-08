@@ -1,5 +1,5 @@
 import Layout from '@/components/layout/Layout';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { getUser } from '../../entities/user';
 
 import { getRentedBooksForUser } from '@/entities/book';
@@ -17,7 +17,6 @@ import { BackButton } from '@/components/layout/back-button';
 import UserEditForm from '@/components/user/UserEditForm';
 import { BookType } from '@/entities/BookType';
 import { UserType } from '@/entities/UserType';
-import { Typography } from '@mui/material';
 import { GetServerSidePropsContext } from 'next/types';
 import { toast } from 'sonner';
 
@@ -36,12 +35,8 @@ export default function UserDetail({
 
   const [userData, setUserData] = useState(user);
 
-  useEffect(() => {
-    setUserData(user);
-  }, []);
-
   if (!router.query.userid) {
-    return <Typography>ID not found</Typography>;
+    return <div>ID not found</div>;
   }
 
   const userid = parseInt(

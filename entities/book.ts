@@ -154,8 +154,9 @@ export async function addBook(client: PrismaClient, book: BookType) {
   console.log('Adding book', book);
   try {
     addAudit(client, 'Add book', book.title, book.id);
+    const { id: bookId, userId, user, ...data } = book;
     return await client.book.create({
-      data: { ...book },
+      data,
     });
   } catch (e) {
     if (
@@ -180,11 +181,12 @@ export async function updateBook(
       book.id ? book.id.toString() + ', ' + book.title : 'undefined',
       id
     );
+    const { id: bookId, userId, user, ...data } = book;
     return await client.book.update({
       where: {
         id,
       },
-      data: { ...book },
+      data,
     });
   } catch (e) {
     if (
